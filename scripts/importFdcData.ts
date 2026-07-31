@@ -60,6 +60,7 @@ function toConvexDoc(item: FoodItem): FoodDoc {
       : undefined,
     macroNutrients,
     nutrients,
+    hasEmbedding: false,
   };
 }
 

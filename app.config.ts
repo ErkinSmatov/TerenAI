@@ -34,7 +34,7 @@ export default (): ExpoConfig => ({
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
     },
-    usesAppleSignIn: true,
+    usesAppleSignIn: false,  // было true
   },
   android: {
     package: getUniqueIdentifier(),
@@ -46,7 +46,7 @@ export default (): ExpoConfig => ({
   },
   plugins: [
     "expo-secure-store",
-    "expo-apple-authentication",
+    // "expo-apple-authentication", TODO
     "expo-router",
     "expo-localization",
     [
