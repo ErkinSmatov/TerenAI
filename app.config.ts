@@ -5,9 +5,9 @@ const isDevelopment = appVariant === "development";
 
 const getUniqueIdentifier = () => {
   if (isDevelopment) {
-    return "com.marcoshernanz.calyo.dev";
+    return "com.codetau.terenai.dev";
   } else {
-    return "com.marcoshernanz.calyo";
+    return "com.codetau.terenai";
   }
 };
 
@@ -81,7 +81,8 @@ export default (): ExpoConfig => ({
   extra: {
     APP_VARIANT: appVariant,
     eas: {
-      projectId: "824c3b7e-6700-4f5d-8961-280b98eb9e74",
+      projectId: "616f0145-400b-4a1e-99d8-efea2681653f",
     },
   },
+  owner: "smatove",
 });
