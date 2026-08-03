@@ -1,6 +1,6 @@
-# CalYo - AI Powered Nutrition Tracker 🍎
+# TerenAI - Трекер питания на основе ИИ 🍎
 
-**Scan, Snap, Track.** An intelligent calorie and macro tracker built with React Native and Computer Vision.
+**Сфотографируй, отправь, отслеживай.** Умный трекер калорий и БЖУ, построенный на React Native и компьютерном зрении.
 
 <p align="center">
   <img src="./upload/assets/ios/screenshot-1.png" width="30%" />
@@ -8,25 +8,14 @@
   <img src="./upload/assets/ios/screenshot-3.png" width="30%" />
 </p>
 
-### 🚀 Features
-*   **AI Food Recognition:** Snap a photo or describe a meal to get an instant nutritional breakdown (calories, macros, vitamins).
-*   **Barcode Scanner:** Instantly pull data from any packaged food item.
-*   **Real-time Sync:** State managed by **Convex** for a seamless, multi-device experience.
-*   **Native Performance:** Built with **Expo** for a smooth, 60fps user interface.
+### 🚀 Возможности
+*   **Распознавание еды ИИ:** Сфотографируйте блюдо или опишите его текстом, чтобы мгновенно получить разбивку по калориям, БЖУ и витаминам.
+*   **Сканер штрихкодов:** Мгновенно получайте данные о любом упакованном продукте.
+*   **Синхронизация в реальном времени:** Состояние управляется **Convex** для бесшовной работы на нескольких устройствах.
+*   **Нативная производительность:** Построено на **Expo** для плавного интерфейса на 60 кадрах в секунду.
 
-### 🛠 Tech Stack
+### 🛠 Технологии
 ![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Expo](https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white)
 ![Convex](https://img.shields.io/badge/Convex-1A1523?style=for-the-badge&logo=convex&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-
-### 📲 Download the App
-
-<div style="display: flex; align-items: center">
-  <a href="https://apps.apple.com/app/id6752223421" style="display: inline-block; margin-right: 10px;">
-      <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" height="40">
-  </a>
-  <a href="https://play.google.com/store/apps/details?id=com.marcoshernanz.calyo" style="display: inline-block;">
-      <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="60">
-  </a>
-</div>

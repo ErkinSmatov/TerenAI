@@ -58,13 +58,13 @@ type Option = {
 
 const options: Option[] = [
   {
-    label: "Describir",
+    label: "Описать",
     icon: PenLineIcon,
     href: "/app/(add)/describe",
     isPro: true,
   },
   {
-    label: "Escanear",
+    label: "Сканировать",
     icon: ScanIcon,
     href: "/app/(add)/camera",
     isPro: false,
@@ -96,7 +96,7 @@ export default function TabsAddOptions() {
 
     if (status && !status.ok) {
       Toast.show({
-        text: "Has alcanzado el límite diario de funciones de IA.",
+        text: "Вы достигли дневного лимита функций ИИ.",
         variant: "error",
       });
       return;

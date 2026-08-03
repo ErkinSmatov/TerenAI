@@ -11,26 +11,26 @@ import OnboardingStep from "../../OnboardingStep";
 const options: SelectOption[] = [
   {
     name: "none",
-    label: "Ninguna",
-    description: "No hago cardio",
+    label: "Нет",
+    description: "Не занимаюсь кардио",
     Icon: SignalZeroIcon,
   },
   {
     name: "beginner",
-    label: "Principiante",
-    description: "Llevo menos de 1 año haciendo cardio",
+    label: "Начинающий",
+    description: "Занимаюсь кардио меньше 1 года",
     Icon: SignalLowIcon,
   },
   {
     name: "intermediate",
-    label: "Intermedio",
-    description: "Llevo entre 1 y 4 años haciendo cardio",
+    label: "Средний уровень",
+    description: "Занимаюсь кардио от 1 до 4 лет",
     Icon: SignalMediumIcon,
   },
   {
     name: "advanced",
-    label: "Avanzado",
-    description: "Llevo más de 4 años haciendo cardio",
+    label: "Продвинутый",
+    description: "Занимаюсь кардио больше 4 лет",
     Icon: SignalIcon,
   },
 ];
@@ -51,7 +51,7 @@ export default function OnboardingCardioExperience() {
   };
 
   return (
-    <OnboardingStep title="¿Cual es tu experiencia con el cardio?">
+    <OnboardingStep title="Какой у вас опыт с кардио?">
       <Select
         options={options}
         selectedOptions={selectedOptions}

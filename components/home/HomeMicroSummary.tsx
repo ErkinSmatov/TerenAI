@@ -38,21 +38,21 @@ export default function HomeMicroSummary({ totalMicros, dayIndex }: Props) {
 
   const micros: Micro[] = [
     {
-      name: "Fibra",
+      name: "Клетчатка",
       value: totalMicros.fiber,
       target: targets.fiber,
       Icon: FiberIcon,
       color: getColor("fiber"),
     },
     {
-      name: "Azúcar",
+      name: "Сахар",
       value: totalMicros.sugar,
       target: targets.sugar,
       Icon: SugarIcon,
       color: getColor("sugar"),
     },
     {
-      name: "Sodio",
+      name: "Натрий",
       value: totalMicros.sodium * 1000,
       target: targets.sodium,
       Icon: SodiumIcon,
@@ -68,7 +68,7 @@ export default function HomeMicroSummary({ totalMicros, dayIndex }: Props) {
       >
         <HomeSummaryCardBig
           item={{
-            name: "Calidad",
+            name: "Качество",
             value: totalMicros.score,
             target: targets.score,
             Icon: HealthIcon,

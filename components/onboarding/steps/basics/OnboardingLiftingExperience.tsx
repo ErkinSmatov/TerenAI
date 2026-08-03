@@ -11,26 +11,26 @@ import OnboardingStep from "../../OnboardingStep";
 const options: SelectOption[] = [
   {
     name: "none",
-    label: "Ninguna",
-    description: "No levanto pesas",
+    label: "Нет",
+    description: "Не занимаюсь силовыми тренировками",
     Icon: SignalZeroIcon,
   },
   {
     name: "beginner",
-    label: "Principiante",
-    description: "Llevo menos de 1 año levantando pesas",
+    label: "Начинающий",
+    description: "Занимаюсь меньше 1 года",
     Icon: SignalLowIcon,
   },
   {
     name: "intermediate",
-    label: "Intermedio",
-    description: "Llevo entre 1 y 4 años levantando pesas",
+    label: "Средний уровень",
+    description: "Занимаюсь от 1 до 4 лет",
     Icon: SignalMediumIcon,
   },
   {
     name: "advanced",
-    label: "Avanzado",
-    description: "Llevo más de 4 años levantando pesas",
+    label: "Продвинутый",
+    description: "Занимаюсь больше 4 лет",
     Icon: SignalIcon,
   },
 ];
@@ -53,7 +53,7 @@ export default function OnboardingLiftingExperience() {
   };
 
   return (
-    <OnboardingStep title="¿Cuál es tu experiencia levantando pesas?">
+    <OnboardingStep title="Какой у вас опыт силовых тренировок?">
       <Select
         options={options}
         selectedOptions={selectedOptions}

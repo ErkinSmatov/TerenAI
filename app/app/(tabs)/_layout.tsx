@@ -31,7 +31,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            tabBarLabel: "Inicio",
+            tabBarLabel: "Главная",
             tabBarIcon: ({ color, size }) => (
               <HomeIcon color={color} strokeWidth={1.75} size={size} />
             ),
@@ -49,7 +49,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="settings"
           options={{
-            tabBarLabel: "Ajustes",
+            tabBarLabel: "Настройки",
             tabBarIcon: ({ color, size }) => (
               <SettingsIcon color={color} strokeWidth={1.75} size={size} />
             ),

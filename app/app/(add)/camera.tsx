@@ -52,7 +52,7 @@ export default function CameraScreen() {
   const checkRateLimit = () => {
     if (status && !status.ok) {
       Toast.show({
-        text: "Has alcanzado el límite diario de funciones de IA.",
+        text: "Вы достигли дневного лимита функций ИИ.",
         variant: "error",
       });
       return false;

@@ -272,7 +272,7 @@ export default function Carousel({
                 style={styles.arrowButton}
                 hitSlop={10}
                 disabled={!isInfinite && activeIndex <= 0}
-                accessibilityLabel="Previous"
+                accessibilityLabel="Назад"
                 onPress={() => {
                   scrollToPrev();
                 }}
@@ -290,7 +290,7 @@ export default function Carousel({
                 style={styles.arrowButton}
                 hitSlop={10}
                 disabled={!isInfinite && activeIndex >= numChildren - 1}
-                accessibilityLabel="Next"
+                accessibilityLabel="Вперёд"
                 onPress={() => {
                   scrollToNext();
                 }}

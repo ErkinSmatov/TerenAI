@@ -2,7 +2,7 @@ import WheelPicker from "@/components/ui/WheelPicker";
 import { useOnboardingContext } from "@/context/OnboardingContext";
 import { StyleSheet, useWindowDimensions, View } from "react-native";
 import { format, getDaysInMonth } from "date-fns";
-import { es } from "date-fns/locale";
+import { ru } from "date-fns/locale";
 import OnboardingStep from "../../OnboardingStep";
 
 export default function OnboardingBirthDate() {
@@ -18,7 +18,7 @@ export default function OnboardingBirthDate() {
   );
 
   const months = Array.from({ length: 12 }, (_, i) => {
-    const name = format(new Date(2020, i, 1), "LLLL", { locale: es });
+    const name = format(new Date(2020, i, 1), "LLLL", { locale: ru });
     return name.charAt(0).toUpperCase() + name.slice(1);
   });
 
@@ -61,7 +61,7 @@ export default function OnboardingBirthDate() {
   };
 
   return (
-    <OnboardingStep title="¿Cuándo naciste?">
+    <OnboardingStep title="Когда вы родились?">
       <View style={[style.pickerContainer, { width: dimensions.width }]}>
         <WheelPicker
           data={days}

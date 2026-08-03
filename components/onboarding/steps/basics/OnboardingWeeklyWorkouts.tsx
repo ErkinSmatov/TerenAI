@@ -9,19 +9,19 @@ const options: SelectOption[] = [
   {
     name: "0-2",
     label: "0-2",
-    description: "Entreno de vez en cuando",
+    description: "Тренируюсь время от времени",
     Icon: Dot1Icon,
   },
   {
     name: "3-5",
     label: "3-5",
-    description: "Entreno varias veces por semana",
+    description: "Тренируюсь несколько раз в неделю",
     Icon: Dot3Icon,
   },
   {
     name: "6+",
     label: "6+",
-    description: "Entreno casi a diario",
+    description: "Тренируюсь почти каждый день",
     Icon: Dot6Icon,
   },
 ];
@@ -37,7 +37,7 @@ export default function OnboardingWeeklyWorkouts() {
   };
 
   return (
-    <OnboardingStep title="¿Cuantos entrenamientos haces a la semana?">
+    <OnboardingStep title="Сколько тренировок в неделю вы делаете?">
       <Select
         options={options}
         selectedOptions={selectedOptions}

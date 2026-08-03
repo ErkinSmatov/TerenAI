@@ -63,23 +63,23 @@ export default function OnboardingHeight() {
   };
 
   const handleMeasurementSystemChange = (system: string) => {
-    if (system !== "Centímetros" && system !== "Pies y Pulgadas") return;
+    if (system !== "Сантиметры" && system !== "Футы и дюймы") return;
     setData((prev) => ({
       ...prev,
-      measurementSystem: system === "Centímetros" ? "metric" : "imperial",
+      measurementSystem: system === "Сантиметры" ? "metric" : "imperial",
     }));
   };
 
   return (
-    <OnboardingStep title="¿Cuanto mides?">
+    <OnboardingStep title="Какой у вас рост?">
       <View style={[style.pickerContainer, { width: dimensions.width }]}>
         <View style={style.segmentControlContainer}>
           <SegmentedControl
-            options={["Centímetros", "Pies y Pulgadas"]}
+            options={["Сантиметры", "Футы и дюймы"]}
             selectedOption={
               data.measurementSystem === "metric"
-                ? "Centímetros"
-                : "Pies y Pulgadas"
+                ? "Сантиметры"
+                : "Футы и дюймы"
             }
             onChange={handleMeasurementSystemChange}
           />

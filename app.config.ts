@@ -13,19 +13,19 @@ const getUniqueIdentifier = () => {
 
 const getAppName = () => {
   if (isDevelopment) {
-    return "CalYo (Dev)";
+    return "TerenAI (Dev)";
   } else {
-    return "CalYo";
+    return "TerenAI";
   }
 };
 
 export default (): ExpoConfig => ({
   name: getAppName(),
-  slug: "Calyo",
+  slug: "TerenAI",
   version: "1.2.1",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
-  scheme: "calyo",
+  scheme: "terenai",
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
   ios: {
@@ -61,7 +61,7 @@ export default (): ExpoConfig => ({
       "expo-camera",
       {
         cameraPermission:
-          "CalYo uses the camera to let you take photos of your meals so the AI can calculate calories and macros.",
+          "TerenAI использует камеру, чтобы вы могли фотографировать блюда, а ИИ рассчитывал калории и БЖУ.",
         recordAudioAndroid: false,
       },
     ],
@@ -69,7 +69,7 @@ export default (): ExpoConfig => ({
       "expo-image-picker",
       {
         photosPermission:
-          "CalYo needs access to your photos to let you import food images for calorie analysis.",
+          "TerenAI нужен доступ к фотографиям, чтобы вы могли загружать снимки еды для анализа калорийности.",
       },
     ],
   ],

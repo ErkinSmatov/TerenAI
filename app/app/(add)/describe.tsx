@@ -32,7 +32,7 @@ export default function DescribeScreen() {
 
     if (status && !status.ok) {
       Toast.show({
-        text: "Has alcanzado el límite diario de funciones de IA.",
+        text: "Вы достигли дневного лимита функций ИИ.",
         variant: "error",
       });
       return;
@@ -53,16 +53,16 @@ export default function DescribeScreen() {
       >
         <ScreenHeader>
           <ScreenHeaderBackButton />
-          <ScreenHeaderTitle title="Describir Comida" />
+          <ScreenHeaderTitle title="Описать блюдо" />
         </ScreenHeader>
 
         <SafeArea edges={["left", "right"]}>
           <ScreenMainTitle
-            title="¿Qué has comido?"
-            description="Describe tu comida y los ingredientes"
+            title="Что вы съели?"
+            description="Опишите блюдо и его ингредиенты"
           />
           <TextInput
-            placeholder="Ej: Dos rebanadas de pan tostado con aguacate y un huevo frito"
+            placeholder="Например: Два тоста с авокадо и одно яйцо-глазунья"
             value={description}
             onChangeText={setDescription}
             multiline
@@ -80,8 +80,8 @@ export default function DescribeScreen() {
             }
           >
             {status !== undefined && !status.ok
-              ? "Límite alcanzado"
-              : "Analizar comida"}
+              ? "Лимит исчерпан"
+              : "Анализировать блюдо"}
           </ScreenFooterButton>
         </ScreenFooter>
       </KeyboardAvoidingView>

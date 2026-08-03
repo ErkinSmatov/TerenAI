@@ -17,7 +17,7 @@ export default function OnboardingSectionLayout({
   onNext,
   onBack,
   isNextDisabled = false,
-  nextButtonText = "Siguiente",
+  nextButtonText = "Далее",
 }: Props) {
   return (
     <View style={styles.container}>

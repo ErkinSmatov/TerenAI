@@ -17,10 +17,10 @@ export async function fetchProduct(barcode: string, locale: string) {
   const localeString = locale;
   const parts = localeString.split("-");
   // const languageCode = parts[0].toLowerCase();
-  const languageCode = "es";
-  const countryCode = parts[1] ? parts[1].toLowerCase() : "es";
+  const languageCode = "ru";
+  const countryCode = parts[1] ? parts[1].toLowerCase() : "ru";
 
-  const appName = Constants.expoConfig?.name ?? "CalYo";
+  const appName = Constants.expoConfig?.name ?? "TerenAI";
   const appVersion = Constants.expoConfig?.version ?? "1.0.0";
   const supportEmail = process.env.EXPO_PUBLIC_SUPPORT_EMAIL;
   const userAgent = `${appName}/${appVersion} (${supportEmail})`;
@@ -72,7 +72,7 @@ export async function fetchProduct(barcode: string, locale: string) {
       : null;
   const genericName =
     p.product_name && p.product_name.length > 0 ? p.product_name : null;
-  const finalName = localizedName ?? genericName ?? "Unknown Product";
+  const finalName = localizedName ?? genericName ?? "Неизвестный продукт";
 
   const fullName = p.brands ? `${p.brands} - ${finalName}` : finalName;
 

@@ -23,25 +23,26 @@ export default function PlanInfoSheet() {
       <View style={{ gap: 32 }}>
         <View style={{ gap: 8 }}>
           <Text size="16" weight="600">
-            Aviso Médico
+            Медицинское предупреждение
           </Text>
           <Text size="14">
-            Esta aplicación ofrece estimaciones con fines informativos y no
-            sustituye el consejo médico profesional. Consulte siempre a un
-            médico antes de realizar cambios en su dieta o actividad física.
+            Это приложение предоставляет оценки в информационных целях и не
+            заменяет профессиональную медицинскую консультацию. Всегда
+            консультируйтесь с врачом перед внесением изменений в диету или
+            физическую активность.
           </Text>
         </View>
         <View style={{ gap: 8 }}>
           <Text size="16" weight="600">
-            Metodología y Fuentes
+            Методология и источники
           </Text>
           <View style={{ gap: 8 }}>
             <Text size="14">
               &bull;{" "}
               <Text size="14" weight="600">
-                Tasa Metabólica Basal (TMB):
+                Базовый уровень метаболизма (BMR):
               </Text>{" "}
-              Calculada mediante la ecuación de Mifflin-St Jeor.{" "}
+              Рассчитан по уравнению Миффлина-Сан Жеора.{" "}
               <Text
                 size="14"
                 style={{ textDecorationLine: "underline" }}
@@ -58,9 +59,9 @@ export default function PlanInfoSheet() {
             <Text size="14">
               &bull;{" "}
               <Text size="14" weight="600">
-                Gasto Energético:
+                Расход энергии:
               </Text>{" "}
-              Estimado según el Compendio de Actividades Físicas.{" "}
+              Оценивается по Компендиуму физической активности.{" "}
               <Text
                 size="14"
                 style={{ textDecorationLine: "underline" }}
@@ -77,9 +78,9 @@ export default function PlanInfoSheet() {
             <Text size="14">
               &bull;{" "}
               <Text size="14" weight="600">
-                Seguridad:
+                Безопасность:
               </Text>{" "}
-              Los límites mínimos de calorías se basan en las{" "}
+              Минимальные лимиты калорий основаны на{" "}
               <Text
                 size="14"
                 style={{ textDecorationLine: "underline" }}
@@ -89,7 +90,7 @@ export default function PlanInfoSheet() {
                   )
                 }
               >
-                Guías Alimentarias para los Estadounidenses (2020-2025)
+                Диетических рекомендациях для американцев (2020–2025)
               </Text>
               .
             </Text>

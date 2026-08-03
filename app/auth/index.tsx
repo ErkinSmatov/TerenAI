@@ -30,7 +30,7 @@ export default function AuthScreen() {
   return (
     <SafeArea>
       <Title style={{ textAlign: "center" }}>
-        Contar calorías de forma sencilla
+        Считайте калории легко и просто
       </Title>
       <View style={styles.carouselContainer}>
         <Carousel showArrows infinite autoScroll>
@@ -52,17 +52,17 @@ export default function AuthScreen() {
             router.navigate("/onboarding");
           }}
         >
-          Comenzar
+          Начать
         </Button>
         <View style={styles.footerText}>
           <Text size="16" style={{ textAlign: "center" }}>
-            ¿Ya tienes cuenta?
+            Уже есть аккаунт?
           </Text>
           <BottomSheet
             ref={bottomSheetRef}
             Trigger={
               <Button size="md" variant="text">
-                Iniciar Sesión
+                Войти
               </Button>
             }
           >

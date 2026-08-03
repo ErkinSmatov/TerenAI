@@ -61,7 +61,7 @@ export default function OnboardingPlan() {
   const macros = useMemo(
     () => [
       {
-        name: "Calorías",
+        name: "Калории",
         amount: calories,
         ratio: 1,
         color: getColor("calorie"),
@@ -71,7 +71,7 @@ export default function OnboardingPlan() {
         },
       },
       {
-        name: "Hidratos",
+        name: "Углеводы",
         amount: carbs,
         ratio: calcRatio(macrosToKcal({ carbs }), calories),
         color: getColor("carb"),
@@ -81,7 +81,7 @@ export default function OnboardingPlan() {
         },
       },
       {
-        name: "Proteína",
+        name: "Белки",
         amount: protein,
         ratio: calcRatio(macrosToKcal({ protein }), calories),
         color: getColor("protein"),
@@ -91,7 +91,7 @@ export default function OnboardingPlan() {
         },
       },
       {
-        name: "Grasas",
+        name: "Жиры",
         amount: fat,
         ratio: calcRatio(macrosToKcal({ fat }), calories),
         color: getColor("fat"),
@@ -105,16 +105,16 @@ export default function OnboardingPlan() {
   );
 
   return (
-    <OnboardingStep title="¡Enhorabuena! Tu plan personalizado está listo">
+    <OnboardingStep title="Поздравляем! Ваш персональный план готов">
       <View style={styles.container}>
         <View style={styles.recommendationsContainer}>
           <View style={styles.header}>
             <PlanInfoSheet />
             <Title size="18" style={{ marginRight: 22 }}>
-              Recomendaciones Diarias
+              Дневные рекомендации
             </Title>
             <Description size="14">
-              Puedes cambiarlas cuando quieras
+              Вы можете изменить их в любой момент
             </Description>
           </View>
           <View style={styles.macrosContainer}>

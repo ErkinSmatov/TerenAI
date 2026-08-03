@@ -57,13 +57,13 @@ export default function OnboardingWeightChangeRate() {
     "worklet";
     const roundedRate = Math.round(rate * 10) / 10;
     if (rate < rec[0]) {
-      return "Lento";
+      return "Медленно";
     } else if (rate > rec[1]) {
-      return "Rápido (Ten Precaución)";
+      return "Быстро (будьте осторожны)";
     } else if (roundedRate === def) {
-      return "Estándar (Recomendado)";
+      return "Стандартно (рекомендуется)";
     } else {
-      return "Estándar";
+      return "Стандартно";
     }
   };
 
@@ -89,7 +89,7 @@ export default function OnboardingWeightChangeRate() {
   };
 
   return (
-    <OnboardingStep title="¿Cómo de rápido quieres alcanzar tu objetivo?">
+    <OnboardingStep title="Как быстро вы хотите достичь цели?">
       <View style={styles.container}>
         <View style={styles.tooltipContainer}>
           <AnimateableText
@@ -107,8 +107,8 @@ export default function OnboardingWeightChangeRate() {
         />
         <View style={styles.weightChange}>
           {[
-            { amount: weeklyRate, period: "Por Semana" },
-            { amount: monthlyRate, period: "Por Mes" },
+            { amount: weeklyRate, period: "В неделю" },
+            { amount: monthlyRate, period: "В месяц" },
           ].map(({ amount, period }) => (
             <WeightChangeRow
               key={`row-${period}`}

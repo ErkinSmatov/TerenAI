@@ -109,7 +109,7 @@ export default function Nutrients({ nutrients, title }: Props) {
     <ScreenMain edges={[]}>
       <ScreenHeader scrollY={scrollY}>
         <ScreenHeaderBackButton />
-        <ScreenHeaderTitle title="Micronutrientes" />
+        <ScreenHeaderTitle title="Микронутриенты" />
       </ScreenHeader>
 
       <ScreenMainScrollView

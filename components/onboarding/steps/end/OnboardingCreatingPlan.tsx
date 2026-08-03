@@ -31,20 +31,20 @@ import { api } from "@/convex/_generated/api";
 import { ProfileData } from "@/convex/tables/profiles";
 
 const dailyRecommendations = [
-  "Calorías",
-  "Carbohidratos",
-  "Proteína",
-  "Grasas",
-  "Micronutrientes",
+  "Калории",
+  "Углеводы",
+  "Белки",
+  "Жиры",
+  "Микронутриенты",
 ];
 
 const descriptions = [
-  "Calculando Calorías...",
-  "Calculando Carbohidratos...",
-  "Calculando Proteína...",
-  "Calculando Grasas...",
-  "Calculando Micronutrientes...",
-  "Plan Personalizado Creado",
+  "Считаем калории...",
+  "Считаем углеводы...",
+  "Считаем белки...",
+  "Считаем жиры...",
+  "Считаем микронутриенты...",
+  "Персональный план создан",
 ];
 
 const stageConfiguration = [
@@ -208,7 +208,7 @@ export default function OnboardingCreatingPlan() {
           style={styles.progressText}
         />
         <Title size="28" style={styles.title}>
-          Estamos creando tu plan personalizado
+          Мы создаём ваш персональный план
         </Title>
       </View>
 
@@ -232,7 +232,7 @@ export default function OnboardingCreatingPlan() {
             />
           </View>
           <Title size="18" style={styles.recommendationsTitle}>
-            Recomendaciones Diarias
+            Дневные рекомендации
           </Title>
           {dailyRecommendations.map((item, i) => (
             <View key={i} style={styles.recommendationContainer}>

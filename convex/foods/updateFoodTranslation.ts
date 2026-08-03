@@ -4,17 +4,17 @@ import { internalMutation } from "../_generated/server";
 export const updateFoodTranslation = internalMutation({
   args: {
     id: v.id("foods"),
-    nameEs: v.string(),
-    categoryEs: v.optional(v.string()),
+    nameRu: v.string(),
+    categoryRu: v.optional(v.string()),
   },
-  handler: async (ctx, { id, nameEs, categoryEs }) => {
+  handler: async (ctx, { id, nameRu, categoryRu }) => {
     const food = await ctx.db.get(id);
     if (!food) return;
 
     await ctx.db.patch(id, {
-      name: { ...food.name, es: nameEs },
+      name: { ...food.name, ru: nameRu },
       category: food.category
-        ? { ...food.category, es: categoryEs ?? food.category.es }
+        ? { ...food.category, ru: categoryRu ?? food.category.ru }
         : undefined,
     });
   },

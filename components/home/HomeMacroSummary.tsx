@@ -35,21 +35,21 @@ export default function HomeMacroSummary({ totalMacros }: Props) {
 
   const macros: Macro[] = [
     {
-      name: "Hidratos",
+      name: "Углеводы",
       value: totalMacros.carbs,
       target: targets.carbs,
       Icon: CarbIcon,
       color: getColor("carb"),
     },
     {
-      name: "Proteína",
+      name: "Белки",
       value: totalMacros.protein,
       target: targets.protein,
       Icon: ProteinIcon,
       color: getColor("protein"),
     },
     {
-      name: "Grasas",
+      name: "Жиры",
       value: totalMacros.fat,
       target: targets.fat,
       Icon: FatIcon,
@@ -61,7 +61,7 @@ export default function HomeMacroSummary({ totalMacros }: Props) {
     <View style={styles.container}>
       <HomeSummaryCardBig
         item={{
-          name: "Calorías",
+          name: "Калории",
           value: totalMacros.calories,
           target: targets.calories,
           Icon: CalorieIcon,

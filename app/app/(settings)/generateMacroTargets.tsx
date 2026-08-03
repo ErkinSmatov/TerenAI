@@ -231,7 +231,7 @@ export default function GenerateMacroTargetsScreen() {
       onNext={handleNext}
       onBack={handleBack}
       isNextDisabled={isNextDisabled}
-      nextButtonText={step === steps.length - 1 ? "Guardar" : undefined}
+      nextButtonText={step === steps.length - 1 ? "Сохранить" : undefined}
     >
       <Animated.View
         key={`step-${step}`}
@@ -240,7 +240,7 @@ export default function GenerateMacroTargetsScreen() {
         exiting={exitingAnimation}
       >
         <OnboardingStepLayout
-          sectionName={"Ajustar Objetivos"}
+          sectionName={"Настроить цели"}
           numSteps={steps.length - 2}
           currentStep={step - 1}
           showHeader={currentStep?.showHeader ?? true}

@@ -63,7 +63,7 @@ export default function AdjustMacroTargetsScreen() {
 
   const macros: Macro[] = [
     {
-      name: "Calorías",
+      name: "Калории",
       color: getColor("calorie"),
       Icon: CalorieIcon,
       value: calories,
@@ -71,7 +71,7 @@ export default function AdjustMacroTargetsScreen() {
       ratio: caloriesRatio,
     },
     {
-      name: "Carbohidratos",
+      name: "Углеводы",
       color: getColor("carb"),
       Icon: CarbIcon,
       value: carbs,
@@ -79,7 +79,7 @@ export default function AdjustMacroTargetsScreen() {
       ratio: carbsRatio,
     },
     {
-      name: "Proteína",
+      name: "Белки",
       color: getColor("protein"),
       Icon: ProteinIcon,
       value: protein,
@@ -87,7 +87,7 @@ export default function AdjustMacroTargetsScreen() {
       ratio: proteinRatio,
     },
     {
-      name: "Grasa",
+      name: "Жиры",
       color: getColor("fat"),
       Icon: FatIcon,
       value: fat,
@@ -151,7 +151,7 @@ export default function AdjustMacroTargetsScreen() {
     <ScreenMain edges={[]}>
       <ScreenHeader scrollY={scrollY}>
         <ScreenHeaderBackButton />
-        <ScreenHeaderTitle title="Ajustar Objetivos" />
+        <ScreenHeaderTitle title="Настроить цели" />
       </ScreenHeader>
 
       <ScreenMainScrollView
@@ -200,13 +200,13 @@ export default function AdjustMacroTargetsScreen() {
             router.navigate("/app/(settings)/generateMacroTargets");
           }}
         >
-          Generar Automáticamente
+          Сгенерировать автоматически
         </ScreenFooterButton>
         <ScreenFooterButton
           style={{ flex: 0 }}
           onPress={() => void handleDone()}
         >
-          Hecho
+          Готово
         </ScreenFooterButton>
       </ScreenFooter>
     </ScreenMain>

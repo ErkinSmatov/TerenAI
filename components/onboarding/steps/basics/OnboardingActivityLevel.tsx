@@ -6,20 +6,20 @@ import OnboardingStep from "../../OnboardingStep";
 const options: SelectOption[] = [
   {
     name: "low",
-    label: "Sedentario",
-    description: "Normalmente menos de 5,000 pasos al día",
+    label: "Сидячий образ жизни",
+    description: "Обычно меньше 5000 шагов в день",
     Icon: ArmchairIcon,
   },
   {
     name: "medium",
-    label: "Algo Activo",
-    description: "Normalmente 5,000 - 10,000 pasos al día",
+    label: "Умеренно активный",
+    description: "Обычно 5000–10 000 шагов в день",
     Icon: FootprintsIcon,
   },
   {
     name: "high",
-    label: "Muy Activo",
-    description: "Normalmente más de 10,000 pasos al día",
+    label: "Очень активный",
+    description: "Обычно больше 10 000 шагов в день",
     Icon: KayakIcon,
   },
 ];
@@ -35,7 +35,7 @@ export default function OnboardingActivityLevel() {
   };
 
   return (
-    <OnboardingStep title="¿Cuál es tu nivel de actividad?">
+    <OnboardingStep title="Какой у вас уровень активности?">
       <Select
         options={options}
         selectedOptions={selectedOptions}

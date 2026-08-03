@@ -110,13 +110,13 @@ export default function ConfirmEmailScreen() {
       >
         <ScreenHeader>
           <ScreenHeaderBackButton />
-          <ScreenHeaderTitle title="Iniciar Sesión" />
+          <ScreenHeaderTitle title="Вход" />
         </ScreenHeader>
 
         <SafeArea edges={["left", "right"]}>
           <ScreenMainTitle
-            title="Confirma tu Email"
-            description={`Introduce el código que te acabamos de enviar a ${email}`}
+            title="Подтвердите email"
+            description={`Введите код, который мы только что отправили на ${email}`}
           />
 
           <OTPInput
@@ -127,7 +127,7 @@ export default function ConfirmEmailScreen() {
 
           <View style={styles.footerText}>
             <Text size="14" color={getColor("mutedForeground")}>
-              ¿No has recibido el código?
+              Не получили код?
             </Text>
             <Button
               size="sm"
@@ -143,14 +143,14 @@ export default function ConfirmEmailScreen() {
                 },
               }}
             >
-              {resendIn > 0 ? `Reenviar (${resendIn})` : "Reenviar"}
+              {resendIn > 0 ? `Отправить снова (${resendIn})` : "Отправить снова"}
             </Button>
           </View>
         </SafeArea>
 
         <ScreenFooter style={{ boxShadow: [] }}>
           <ScreenFooterButton onPress={() => inputRef.current?.flashError()}>
-            Continuar
+            Продолжить
           </ScreenFooterButton>
         </ScreenFooter>
       </KeyboardAvoidingView>

@@ -1,5 +1,5 @@
 const testingConfig = {
-  testEmail: "calyotesting@test.test",
+  testEmail: "terenaitesting@test.test",
   testPassword: "test-password-123",
 } as const;
 

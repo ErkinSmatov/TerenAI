@@ -33,7 +33,7 @@ export default function TabsAddButton({
         variant="primary"
         style={{ height: size, width: size, ...getShadow("sm") }}
         hitSlop={10}
-        accessibilityLabel="Add"
+        accessibilityLabel="Добавить"
         {...pressableProps}
       >
         <Animated.View style={animatedStyle}>

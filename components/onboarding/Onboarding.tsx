@@ -52,7 +52,7 @@ export type OnboardingSectionType = {
 
 const sections: OnboardingSectionType[] = [
   {
-    name: "Fundamentos",
+    name: "Основы",
     steps: [
       {
         screen: <OnboardingBasicsSection key="basics-section" />,
@@ -127,7 +127,7 @@ const sections: OnboardingSectionType[] = [
     ],
   },
   {
-    name: "Objetivo",
+    name: "Цель",
     steps: [
       {
         screen: <OnboardingGoalSection key="goal-section" />,
@@ -160,7 +160,7 @@ const sections: OnboardingSectionType[] = [
     ],
   },
   {
-    name: "Programa",
+    name: "Программа",
     steps: [
       {
         screen: <OnboardingProgramSection key="program-section" />,
@@ -179,7 +179,7 @@ const sections: OnboardingSectionType[] = [
     ],
   },
   {
-    name: "Resultados",
+    name: "Результаты",
     steps: [
       {
         screen: <OnboardingCreatingPlan key="creating-plan" />,

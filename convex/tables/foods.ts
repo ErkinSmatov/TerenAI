@@ -20,10 +20,10 @@ export const foodsFields = {
 
   name: v.object({
     en: v.string(),
-    es: v.optional(v.string()),
+    ru: v.optional(v.string()),
   }),
   category: v.optional(
-    v.object({ en: v.string(), es: v.optional(v.string()) })
+    v.object({ en: v.string(), ru: v.optional(v.string()) })
   ),
 
   macroNutrients: v.object({

@@ -89,7 +89,7 @@ export default function SignInButtons({
             color={getColor("background")}
             style={styles.buttonPrimaryText}
           >
-            Continuar con Apple
+            Продолжить с Apple
           </Text>
         </Button>
       )}
@@ -106,7 +106,7 @@ export default function SignInButtons({
           weight={Platform.OS === "android" ? undefined : "500"}
           color={Platform.OS === "android" ? getColor("background") : undefined}
         >
-          Continuar con Google
+          Продолжить с Google
         </Text>
       </Button>
       {/* <Button

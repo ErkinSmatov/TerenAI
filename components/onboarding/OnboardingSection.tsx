@@ -10,19 +10,19 @@ import SafeArea from "../ui/SafeArea";
 
 const sections = [
   {
-    title: "Fundamentos",
+    title: "Основы",
     description:
-      "Empezaremos conociéndote y entendiendo tu metabolismo para sentar la base de tu programa personalizado.",
+      "Начнём со знакомства с вами и вашим метаболизмом, чтобы заложить основу персональной программы.",
   },
   {
-    title: "Objetivo",
+    title: "Цель",
     description:
-      "Define tu meta y CalYo diseñará un programa para ayudarte a alcanzarla.",
+      "Определите свою цель, и TerenAI составит программу, которая поможет её достичь.",
   },
   {
-    title: "Programa",
+    title: "Программа",
     description:
-      "Comparte tus preferencias alimentarias y tus hábitos de ejercicio para afinar tu programa a medida.",
+      "Расскажите о своих пищевых предпочтениях и привычках тренировок, чтобы точно настроить вашу программу.",
   },
 ];
 
@@ -46,8 +46,8 @@ export default function OnboardingSection({ section: sectionNumber }: Props) {
   return (
     <SafeArea style={styles.safeArea} edges={[]}>
       <Header style={styles.header}>
-        <Title>¡Empecemos!</Title>
-        <Description>Tu programa personalizado te espera</Description>
+        <Title>Начнём!</Title>
+        <Description>Ваша персональная программа уже готова</Description>
       </Header>
       <View style={styles.container}>
         {positions.length === sections.length &&

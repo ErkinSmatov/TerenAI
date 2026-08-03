@@ -44,15 +44,15 @@ export async function processDetectedItems({
     });
     if (!fdcFood) return null;
 
-    if (!fdcFood.name.es) {
-      const { nameEs, categoryEs } = await translateFood({
+    if (!fdcFood.name.ru) {
+      const { nameRu, categoryRu } = await translateFood({
         nameEn: fdcFood.name.en,
         categoryEn: fdcFood.category?.en,
       });
       await ctx.runMutation(internal.foods.updateFoodTranslation.default, {
         id: fdcFood._id,
-        nameEs,
-        categoryEs,
+        nameRu,
+        categoryRu,
       });
     }
 

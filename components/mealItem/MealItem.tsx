@@ -76,7 +76,7 @@ export default function MealItem({
     <ScreenMain edges={[]}>
       <ScreenHeader scrollY={scrollY}>
         <ScreenHeaderBackButton />
-        <ScreenHeaderTitle title="Ingrediente" />
+        <ScreenHeaderTitle title="Ингредиент" />
       </ScreenHeader>
 
       <ScreenMainScrollView
@@ -125,7 +125,7 @@ export default function MealItem({
             router.dismiss();
           }}
         >
-          Hecho
+          Готово
         </ScreenFooterButton>
       </ScreenFooter>
     </ScreenMain>

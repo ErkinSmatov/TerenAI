@@ -9,10 +9,10 @@ import {
 import OnboardingStep from "../../OnboardingStep";
 
 const options: SelectOption[] = [
-  { name: "none", label: "Ninguno", Icon: ArmchairIcon },
-  { name: "lifting", label: "Levantamiento de Pesas", Icon: DumbbellIcon },
-  { name: "cardio", label: "Cardio", Icon: HeartPulseIcon },
-  { name: "both", label: "Ambos", Icon: CheckCheckIcon },
+  { name: "none", label: "Нет", Icon: ArmchairIcon },
+  { name: "lifting", label: "Силовые тренировки", Icon: DumbbellIcon },
+  { name: "cardio", label: "Кардио", Icon: HeartPulseIcon },
+  { name: "both", label: "Оба варианта", Icon: CheckCheckIcon },
 ];
 
 export default function OnboardingTraining() {
@@ -31,7 +31,7 @@ export default function OnboardingTraining() {
   };
 
   return (
-    <OnboardingStep title="¿Qué tipo de entrenamiento vas a hacer durante este programa?">
+    <OnboardingStep title="Какой тип тренировок вы будете выполнять по этой программе?">
       <Select
         options={options}
         selectedOptions={selectedOptions}

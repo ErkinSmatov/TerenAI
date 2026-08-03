@@ -76,7 +76,7 @@ export default function Meal({
 
     if (status && !status.ok) {
       Toast.show({
-        text: "Has alcanzado el límite diario de funciones de IA.",
+        text: "Вы достигли дневного лимита функций ИИ.",
         variant: "error",
       });
       return;
@@ -89,12 +89,12 @@ export default function Meal({
     <ScreenMain edges={[]}>
       <ScreenHeader scrollY={scrollY}>
         <ScreenHeaderBackButton />
-        <ScreenHeaderTitle title="Comida" />
+        <ScreenHeaderTitle title="Блюдо" />
         <ScreenHeaderActions
           options={[
             {
               Icon: TrashIcon,
-              text: "Eliminar",
+              text: "Удалить",
               onPress: handleDelete,
               destructive: true,
             },
@@ -135,14 +135,14 @@ export default function Meal({
             Icon={SparklesIcon}
             fill={getColor("foreground")}
           />
-          <ScreenFooterButtonText text="Corregir" />
+          <ScreenFooterButtonText text="Исправить" />
         </ScreenFooterButton>
         <ScreenFooterButton
           onPress={() => {
             router.dismissTo("/app");
           }}
         >
-          Hecho
+          Готово
         </ScreenFooterButton>
       </ScreenFooter>
     </ScreenMain>

@@ -17,7 +17,7 @@ export default function MealItemNutrientsScreen() {
         nutrientsPer100g: mealItem.nutrientsPer100g,
       })
     : undefined;
-  const name = mealItem?.food.name.es ?? mealItem?.food.name.en ?? "";
+  const name = mealItem?.food.name.ru ?? mealItem?.food.name.en ?? "";
 
   return <Nutrients nutrients={nutrients} title={name} />;
 }

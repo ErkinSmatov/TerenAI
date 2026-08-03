@@ -24,7 +24,7 @@ export default function OnboardingCreateAccount() {
   }, [data, isSubmitting]);
 
   return (
-    <OnboardingStep title="Crea tu cuenta">
+    <OnboardingStep title="Создайте аккаунт">
       <View style={styles.container}>
         <View style={styles.signInButtonsContainer}>
           <SignInButtons

@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { StyleSheet, View } from "react-native";
 import { addDays, format, getDay, startOfWeek } from "date-fns";
-import { es } from "date-fns/locale";
+import { ru } from "date-fns/locale";
 import Text from "../ui/Text";
 import getColor from "@/lib/ui/getColor";
 import CircularProgress from "../ui/CircularProgress";
@@ -122,8 +122,8 @@ export default function HomeDaySelector({
 
     return {
       weekDay: (getDay(date) + 6) % 7,
-      letter: format(date, "EEEEE", { locale: es }).toUpperCase(),
-      number: format(date, "dd", { locale: es }),
+      letter: format(date, "EEEEE", { locale: ru }).toUpperCase(),
+      number: format(date, "dd", { locale: ru }),
       carbsRatio: isNaN(carbsRatio) ? 0 : carbsRatio,
       proteinRatio: isNaN(proteinRatio) ? 0 : proteinRatio,
       fatRatio: isNaN(fatRatio) ? 0 : fatRatio,

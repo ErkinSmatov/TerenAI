@@ -4,8 +4,8 @@ import { MarsIcon, VenusIcon } from "lucide-react-native";
 import OnboardingStep from "../../OnboardingStep";
 
 const options: SelectOption[] = [
-  { name: "male", label: "Hombre", Icon: MarsIcon },
-  { name: "female", label: "Mujer", Icon: VenusIcon },
+  { name: "male", label: "Мужской", Icon: MarsIcon },
+  { name: "female", label: "Женский", Icon: VenusIcon },
 ];
 
 export default function OnboardingSex() {
@@ -19,7 +19,7 @@ export default function OnboardingSex() {
   };
 
   return (
-    <OnboardingStep title="¿Cuál es tu sexo?">
+    <OnboardingStep title="Какой у вас пол?">
       <Select
         options={options}
         selectedOptions={selectedOptions}

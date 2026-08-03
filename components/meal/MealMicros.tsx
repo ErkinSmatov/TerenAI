@@ -22,21 +22,21 @@ type Props = {
 export default function MealMicros({ source, id, loading, micros }: Props) {
   const displayMicros = [
     {
-      label: "Fibra",
+      label: "Клетчатка",
       color: getColor("fiber"),
       Icon: FiberIcon,
       value: micros?.fiber ?? 0,
       unit: "g",
     },
     {
-      label: "Azúcar",
+      label: "Сахар",
       color: getColor("sugar"),
       Icon: SugarIcon,
       value: micros?.sugar ?? 0,
       unit: "g",
     },
     {
-      label: "Sodio",
+      label: "Натрий",
       color: getColor("sodium"),
       Icon: SodiumIcon,
       value: (micros?.sodium ?? 0) * 1000,
@@ -62,7 +62,7 @@ export default function MealMicros({ source, id, loading, micros }: Props) {
       >
         <MealSummaryCardBig
           item={{
-            label: "Calidad",
+            label: "Качество",
             Icon: HealthIcon,
             color: getColor("health"),
             value: Math.round(micros?.score ?? 0),

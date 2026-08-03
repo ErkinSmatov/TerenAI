@@ -98,7 +98,7 @@ export default function MealScreen() {
 
   const createMealFromBarcode = useCallback(
     async (barcode: string) => {
-      const locale = getLocales().at(0)?.languageTag ?? "es-ES";
+      const locale = getLocales().at(0)?.languageTag ?? "ru-RU";
 
       const existingFood = await convex.query(
         api.foods.getFoodByIdentity.default,
@@ -144,7 +144,7 @@ export default function MealScreen() {
       }
     } catch (e) {
       logError("Start meal error", e);
-      Toast.show({ text: "Error al analizar la comida", variant: "error" });
+      Toast.show({ text: "Ошибка при анализе блюда", variant: "error" });
       router.replace("/app");
     }
   }, [
@@ -180,7 +180,7 @@ export default function MealScreen() {
   const items = isDone
     ? mealItems.map((item) => ({
         id: item._id,
-        name: item.food.name.es ?? item.food.name.en,
+        name: item.food.name.ru ?? item.food.name.en,
         calories: macrosToKcal(item.macrosPer100g) * (item.grams / 100),
         grams: item.grams,
       }))

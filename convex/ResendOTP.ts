@@ -20,10 +20,10 @@ export const ResendOTP = Email({
   async sendVerificationRequest({ identifier: email, provider, token }) {
     const resend = new ResendAPI(provider.apiKey);
     const { error } = await resend.emails.send({
-      from: "CalYo <sign-in@calyoapp.com>",
+      from: "TerenAI <sign-in@terenaiapp.com>",
       to: [email],
-      subject: `Sign in to CalYo`,
-      text: "Your code is " + token,
+      subject: `Вход в TerenAI`,
+      text: "Ваш код: " + token,
     });
 
     if (error) {

@@ -28,9 +28,9 @@ export default function SettingsScreen() {
   const handleRestorePurchases = async () => {
     const customerInfo = await restorePurchases();
     if (customerInfo) {
-      Alert.alert("Éxito", "Compras restauradas correctamente");
+      Alert.alert("Успех", "Покупки успешно восстановлены");
     } else {
-      Alert.alert("Error", "Error al restaurar las compras");
+      Alert.alert("Ошибка", "Не удалось восстановить покупки");
     }
   };
 
@@ -49,31 +49,31 @@ export default function SettingsScreen() {
 
   return (
     <SafeArea edges={["top", "left", "right"]}>
-      <Title style={styles.title}>Ajustes</Title>
+      <Title style={styles.title}>Настройки</Title>
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
         <SettingsGroup>
           <Link href="/app/(settings)/adjustMacroTargets" asChild>
-            <SettingsItem text="Ajustar Macronutrientes" Icon={PieChartIcon} />
+            <SettingsItem text="Настроить БЖУ" Icon={PieChartIcon} />
           </Link>
         </SettingsGroup>
         <SettingsGroup>
           {!isPro && (
             <SettingsItem
-              text="Hazte Pro"
+              text="Стать Pro"
               Icon={CrownIcon}
               onPress={navigateToPaywall}
             />
           )}
           <SettingsItem
-            text="Gestionar suscripción"
+            text="Управление подпиской"
             Icon={CreditCardIcon}
             onPress={() => void manageSubscription()}
           />
           <SettingsItem
-            text="Restaurar compras"
+            text="Восстановить покупки"
             Icon={RefreshCwIcon}
             onPress={() => void handleRestorePurchases()}
           />
@@ -83,19 +83,19 @@ export default function SettingsScreen() {
             trigger={
               <SettingsItem
                 destructive
-                text="Eliminar Cuenta"
+                text="Удалить аккаунт"
                 Icon={UserXIcon}
               />
             }
             destructive
-            title="Eliminar Cuenta"
-            description="¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer."
+            title="Удалить аккаунт"
+            description="Вы уверены, что хотите удалить аккаунт? Это действие нельзя отменить."
             onConfirm={() => void handleDeleteAccount()}
           />
         </SettingsGroup>
         <SettingsGroup>
           <SettingsItem
-            text="Cerrar Sesión"
+            text="Выйти"
             Icon={LogOutIcon}
             onPress={() => void handleSignOut()}
           />

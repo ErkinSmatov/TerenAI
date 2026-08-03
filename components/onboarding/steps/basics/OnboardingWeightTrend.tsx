@@ -5,12 +5,12 @@ import { IconQuestionMark } from "@tabler/icons-react-native";
 import OnboardingStep from "../../OnboardingStep";
 
 const options: SelectOption[] = [
-  { name: "lose", label: "He perdido peso", Icon: ArrowDownIcon },
-  { name: "gain", label: "He ganado peso", Icon: ArrowUpIcon },
-  { name: "maintain", label: "Mi peso no ha cambiado", Icon: MinusIcon },
+  { name: "lose", label: "Я похудел(а)", Icon: ArrowDownIcon },
+  { name: "gain", label: "Я набрал(а) вес", Icon: ArrowUpIcon },
+  { name: "maintain", label: "Мой вес не изменился", Icon: MinusIcon },
   {
     name: "unsure",
-    label: "No estoy seguro",
+    label: "Не уверен(а)",
     Icon: <IconQuestionMark size={28} />,
   },
 ];
@@ -31,7 +31,7 @@ export default function OnboardingWeightTrend() {
   };
 
   return (
-    <OnboardingStep title="¿Cómo ha evolucionado tu peso en las últimas semanas?">
+    <OnboardingStep title="Как менялся ваш вес за последние недели?">
       <Select
         options={options}
         selectedOptions={selectedOptions}

@@ -16,21 +16,21 @@ type Props = {
 export default function MealMacros({ loading, macros }: Props) {
   const displayMacros = [
     {
-      label: "Hidratos",
+      label: "Углеводы",
       color: getColor("carb"),
       Icon: CarbIcon,
       value: Math.round(macros?.carbs ?? 0),
       unit: "g",
     },
     {
-      label: "Proteína",
+      label: "Белки",
       color: getColor("protein"),
       Icon: ProteinIcon,
       value: Math.round(macros?.protein ?? 0),
       unit: "g",
     },
     {
-      label: "Grasas",
+      label: "Жиры",
       color: getColor("fat"),
       Icon: FatIcon,
       value: Math.round(macros?.fat ?? 0),
@@ -42,7 +42,7 @@ export default function MealMacros({ loading, macros }: Props) {
     <View style={styles.container}>
       <MealSummaryCardBig
         item={{
-          label: "Calorías",
+          label: "Калории",
           Icon: FlameIcon,
           color: getColor("calorie"),
           value: Math.round(macros?.calories ?? 0),

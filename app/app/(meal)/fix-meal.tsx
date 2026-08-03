@@ -35,7 +35,7 @@ export default function FixMealScreen() {
 
     if (status && !status.ok) {
       Toast.show({
-        text: "Has alcanzado el límite diario de funciones de IA.",
+        text: "Вы достигли дневного лимита функций ИИ.",
         variant: "error",
       });
       return;
@@ -46,7 +46,7 @@ export default function FixMealScreen() {
       router.dismiss();
     } catch (error) {
       console.error(error);
-      alert("Error correcting meal");
+      alert("Ошибка при исправлении блюда");
     }
   };
 
@@ -59,16 +59,16 @@ export default function FixMealScreen() {
       >
         <ScreenHeader>
           <ScreenHeaderBackButton />
-          <ScreenHeaderTitle title="Corregir Comida" />
+          <ScreenHeaderTitle title="Исправить блюдо" />
         </ScreenHeader>
 
         <SafeArea edges={["left", "right"]}>
           <ScreenMainTitle
-            title="¿Qué quieres corregir?"
-            description="Describe los cambios para corregir la comida"
+            title="Что нужно исправить?"
+            description="Опишите изменения, чтобы скорректировать блюдо"
           />
           <TextInput
-            placeholder="Ej: No es pollo, es tofu"
+            placeholder="Например: Это не курица, а тофу"
             value={correction}
             onChangeText={setCorrection}
             multiline
@@ -85,8 +85,8 @@ export default function FixMealScreen() {
             }
           >
             {status !== undefined && !status.ok
-              ? "Límite alcanzado"
-              : "Corregir"}
+              ? "Лимит исчерпан"
+              : "Исправить"}
           </ScreenFooterButton>
         </ScreenFooter>
       </KeyboardAvoidingView>

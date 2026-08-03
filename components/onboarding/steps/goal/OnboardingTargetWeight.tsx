@@ -45,21 +45,21 @@ export default function OnboardingTargetWeight() {
   };
 
   const handleMeasurementSystemChange = (system: string) => {
-    if (system !== "Kilogramos" && system !== "Libras") return;
+    if (system !== "Килограммы" && system !== "Фунты") return;
     setData((prev) => ({
       ...prev,
-      measurementSystem: system === "Kilogramos" ? "metric" : "imperial",
+      measurementSystem: system === "Килограммы" ? "metric" : "imperial",
     }));
   };
 
   return (
-    <OnboardingStep title="¿Qué peso te gustaría alcanzar?">
+    <OnboardingStep title="Какой вес вы хотели бы достичь?">
       <View style={style.pickerContainer}>
         <View style={style.segmentControlContainer}>
           <SegmentedControl
-            options={["Kilogramos", "Libras"]}
+            options={["Килограммы", "Фунты"]}
             selectedOption={
-              data.measurementSystem === "metric" ? "Kilogramos" : "Libras"
+              data.measurementSystem === "metric" ? "Килограммы" : "Фунты"
             }
             onChange={handleMeasurementSystemChange}
           />

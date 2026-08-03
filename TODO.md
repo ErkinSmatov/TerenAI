@@ -60,7 +60,7 @@
 - [ ] Test email sign-in safe
 - [ ] Environment variables for different environments
 - [ ] Email sign in rate limits
-- [ ] calyoapp.com domain
+- [ ] terenaiapp.com domain
 - [ ] Resend custom domain
 - [ ] Set-up OTP sign-in with custom email address
 

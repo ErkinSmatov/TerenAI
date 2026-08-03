@@ -45,7 +45,7 @@ function LogItem({ meal }: LogItemProps) {
                 numberOfLines={1}
                 style={styles.itemName}
               >
-                {meal.name ?? "Comida sin nombre"}
+                {meal.name ?? "Блюдо без названия"}
               </Text>
             </WithSkeleton>
             <Text size="14">{format(meal._creationTime, "HH:mm")}</Text>
@@ -92,7 +92,7 @@ export default function HomeRecentlyLogged({ meals }: Props) {
   return (
     <SafeArea edges={["left", "right"]} style={styles.safeArea}>
       <Text size="20" weight="600" style={styles.title}>
-        Recientemente añadido
+        Недавно добавлено
       </Text>
       <View style={styles.itemsContainer}>
         {meals.map((meal, index) => (
@@ -104,7 +104,7 @@ export default function HomeRecentlyLogged({ meals }: Props) {
             color={getColor("mutedForeground", 0.5)}
             style={styles.noMealsAdded}
           >
-            Añade comidas para verlas aquí&hellip;
+            Добавьте блюда, чтобы увидеть их здесь&hellip;
           </Text>
         )}
       </View>

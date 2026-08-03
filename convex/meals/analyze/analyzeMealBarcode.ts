@@ -37,7 +37,7 @@ const analyzeMealBarcode = action({
         }
       );
       let foodId = existingFood?._id;
-      let name = existingFood?.name.es ?? existingFood?.name.en;
+      let name = existingFood?.name.ru ?? existingFood?.name.en;
       if (!foodId) {
         if (!product) {
           await ctx.runMutation(api.meals.updateMeal.default, {
@@ -65,7 +65,7 @@ const analyzeMealBarcode = action({
         foodId = await ctx.runMutation(internal.foods.createFood.default, {
           food: {
             identity: { source: "off", id: barcode },
-            name: { en: product.name, es: product.name },
+            name: { en: product.name, ru: product.name },
             macroNutrients,
             nutrients,
             hasEmbedding: false,

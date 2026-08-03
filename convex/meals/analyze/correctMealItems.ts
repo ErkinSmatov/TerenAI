@@ -7,7 +7,7 @@ import logError from "@/lib/utils/logError";
 const correctionSchema = z.object({
   mealName: z
     .string()
-    .describe("Short, appetizing, generic meal name in Spanish"),
+    .describe("Short, appetizing, generic meal name in Russian"),
   items: z.array(
     z.object({
       name: z.string().min(1),

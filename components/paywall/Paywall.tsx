@@ -36,21 +36,21 @@ import logError from "@/lib/utils/logError";
 
 const proFeatures = [
   {
-    title: "Foto y listo",
+    title: "Сфоткал — и готово",
     description:
-      "La IA identifica tu comida y calcula las calorías al instante. Solo apunta y dispara.",
+      "ИИ распознаёт вашу еду и мгновенно считает калории. Просто наведите камеру и снимите.",
     Icon: CameraIcon,
   },
   {
-    title: "Registro por texto",
+    title: "Запись текстом",
     description:
-      "Simplemente describe tu plato y la IA calculará los macros automáticamente.",
+      "Просто опишите блюдо, и ИИ автоматически рассчитает БЖУ.",
     Icon: PenLineIcon,
   },
   {
-    title: "Control total y edición",
+    title: "Полный контроль и редактирование",
     description:
-      "Ajusta ingredientes o cantidades fácilmente si la IA se equivoca. Tú tienes la última palabra.",
+      "Легко скорректируйте ингредиенты или количество, если ИИ ошибся. Последнее слово всегда за вами.",
     Icon: SparklesIcon,
   },
 ];
@@ -101,7 +101,7 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
         logError("Paywall error", e);
         Toast.show({
           variant: "error",
-          text: "Error al cargar las ofertas",
+          text: "Не удалось загрузить предложения",
         });
       }
     })();
@@ -125,7 +125,7 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
     } catch (e) {
       const error = e as { userCancelled?: boolean; message?: string };
       if (!error.userCancelled && error.message) {
-        Alert.alert("Error", error.message);
+        Alert.alert("Ошибка", error.message);
       }
       logError("Paywall error", error);
     } finally {
@@ -137,9 +137,9 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
     setIsPurchasing(true);
     const customerInfo = await restorePurchases();
     if (customerInfo) {
-      Alert.alert("Éxito", "Compras restauradas correctamente");
+      Alert.alert("Успех", "Покупки успешно восстановлены");
     } else {
-      Alert.alert("Error", "Error al restaurar las compras");
+      Alert.alert("Ошибка", "Не удалось восстановить покупки");
     }
     setIsPurchasing(false);
   };
@@ -148,7 +148,7 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
     <ScreenMain edges={[]}>
       <ScreenHeader scrollY={scrollY}>
         {type === "back" && <ScreenHeaderBackButton />}
-        <ScreenHeaderTitle title="Planes" />
+        <ScreenHeaderTitle title="Тарифы" />
         {type === "close" && (
           <ScreenHeaderButton
             Icon={XIcon}
@@ -163,8 +163,8 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
         safeAreaProps={{ edges: ["left", "right"] }}
       >
         <ScreenMainTitle
-          title="CalYo Pro"
-          description="Logra tus objetivos registrando tus comidas en segundos, no en minutos"
+          title="TerenAI Pro"
+          description="Достигайте своих целей, записывая приёмы пищи за секунды, а не за минуты"
           style={styles.title}
         />
         <View style={styles.packageContainer}>
@@ -195,15 +195,15 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
                       >
                         {currencyMap[pkg.product.currencyCode] ??
                           pkg.product.currencyCode}
-                        {Math.round((pkg.product.price / 12) * 100) / 100} / mes
+                        {Math.round((pkg.product.price / 12) * 100) / 100} / мес
                       </Text>
                     </View>
                   )}
 
                   <Text size="12">
                     {pkg.packageType === PACKAGE_TYPE.MONTHLY
-                      ? "1 mes"
-                      : "12 meses"}
+                      ? "1 месяц"
+                      : "12 месяцев"}
                   </Text>
                   <Text size="18" weight="600">
                     {currencyMap[pkg.product.currencyCode] ??
@@ -211,10 +211,10 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
                     {Math.round(pkg.product.price * 100) / 100}
                   </Text>
                   <Text size="12" color={getColor("mutedForeground", 0.75)}>
-                    Facturación{" "}
+                    Оплата{" "}
                     {pkg.packageType === PACKAGE_TYPE.MONTHLY
-                      ? "mensual"
-                      : "anual"}
+                      ? "ежемесячно"
+                      : "ежегодно"}
                   </Text>
                 </Card>
               </Button>
@@ -224,7 +224,7 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
 
         <View>
           <Text size="20" weight="600" style={{ paddingBottom: 16 }}>
-            ¿Por qué ser Pro?
+            Почему стоит выбрать Pro?
           </Text>
           <Card style={styles.featuresCard}>
             {proFeatures.map(({ title, description, Icon }, index) => {
@@ -273,7 +273,7 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
               )
             }
           >
-            Privacy Policy
+            Политика конфиденциальности
           </Text>
           <Text>&middot;</Text>
           <Text
@@ -285,7 +285,7 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
               )
             }
           >
-            Terms of Use
+            Условия использования
           </Text>
         </View>
       </ScreenMainScrollView>
@@ -298,7 +298,7 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
           }
           disabled={!selectedPackage || isPurchasing}
         >
-          Empezar prueba gratis de 7 días
+          Начать бесплатный пробный период на 7 дней
         </ScreenFooterButton>
         <ScreenFooterButton
           variant="ghost"
@@ -311,7 +311,7 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
           hitSlop={4}
           onPress={() => void handleRestore()}
         >
-          Restaurar compras
+          Восстановить покупки
         </ScreenFooterButton>
       </ScreenFooter>
     </ScreenMain>

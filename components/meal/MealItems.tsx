@@ -29,7 +29,7 @@ export default function MealItems({ items = [], loading }: Props) {
   return (
     <View>
       <View style={styles.headerContainer}>
-        <Text weight="600">Ingredientes</Text>
+        <Text weight="600">Ингредиенты</Text>
         {/* <Button
           variant="base"
           size="base"
@@ -42,7 +42,7 @@ export default function MealItems({ items = [], loading }: Props) {
             color={getColor("mutedForeground")}
           />
           <Text size="14" color={getColor("mutedForeground")}>
-            Añadir más
+            Добавить ещё
           </Text>
         </Button> */}
       </View>

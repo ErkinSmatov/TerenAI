@@ -59,11 +59,11 @@ export default function SignInScreen() {
       >
         <ScreenHeader>
           <ScreenHeaderBackButton />
-          <ScreenHeaderTitle title="Iniciar Sesión" />
+          <ScreenHeaderTitle title="Вход" />
         </ScreenHeader>
 
         <SafeArea edges={["left", "right"]}>
-          <ScreenMainTitle title="Iniciar Sesión" />
+          <ScreenMainTitle title="Вход" />
           <TextInput
             label="Email"
             placeholder="example@example.com"
@@ -78,7 +78,7 @@ export default function SignInScreen() {
 
         <ScreenFooter style={{ boxShadow: [] }}>
           <ScreenFooterButton onPress={() => void handleSubmit()}>
-            Continuar
+            Продолжить
           </ScreenFooterButton>
         </ScreenFooter>
       </KeyboardAvoidingView>

@@ -21,12 +21,12 @@ type NutrientCategory = {
 export const nutrientsData: NutrientCategory[] = [
   {
     id: "carbs",
-    categoryLabel: "Carbohidratos y Azúcares",
+    categoryLabel: "Углеводы и сахара",
     themeColor: getColor("carb"),
     metrics: [
       {
         id: "total",
-        label: "Hidratos Totales",
+        label: "Углеводы всего",
         unit: "g",
         value: 0,
         default: 0,
@@ -35,7 +35,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "net",
-        label: "Hidratos Netos",
+        label: "Чистые углеводы",
         unit: "g",
         value: 0,
         default: 0,
@@ -44,7 +44,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "fiber",
-        label: "Fibra",
+        label: "Клетчатка",
         unit: "g",
         value: 0,
         default: 0,
@@ -53,7 +53,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "sugar",
-        label: "Azúcares Totales",
+        label: "Сахара всего",
         unit: "g",
         value: 0,
         default: 0,
@@ -64,12 +64,12 @@ export const nutrientsData: NutrientCategory[] = [
   },
   {
     id: "fats",
-    categoryLabel: "Grasas y Lípidos",
+    categoryLabel: "Жиры и липиды",
     themeColor: getColor("fat"),
     metrics: [
       {
         id: "total",
-        label: "Grasas Totales",
+        label: "Жиры всего",
         unit: "g",
         value: 0,
         default: 0,
@@ -78,7 +78,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "saturated",
-        label: "Saturadas",
+        label: "Насыщенные",
         unit: "g",
         value: 0,
         default: 0,
@@ -87,7 +87,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "monounsaturated",
-        label: "Monoinsaturadas",
+        label: "Мононенасыщенные",
         unit: "g",
         value: 0,
         default: 0,
@@ -96,7 +96,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "polyunsaturated",
-        label: "Poliinsaturadas",
+        label: "Полиненасыщенные",
         unit: "g",
         value: 0,
         default: 0,
@@ -105,7 +105,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "trans",
-        label: "Trans",
+        label: "Трансжиры",
         unit: "g",
         value: 0,
         default: 0,
@@ -114,7 +114,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "cholesterol",
-        label: "Colesterol",
+        label: "Холестерин",
         unit: "mg",
         value: 0,
         default: 0,
@@ -125,12 +125,12 @@ export const nutrientsData: NutrientCategory[] = [
   },
   {
     id: "protein",
-    categoryLabel: "Proteínas",
+    categoryLabel: "Белки",
     themeColor: getColor("protein"),
     metrics: [
       {
         id: "total",
-        label: "Proteína Total",
+        label: "Белки всего",
         unit: "g",
         value: 0,
         default: 0,
@@ -139,7 +139,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "leucine",
-        label: "Leucina",
+        label: "Лейцин",
         unit: "g",
         value: 0,
         default: 0,
@@ -148,7 +148,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "isoleucine",
-        label: "Isoleucina",
+        label: "Изолейцин",
         unit: "g",
         value: 0,
         default: 0,
@@ -157,7 +157,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "valine",
-        label: "Valina",
+        label: "Валин",
         unit: "g",
         value: 0,
         default: 0,
@@ -166,7 +166,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "tryptophan",
-        label: "Triptófano",
+        label: "Триптофан",
         unit: "g",
         value: 0,
         default: 0,
@@ -177,12 +177,12 @@ export const nutrientsData: NutrientCategory[] = [
   },
   {
     id: "vitamins",
-    categoryLabel: "Vitaminas",
+    categoryLabel: "Витамины",
     themeColor: getColor("purple"),
     metrics: [
       {
         id: "a",
-        label: "Vitamina A",
+        label: "Витамин A",
         unit: "µg",
         value: 0,
         default: 0,
@@ -191,7 +191,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "b12",
-        label: "Vitamina B12",
+        label: "Витамин B12",
         unit: "µg",
         value: 0,
         default: 0,
@@ -200,7 +200,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "b9",
-        label: "Folato (B9)",
+        label: "Фолат (B9)",
         unit: "µg",
         value: 0,
         default: 0,
@@ -209,7 +209,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "c",
-        label: "Vitamina C",
+        label: "Витамин C",
         unit: "mg",
         value: 0,
         default: 0,
@@ -218,7 +218,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "d",
-        label: "Vitamina D",
+        label: "Витамин D",
         unit: "IU",
         value: 0,
         default: 0,
@@ -227,7 +227,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "e",
-        label: "Vitamina E",
+        label: "Витамин E",
         unit: "mg",
         value: 0,
         default: 0,
@@ -236,7 +236,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "k",
-        label: "Vitamina K",
+        label: "Витамин K",
         unit: "µg",
         value: 0,
         default: 0,
@@ -247,12 +247,12 @@ export const nutrientsData: NutrientCategory[] = [
   },
   {
     id: "minerals",
-    categoryLabel: "Minerales",
+    categoryLabel: "Минералы",
     themeColor: getColor("blue"),
     metrics: [
       {
         id: "sodium",
-        label: "Sodio",
+        label: "Натрий",
         unit: "mg",
         value: 0,
         default: 0,
@@ -261,7 +261,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "potassium",
-        label: "Potasio",
+        label: "Калий",
         unit: "mg",
         value: 0,
         default: 0,
@@ -270,7 +270,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "magnesium",
-        label: "Magnesio",
+        label: "Магний",
         unit: "mg",
         value: 0,
         default: 0,
@@ -279,7 +279,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "calcium",
-        label: "Calcio",
+        label: "Кальций",
         unit: "mg",
         value: 0,
         default: 0,
@@ -288,7 +288,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "iron",
-        label: "Hierro",
+        label: "Железо",
         unit: "mg",
         value: 0,
         default: 0,
@@ -297,7 +297,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "zinc",
-        label: "Zinc",
+        label: "Цинк",
         unit: "mg",
         value: 0,
         default: 0,
@@ -308,12 +308,12 @@ export const nutrientsData: NutrientCategory[] = [
   },
   {
     id: "other",
-    categoryLabel: "Otros",
+    categoryLabel: "Прочее",
     themeColor: getColor("foreground"),
     metrics: [
       {
         id: "water",
-        label: "Agua",
+        label: "Вода",
         unit: "ml",
         value: 0,
         default: 0,
@@ -322,7 +322,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "caffeine",
-        label: "Cafeína",
+        label: "Кофеин",
         unit: "mg",
         value: 0,
         default: 0,
@@ -331,7 +331,7 @@ export const nutrientsData: NutrientCategory[] = [
       },
       {
         id: "alcohol",
-        label: "Alcohol",
+        label: "Алкоголь",
         unit: "g",
         value: 0,
         default: 0,
