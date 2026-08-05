@@ -78,20 +78,35 @@
 
 ## Traceability
 
-Заполняется при создании роадмапа.
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| OBS-01 … OBS-04 | TBD | Pending |
-| BOOT-01 … BOOT-04 | TBD | Pending |
-| GUEST-01 … GUEST-07 | TBD | Pending |
-| FLOW-01 … FLOW-04 | TBD | Pending |
-| DIST-01 … DIST-02 | TBD | Pending |
+| OBS-01 | Phase 1 — Наблюдаемость продакшена | Pending |
+| OBS-02 | Phase 1 — Наблюдаемость продакшена | Pending |
+| OBS-03 | Phase 1 — Наблюдаемость продакшена | Pending |
+| OBS-04 | Phase 1 — Наблюдаемость продакшена | Pending |
+| BOOT-01 | Phase 2 — Стабильный запуск и дистрибуция | Pending |
+| BOOT-02 | Phase 2 — Стабильный запуск и дистрибуция | Pending |
+| BOOT-03 | Phase 2 — Стабильный запуск и дистрибуция | Pending |
+| BOOT-04 | Phase 2 — Стабильный запуск и дистрибуция | Pending |
+| DIST-01 | Phase 2 — Стабильный запуск и дистрибуция | Pending |
+| DIST-02 | Phase 2 — Стабильный запуск и дистрибуция | Pending |
+| GUEST-01 | Phase 3 — Гостевой доступ без регистрации | Pending |
+| GUEST-02 | Phase 3 — Гостевой доступ без регистрации | Pending |
+| GUEST-03 | Phase 3 — Гостевой доступ без регистрации | Pending |
+| GUEST-04 | Phase 3 — Гостевой доступ без регистрации | Pending |
+| GUEST-05 | Phase 3 — Гостевой доступ без регистрации | Pending |
+| GUEST-06 | Phase 3 — Гостевой доступ без регистрации | Pending |
+| GUEST-07 | Phase 3 — Гостевой доступ без регистрации | Pending |
+| FLOW-01 | Phase 4 — Сквозной сценарий тестера | Pending |
+| FLOW-02 | Phase 4 — Сквозной сценарий тестера | Pending |
+| FLOW-03 | Phase 4 — Сквозной сценарий тестера | Pending |
+| FLOW-04 | Phase 4 — Сквозной сценарий тестера | Pending |
 
 **Coverage:**
-- v1 requirements: 22 total
-- Mapped to phases: 0
-- Unmapped: 22 ⚠️ (роадмап ещё не создан)
+- v1 requirements: 21 total (исправлено при создании роадмапа — предыдущее значение «22 total» было устаревшим плейсхолдером; фактический список содержит 4 OBS + 4 BOOT + 7 GUEST + 4 FLOW + 2 DIST = 21)
+- Mapped to phases: 21
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-08-05*
+*Traceability updated: 2026-08-05 при создании роадмапа v1.3*
