@@ -1,6 +1,7 @@
 import { convexAuth } from "@convex-dev/auth/server";
 import Google from "@auth/core/providers/google";
 import Apple, { AppleProfile } from "@auth/core/providers/apple";
+import { Anonymous } from "@convex-dev/auth/providers/Anonymous";
 import { ConvexCredentials } from "@convex-dev/auth/providers/ConvexCredentials";
 import { ResendOTP } from "./ResendOTP";
 import { MutationCtx } from "./_generated/server";
@@ -33,6 +34,9 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
       },
     }),
     ResendOTP,
+    // Гостевой вход: создаёт настоящего пользователя без email/провайдера,
+    // поэтому все auth-гейтнутые функции и <Stack.Protected> работают без правок.
+    Anonymous,
     ConvexCredentials({
       id: "password",
       authorize: async (credentials, ctx) => {

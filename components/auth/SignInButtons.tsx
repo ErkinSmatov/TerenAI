@@ -10,6 +10,9 @@ import GoogleLogo from "@/assets/svg/google-logo.svg";
 import getColor from "@/lib/ui/getColor";
 import { useState } from "react";
 import logError from "@/lib/utils/logError";
+import { Toast } from "@/components/ui/Toast";
+
+const signInErrorText = "Не удалось войти. Попробуйте ещё раз";
 
 type Props = {
   onEmailLogin?: () => void;
@@ -39,7 +42,8 @@ export default function SignInButtons({
         return;
       }
       if (!redirect) {
-        console.warn("Missing redirect URL from signIn response");
+        logError("Missing redirect URL from signIn response", provider);
+        Toast.show({ text: signInErrorText, variant: "error" });
         return;
       }
       const result = await openAuthSessionAsync(
@@ -50,7 +54,8 @@ export default function SignInButtons({
         const { url } = result;
         const code = new URL(url).searchParams.get("code");
         if (!code) {
-          console.warn("Authorization code not found in redirect callback");
+          logError("Authorization code not found in redirect callback", url);
+          Toast.show({ text: signInErrorText, variant: "error" });
           return;
         }
         await signIn(provider, { code });
@@ -62,6 +67,7 @@ export default function SignInButtons({
       }
     } catch (error) {
       logError("Authentication error", error);
+      Toast.show({ text: signInErrorText, variant: "error" });
     } finally {
       setIsAuthenticating(false);
     }
