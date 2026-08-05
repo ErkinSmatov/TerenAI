@@ -83,7 +83,7 @@
 **Development:**
 - Node.js (version not pinned via `.nvmrc`/`engines` field - not detected)
 - Expo CLI / EAS CLI `>= 16.6.2` (`eas.json` `cli.version`)
-- iOS/Android native project folders committed (`ios/`, `android/`) alongside Expo config plugins (indicates a "prebuild"-based / bare-adjacent workflow, not pure managed Expo Go)
+- iOS/Android native folders (`ios/`, `android/`) exist on disk locally but are **gitignored and NOT committed** (`.gitignore:5-6`; `git ls-files ios/` returns 0 files). This is managed/CNG workflow — EAS regenerates native projects from `app.config.ts` on the build server, so config-plugin changes apply automatically without a manual `expo prebuild` + commit. *(Corrected 2026-08-05: the original audit claimed these folders were committed, inferring from their presence on disk.)*
 
 **Production:**
 - iOS App Store + Google Play (native builds via EAS, `eas:prod` script → `eas build --profile production`)
