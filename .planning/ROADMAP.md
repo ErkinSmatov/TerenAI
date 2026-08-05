@@ -29,7 +29,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Существующий хелпер `lib/utils/logError.ts` отправляет ошибки в этот сервис на всех текущих местах вызова (`convex/meals/updateMeal.ts`, `convex/meals/getMeal.ts`, `context/SubscriptionContext.tsx` и др.), сохраняя прежнее поведение в dev (вывод в консоль)
   3. Стек-трейс релизной сборки в сервисе отчётов читаем — показывает файлы/строки исходного кода TS, а не адреса Hermes-байткода (sourcemaps для EAS-билда загружены)
   4. Команда может собрать production-конфигурацию локально (`eas build --local` или `APP_VARIANT=production npx expo run:ios --configuration Release` с `eas env:pull --environment production`) и воспроизвести на ней поведение релиза
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Проект в Sentry и секреты сборки: DSN и метка окружения в EAS, build-time токен для sourcemaps (wave 1, требует человека)
+- [ ] 01-02-PLAN.md — Установка `@sentry/react-native`, конфиг-плагин и metro-плагин, ранняя инициализация в `index.ts`, рантайм-безопасный `logError` через реестр репортеров (wave 2)
+- [ ] 01-03-PLAN.md — Скрытый раздел диагностики в настройках (проверка отчётов без пересборки) и скрипты локальной production-сборки + `docs/PRODUCTION-DEBUGGING.md` (wave 3)
+- [ ] 01-04-PLAN.md — Проверка на реальной релизной сборке: локальный Release, сборка EAS с загрузкой sourcemaps, сквозная проверка в TestFlight (wave 4, требует человека)
 
 ### Phase 2: Стабильный запуск и дистрибуция
 **Goal**: TestFlight-сборка iOS доходит до первого экрана без краша; сам краш 1.2.1 (1) исправлен и задокументирован так, чтобы регрессия распознавалась повторно; процесс «собрать и залить в TestFlight» воспроизводим
@@ -103,7 +109,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Наблюдаемость продакшена | 0/TBD | Not started | - |
+| 1. Наблюдаемость продакшена | 0/4 | Planned | - |
 | 2. Стабильный запуск и дистрибуция | 0/TBD | Частично: краш устранён и проверен на 1.2.1 (2), `ascAppId` задан. Остаются BOOT-02, BOOT-03, DIST-01 | - |
 | 3. Вход в конце онбординга + гостевой доступ | 0/TBD | Частично: гостевой вход реализован (`5e79ced`), ждёт ключей Google и проверки на устройстве | - |
 | 4. Сквозной сценарий тестера | 0/TBD | Not started | - |
