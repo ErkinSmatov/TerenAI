@@ -1,3 +1,4 @@
+import DiagnosticsSection from "@/components/settings/DiagnosticsSection";
 import SettingsGroup from "@/components/settings/SettingsGroup";
 import SettingsItem from "@/components/settings/SettingsItem";
 import AlertDialog from "@/components/ui/AlertDialog";
@@ -100,6 +101,7 @@ export default function SettingsScreen() {
             onPress={() => void handleSignOut()}
           />
         </SettingsGroup>
+        <DiagnosticsSection />
       </ScrollView>
     </SafeArea>
   );
