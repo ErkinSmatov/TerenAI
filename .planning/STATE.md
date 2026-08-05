@@ -11,8 +11,8 @@ See: .planning/PROJECT.md (updated 2026-08-05)
 
 Phase: 1 of 4 (Наблюдаемость продакшена)
 Plan: TBD (роадмап создан, планирование фазы ещё не запускалось)
-Status: Ready to plan
-Last activity: 2026-08-05 — Роадмап v1.3 «Стабильный билд в TestFlight» создан, все 21 v1-требование замаплены на 4 фазы
+Status: Ready to plan — но ожидается подтверждение результата внеплановой проверочной сборки (см. ниже)
+Last activity: 2026-08-05 — Вне роадмапа выполнена проверка гипотезы о крашe: `EXPO_PUBLIC_CONVEX_URL` задана в EAS-среде `production`, собрана и залита в TestFlight сборка 1.2.1 (2). Лог сборки подтверждает загрузку переменной («Environment variables … loaded from the "production" environment on EAS: EXPO_PUBLIC_CONVEX_URL»). **Фактический запуск на устройстве человеком ещё не подтверждён** — BOOT-01 остаётся Pending до этого.
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -48,7 +48,9 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None yet.
+- **Ожидает человека:** установить 1.2.1 (2) из TestFlight и подтвердить, открывается ли приложение. Это единственная проверка гипотезы о крашe — до неё BOOT-01 не закрыт.
+- Если приложение всё же крашится — гипотеза о переменной окружения была неполной; тогда Phase 1 (Sentry) становится обязательной предпосылкой, а не удобством, потому что других источников диагностики нет.
+- Ключи RevenueCat (`EXPO_PUBLIC_REVENUECAT_APPLE_API_KEY`, `EXPO_PUBLIC_REVENUECAT_GOOGLE_API_KEY`) отсутствуют и в `.env.local`, и в EAS. Краш не вызывают (инициализация защищена проверкой `if (apiKey)`), но подписки не работают нигде. Всплывёт в Phase 3 при GUEST-07.
 
 ### Blockers/Concerns
 
