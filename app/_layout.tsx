@@ -1,14 +1,19 @@
 import { Stack } from "expo-router";
+import * as Sentry from "@sentry/react-native";
 import RootLayoutProvider from "@/components/RootLayoutProvider";
 import { useAuthContext } from "@/context/AuthContext";
 
-export default function RootLayout() {
+function RootLayout() {
   return (
     <RootLayoutProvider>
       <RootNavigator />
     </RootLayoutProvider>
   );
 }
+
+// Sentry.wrap даёт хлебные крошки по касаниям и привязку событий к жизненному
+// циклу приложения.
+export default Sentry.wrap(RootLayout);
 
 function RootNavigator() {
   const { isAuthenticated } = useAuthContext();

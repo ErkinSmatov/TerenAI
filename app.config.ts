@@ -1,4 +1,5 @@
 import type { ExpoConfig } from "expo/config";
+import { withSentry } from "@sentry/react-native/expo";
 
 const appVariant = process.env.APP_VARIANT;
 const isDevelopment = appVariant === "development";
@@ -19,7 +20,7 @@ const getAppName = () => {
   }
 };
 
-export default (): ExpoConfig => ({
+const config: ExpoConfig = {
   name: getAppName(),
   slug: "Calyo",
   version: "1.2.1",
@@ -85,4 +86,15 @@ export default (): ExpoConfig => ({
     },
   },
   owner: "smatove",
-});
+};
+
+// withSentry подключает нативную часть SDK и автозагрузку sourcemaps при сборке.
+// Токен здесь НЕ передаётся намеренно — плагин берёт его из переменной окружения
+// SENTRY_AUTH_TOKEN, которую EAS подставляет в окружение сборки. Слаги секретами
+// не являются.
+export default (): ExpoConfig =>
+  withSentry(config, {
+    url: "https://sentry.io/",
+    organization: "codetau-et",
+    project: "terenai",
+  });

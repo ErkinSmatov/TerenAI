@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-const { getDefaultConfig } = require("expo/metro-config");
+// getSentryExpoConfig — замена getDefaultConfig из expo/metro-config: та же
+// сигнатура, но дополнительно генерирует sourcemaps для загрузки в Sentry.
+// Без неё стек-трейсы релиза остались бы адресами Hermes-байткода.
+const { getSentryExpoConfig } = require("@sentry/react-native/metro");
 
-const config = getDefaultConfig(__dirname);
+const config = getSentryExpoConfig(__dirname);
 
 const { transformer, resolver } = config;
 
