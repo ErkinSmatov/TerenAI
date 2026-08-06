@@ -237,11 +237,19 @@ export default function Onboarding() {
     if (isCompletingOnboarding) return;
 
     setIsCompletingOnboarding(true);
-    if (!isOnboardingDataComplete(data)) return;
-    await completeOnboarding({ data, targets });
+    // finally обязателен: без него ранний выход по неполным данным или любая
+    // ошибка completeOnboarding (сеть, сбой мутации) оставляли флаг в true.
+    // Тогда isNextDisabled залипал, кнопка «Далее» блокировалась навсегда и
+    // пользователь застревал на последнем шаге онбординга без выхода.
+    try {
+      if (!isOnboardingDataComplete(data)) return;
+      await completeOnboarding({ data, targets });
 
-    if (router.canDismiss()) router.dismissAll();
-    router.replace("/app");
+      if (router.canDismiss()) router.dismissAll();
+      router.replace("/app");
+    } finally {
+      setIsCompletingOnboarding(false);
+    }
   }, [
     isCompletingOnboarding,
     data,
