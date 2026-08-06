@@ -54,7 +54,7 @@ export default function Meal({
   const router = useRouter();
   const updateMeal = useMutation(api.meals.updateMeal.default);
   const isDeletingRef = useRef(false);
-  const { isPro, navigateToPaywall } = useSubscriptionContext();
+  const { hasProAccess, navigateToPaywall } = useSubscriptionContext();
 
   const { scrollY, onScroll } = useScrollY();
 
@@ -69,7 +69,7 @@ export default function Meal({
   };
 
   const handleFixMeal = () => {
-    if (!isPro) {
+    if (!hasProAccess) {
       navigateToPaywall();
       return;
     }
@@ -130,7 +130,7 @@ export default function Meal({
           disabled={loading || (status !== undefined && !status.ok)}
           style={{ position: "relative" }}
         >
-          {!isPro && <ProLabel />}
+          {!hasProAccess && <ProLabel />}
           <ScreenFooterButtonIcon
             Icon={SparklesIcon}
             fill={getColor("foreground")}

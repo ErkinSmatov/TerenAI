@@ -75,7 +75,7 @@ export default function TabsAddOptions() {
   const router = useRouter();
   const popoverTriggerRef = useRef<TriggerRef>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { isPro, navigateToPaywall } = useSubscriptionContext();
+  const { hasProAccess, navigateToPaywall } = useSubscriptionContext();
   const { status } = useRateLimit(api.rateLimit.getAiFeaturesRateLimit, {
     getServerTimeMutation: api.rateLimit.getServerTime,
   });
@@ -83,7 +83,7 @@ export default function TabsAddOptions() {
   const handleOptionPress = (option: Option) => {
     popoverTriggerRef.current?.close();
 
-    if (!isPro && option.isPro) {
+    if (!hasProAccess && option.isPro) {
       if (Platform.OS === "android") {
         setTimeout(() => {
           navigateToPaywall();

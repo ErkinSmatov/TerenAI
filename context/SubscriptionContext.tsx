@@ -2,13 +2,22 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { Linking, Platform } from "react-native";
 import Purchases, { CustomerInfo, LOG_LEVEL } from "react-native-purchases";
 import { revenueCatConfig } from "@/config/revenueCatConfig";
+import { subscriptionConfig } from "@/config/subscriptionConfig";
 import { useRouter } from "expo-router";
 import { useAction, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Constants from "expo-constants";
 
 type SubscriptionContextType = {
+  /** Реальный статус подписки в RevenueCat. Не использовать для гейтов. */
   isPro: boolean;
+  /**
+   * Есть ли у пользователя доступ к платным функциям.
+   * При выключенной монетизации истинно для всех — именно это должны
+   * проверять гейты в интерфейсе, а не isPro.
+   */
+  hasProAccess: boolean;
+  isMonetizationEnabled: boolean;
   customerInfo: CustomerInfo | null;
   isLoading: boolean;
   navigateToPaywall: () => void;
@@ -101,7 +110,14 @@ export function SubscriptionProvider({
     }
   };
 
+  const { isMonetizationEnabled } = subscriptionConfig;
+  const hasProAccess = isMonetizationEnabled ? isPro : true;
+
   const navigateToPaywall = () => {
+    // При выключенной монетизации пейволла не существует — переход никуда
+    // не ведёт. Вызовы оставлены на местах, чтобы возврат монетизации
+    // сводился к одному флагу в config/subscriptionConfig.ts.
+    if (!isMonetizationEnabled) return;
     router.push("/app/paywall");
   };
 
@@ -136,6 +152,8 @@ export function SubscriptionProvider({
     <SubscriptionContext.Provider
       value={{
         isPro,
+        hasProAccess,
+        isMonetizationEnabled,
         customerInfo,
         isLoading,
         navigateToPaywall,

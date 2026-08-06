@@ -28,14 +28,14 @@ type CameraMode = "photo" | "barcode";
 export default function CameraScreen() {
   const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
-  const { isPro, navigateToPaywall } = useSubscriptionContext();
+  const { hasProAccess, navigateToPaywall } = useSubscriptionContext();
   const { status } = useRateLimit(api.rateLimit.getAiFeaturesRateLimit, {
     getServerTimeMutation: api.rateLimit.getServerTime,
   });
 
   const [enableTorch, setEnableTorch] = useState(false);
   const [selectedOption, setSelectedOption] = useState<CameraMode>(
-    isPro ? "photo" : "barcode"
+    hasProAccess ? "photo" : "barcode"
   );
 
   const cameraRef = useRef<CameraView>(null);
@@ -61,7 +61,7 @@ export default function CameraScreen() {
   };
 
   const takePhoto = async () => {
-    if (!isPro) {
+    if (!hasProAccess) {
       navigateToPaywall();
       return;
     }
@@ -87,7 +87,7 @@ export default function CameraScreen() {
   };
 
   const handleUpload = async () => {
-    if (!isPro) {
+    if (!hasProAccess) {
       navigateToPaywall();
       return;
     }

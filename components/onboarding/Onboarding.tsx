@@ -37,6 +37,7 @@ import { Platform } from "react-native";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import OnboardingPaywall from "./steps/end/OnboardingPaywall";
+import { subscriptionConfig } from "@/config/subscriptionConfig";
 
 export type OnboardingSectionType = {
   name: string;
@@ -198,7 +199,11 @@ const sections: OnboardingSectionType[] = [
       {
         screen: <OnboardingPaywall key="paywall" />,
         completed: () => false,
-        skip: () => false,
+        // При выключенной монетизации шаг пропускается. Онбординг при этом
+        // завершается корректно: handleNext, выйдя за последнюю секцию,
+        // вызывает handleCompleteOnboarding — сохранение данных и переход
+        // на главный экран происходят там же, где и раньше.
+        skip: () => !subscriptionConfig.isMonetizationEnabled,
         showHeader: false,
         scrollView: false,
         isFullScreen: true,

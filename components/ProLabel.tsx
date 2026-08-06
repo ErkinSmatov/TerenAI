@@ -4,9 +4,9 @@ import Text from "./ui/Text";
 import getColor from "@/lib/ui/getColor";
 
 export default function ProLabel() {
-  const { isPro } = useSubscriptionContext();
+  const { hasProAccess } = useSubscriptionContext();
 
-  if (isPro) {
+  if (hasProAccess) {
     return null;
   }
 

@@ -6,6 +6,7 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { Id } from "../../_generated/dataModel";
 import logError from "@/lib/utils/logError";
 import { rateLimiter } from "../../rateLimit";
+import { subscriptionConfig } from "@/config/subscriptionConfig";
 import { processDetectedItems } from "./processDetectedItems";
 
 const analyzeMealPhoto = action({
@@ -17,7 +18,8 @@ const analyzeMealPhoto = action({
       if (userId === null) throw new Error("Unauthorized");
 
       const profile = await ctx.runQuery(api.profiles.getProfile.default);
-      if (!profile?.isPro) throw new Error("Pro subscription required");
+      if (subscriptionConfig.isMonetizationEnabled && !profile?.isPro)
+      throw new Error("Pro subscription required");
 
       await rateLimiter.limit(ctx, "aiFeatures", { key: userId, throws: true });
 

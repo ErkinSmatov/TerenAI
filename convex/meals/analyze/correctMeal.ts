@@ -5,6 +5,7 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import correctMealItems from "./correctMealItems";
 import { processDetectedItems } from "./processDetectedItems";
 import { rateLimiter } from "../../rateLimit";
+import { subscriptionConfig } from "@/config/subscriptionConfig";
 import { analyzeMealConfig } from "./analyzeMealConfig";
 
 export const correctMeal = action({
@@ -20,7 +21,8 @@ export const correctMeal = action({
     if (!userId) throw new Error("Unauthorized");
 
     const profile = await ctx.runQuery(api.profiles.getProfile.default);
-    if (!profile?.isPro) throw new Error("Pro subscription required");
+    if (subscriptionConfig.isMonetizationEnabled && !profile?.isPro)
+      throw new Error("Pro subscription required");
 
     await rateLimiter.limit(ctx, "aiFeatures", { key: userId, throws: true });
 

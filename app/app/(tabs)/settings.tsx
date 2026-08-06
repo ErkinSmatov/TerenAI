@@ -21,8 +21,13 @@ import { Alert, ScrollView, StyleSheet } from "react-native";
 
 export default function SettingsScreen() {
   const { signOut } = useAuthContext();
-  const { isPro, navigateToPaywall, manageSubscription, restorePurchases } =
-    useSubscriptionContext();
+  const {
+    isPro,
+    isMonetizationEnabled,
+    navigateToPaywall,
+    manageSubscription,
+    restorePurchases,
+  } = useSubscriptionContext();
   const deleteUser = useMutation(api.users.deleteUser.default);
   const router = useRouter();
 
@@ -60,25 +65,27 @@ export default function SettingsScreen() {
             <SettingsItem text="Настроить БЖУ" Icon={PieChartIcon} />
           </Link>
         </SettingsGroup>
-        <SettingsGroup>
-          {!isPro && (
+        {isMonetizationEnabled && (
+          <SettingsGroup>
+            {!isPro && (
+              <SettingsItem
+                text="Стать Pro"
+                Icon={CrownIcon}
+                onPress={navigateToPaywall}
+              />
+            )}
             <SettingsItem
-              text="Стать Pro"
-              Icon={CrownIcon}
-              onPress={navigateToPaywall}
+              text="Управление подпиской"
+              Icon={CreditCardIcon}
+              onPress={() => void manageSubscription()}
             />
-          )}
-          <SettingsItem
-            text="Управление подпиской"
-            Icon={CreditCardIcon}
-            onPress={() => void manageSubscription()}
-          />
-          <SettingsItem
-            text="Восстановить покупки"
-            Icon={RefreshCwIcon}
-            onPress={() => void handleRestorePurchases()}
-          />
-        </SettingsGroup>
+            <SettingsItem
+              text="Восстановить покупки"
+              Icon={RefreshCwIcon}
+              onPress={() => void handleRestorePurchases()}
+            />
+          </SettingsGroup>
+        )}
         <SettingsGroup>
           <AlertDialog
             trigger={
