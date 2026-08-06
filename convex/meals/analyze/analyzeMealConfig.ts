@@ -2,6 +2,16 @@ import { EmbeddingModel, LanguageModel } from "ai";
 import { google } from "@ai-sdk/google";
 import { openrouter } from "@/convex/ai";
 
+// Модель вынесена в константу: её используют три из четырёх шагов пайплайна,
+// и при следующей смене поколения менять придётся одно место.
+//
+// 2026-08-06: x-ai/grok-4.1-fast снята с обслуживания xAI и удалена из каталога
+// OpenRouter — вызовы падали с AI_APICallError прямо в анализе фото.
+// grok-4.3 — рекомендованная вендором замена: поддерживает изображения
+// (обязательно для imageProcessingModel) и относится к самой дешёвой группе
+// текущих моделей Grok, $1.25/$2.50 за 1M токенов входа/выхода.
+const GROK_MODEL = "x-ai/grok-4.3";
+
 type AnalyzeMealConfig = {
   temperature: number;
   candidatesPerItem: number;
@@ -15,10 +25,10 @@ type AnalyzeMealConfig = {
 export const analyzeMealConfig: AnalyzeMealConfig = {
   temperature: 0.2,
   candidatesPerItem: 3,
-  imageProcessingModel: openrouter.chat("x-ai/grok-4.1-fast"), // google("gemini-2.5-flash"),
+  imageProcessingModel: openrouter.chat(GROK_MODEL), // google("gemini-2.5-flash"),
   embeddingsModel: google.textEmbeddingModel("gemini-embedding-001"),
-  candidateSelectionModel: openrouter.chat("x-ai/grok-4.1-fast"),
-  namingModel: openrouter.chat("x-ai/grok-4.1-fast"),
+  candidateSelectionModel: openrouter.chat(GROK_MODEL),
+  namingModel: openrouter.chat(GROK_MODEL),
   maxUserInputLength: 500,
 };
 
