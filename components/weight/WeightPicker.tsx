@@ -1,4 +1,5 @@
 import AnimateableText from "react-native-animateable-text";
+import { useMemo } from "react";
 import {
   PixelRatio,
   StyleSheet,
@@ -13,6 +14,7 @@ import Animated, {
 } from "react-native-reanimated";
 import {
   Canvas,
+  FontStyle,
   Group,
   Paragraph,
   Path,
@@ -20,9 +22,7 @@ import {
   SkParagraphStyle,
   SkTextStyle,
   TextAlign,
-  useFonts,
 } from "@shopify/react-native-skia";
-import type { DataModule } from "@shopify/react-native-skia";
 import getColor from "@/lib/ui/getColor";
 import { LinearGradient } from "expo-linear-gradient";
 import resolveFontFamily from "@/lib/ui/resolveFontFamily";
@@ -113,12 +113,20 @@ export default function WeightPicker({
     onChange?.(weight.value);
   };
 
-  const interRegular =
-    require("@/node_modules/@expo-google-fonts/inter/400Regular/Inter_400Regular.ttf") as DataModule;
+  const fontManager = useMemo(() => {
+    const typeface = Skia.FontMgr.System().matchFamilyStyle(
+      resolveFontFamily({ weight: 400 }),
+      FontStyle.Normal
+    );
+    // matchFamilyStyle is typed as non-nullable, but the native implementation
+    // returns null when no matching family is registered.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!typeface) return null;
 
-  const fontManager = useFonts({
-    Inter: [interRegular],
-  });
+    const provider = Skia.TypefaceFontProvider.Make();
+    provider.registerFont(typeface, "Inter");
+    return provider;
+  }, []);
 
   const animatedProps = {
     weightText: useAnimatedProps(() => ({
