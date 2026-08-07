@@ -9,7 +9,6 @@ import OnboardingSex from "./steps/basics/OnboardingSex";
 import OnboardingBirthDate from "./steps/basics/OnboardingBirthDate";
 import OnboardingHeight from "./steps/basics/OnboardingHeight";
 import OnboardingWeight from "./steps/basics/OnboardingWeight";
-import OnboardingWeightTrend from "./steps/basics/OnboardingWeightTrend";
 import OnboardingActivityLevel from "./steps/basics/OnboardingActivityLevel";
 import OnboardingLiftingExperience from "./steps/basics/OnboardingLiftingExperience";
 import OnboardingCardioExperience from "./steps/basics/OnboardingCardioExperience";
@@ -89,13 +88,6 @@ const sections: OnboardingSectionType[] = [
         skip: () => false,
         showHeader: true,
         scrollView: false,
-      },
-      {
-        screen: <OnboardingWeightTrend key="weight-trend" />,
-        completed: ({ data }) => data.weightTrend !== undefined,
-        skip: () => false,
-        showHeader: true,
-        scrollView: true,
       },
       {
         screen: <OnboardingWeeklyWorkouts key="weekly-workouts" />,

@@ -10,7 +10,6 @@ import { api } from "@/convex/_generated/api";
 export type OnboardingData = Optional<
   ProfileData,
   | "sex"
-  | "weightTrend"
   | "weeklyWorkouts"
   | "activityLevel"
   | "liftingExperience"
@@ -93,7 +92,6 @@ const onboardingFields: (keyof ProfileData)[] = [
   "birthDate",
   "height",
   "weight",
-  "weightTrend",
   "weeklyWorkouts",
   "activityLevel",
   "liftingExperience",

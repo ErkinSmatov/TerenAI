@@ -19,12 +19,6 @@ export const profilesFields = {
       birthDate: v.number(),
       height: v.number(),
       weight: v.number(),
-      weightTrend: v.union(
-        v.literal("lose"),
-        v.literal("maintain"),
-        v.literal("gain"),
-        v.literal("unsure")
-      ),
       weeklyWorkouts: v.union(
         v.literal("0-2"),
         v.literal("3-5"),
