@@ -41,6 +41,18 @@ export const profilesFields = {
         v.literal("intermediate"),
         v.literal("advanced")
       ),
+      goalTrack: v.union(
+        v.literal("biohacking"),
+        v.literal("glucometer"),
+        v.literal("weightControl")
+      ),
+      glucometerType: v.optional(
+        v.union(
+          v.literal("diabetes1"),
+          v.literal("diabetes2"),
+          v.literal("sugarControl")
+        )
+      ),
       goal: v.union(
         v.literal("lose"),
         v.literal("maintain"),

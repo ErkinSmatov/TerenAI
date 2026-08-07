@@ -14,6 +14,7 @@ export type OnboardingData = Optional<
   | "activityLevel"
   | "liftingExperience"
   | "cardioExperience"
+  | "goalTrack"
   | "goal"
   | "training"
 >;
@@ -96,6 +97,7 @@ const onboardingFields: (keyof ProfileData)[] = [
   "activityLevel",
   "liftingExperience",
   "cardioExperience",
+  "goalTrack",
   "goal",
   "targetWeight",
   "weightChangeRate",
@@ -109,5 +111,11 @@ const hasValue = <T,>(value: T | undefined | null): value is T => {
 export function isOnboardingDataComplete(
   data: OnboardingData
 ): data is ProfileData {
-  return onboardingFields.every((field) => hasValue(data[field]));
+  if (!onboardingFields.every((field) => hasValue(data[field]))) {
+    return false;
+  }
+  if (data.goalTrack === "glucometer") {
+    return hasValue(data.glucometerType);
+  }
+  return true;
 }

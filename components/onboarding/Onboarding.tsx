@@ -13,6 +13,8 @@ import OnboardingActivityLevel from "./steps/basics/OnboardingActivityLevel";
 import OnboardingLiftingExperience from "./steps/basics/OnboardingLiftingExperience";
 import OnboardingCardioExperience from "./steps/basics/OnboardingCardioExperience";
 import OnboardingGoalSection from "./steps/goal/OnboardingGoalSection";
+import OnboardingGoalTrack from "./steps/goal/OnboardingGoalTrack";
+import OnboardingGlucometerType from "./steps/goal/OnboardingGlucometerType";
 import OnboardingGoal from "./steps/goal/OnboardingGoal";
 import OnboardingTargetWeight from "./steps/goal/OnboardingTargetWeight";
 import OnboardingWeightChangeRate from "./steps/goal/OnboardingWeightChangeRate";
@@ -130,23 +132,39 @@ const sections: OnboardingSectionType[] = [
         scrollView: true,
       },
       {
+        screen: <OnboardingGoalTrack key="goal-track" />,
+        completed: ({ data }) => data.goalTrack !== undefined,
+        skip: () => false,
+        showHeader: true,
+        scrollView: true,
+      },
+      {
+        screen: <OnboardingGlucometerType key="glucometer-type" />,
+        completed: ({ data }) => data.glucometerType !== undefined,
+        skip: ({ data }) => data.goalTrack !== "glucometer",
+        showHeader: true,
+        scrollView: true,
+      },
+      {
         screen: <OnboardingGoal key="goal" />,
         completed: ({ data }) => data.goal !== undefined,
-        skip: () => false,
+        skip: ({ data }) => data.goalTrack !== "weightControl",
         showHeader: true,
         scrollView: true,
       },
       {
         screen: <OnboardingTargetWeight key="target-weight" />,
         completed: () => true,
-        skip: ({ data }) => data.goal === "maintain",
+        skip: ({ data }) =>
+          data.goalTrack !== "weightControl" || data.goal === "maintain",
         showHeader: true,
         scrollView: false,
       },
       {
         screen: <OnboardingWeightChangeRate key="weight-change-rate" />,
         completed: () => true,
-        skip: ({ data }) => data.goal === "maintain",
+        skip: ({ data }) =>
+          data.goalTrack !== "weightControl" || data.goal === "maintain",
         showHeader: true,
         scrollView: false,
       },
