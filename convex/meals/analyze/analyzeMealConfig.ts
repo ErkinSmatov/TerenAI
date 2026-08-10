@@ -2,15 +2,23 @@ import { EmbeddingModel, LanguageModel } from "ai";
 import { google } from "@ai-sdk/google";
 import { openrouter } from "@/convex/ai";
 
-// Модель вынесена в константу: её используют три из четырёх шагов пайплайна,
-// и при следующей смене поколения менять придётся одно место.
+// Пресеты модели для пайплайна анализа блюда: её используют три из четырёх
+// шагов (imageProcessingModel/candidateSelectionModel/namingModel), оба
+// варианта должны поддерживать изображения (обязательно для
+// imageProcessingModel). Переключение — смена ACTIVE_MODEL ниже.
 //
 // 2026-08-06: x-ai/grok-4.1-fast снята с обслуживания xAI и удалена из каталога
 // OpenRouter — вызовы падали с AI_APICallError прямо в анализе фото.
-// grok-4.3 — рекомендованная вендором замена: поддерживает изображения
-// (обязательно для imageProcessingModel) и относится к самой дешёвой группе
-// текущих моделей Grok, $1.25/$2.50 за 1M токенов входа/выхода.
-const GROK_MODEL = "x-ai/grok-4.3";
+// grok-4.3 — рекомендованная вендором замена, самая дешёвая в текущей линейке
+// Grok, $1.25/$2.50 за 1M токенов входа/выхода.
+const MODEL_PRESETS = {
+  grok: "x-ai/grok-4.3",
+  geminiFlash: "google/gemini-3-flash-preview",
+} as const;
+
+const ACTIVE_MODEL: keyof typeof MODEL_PRESETS = "grok";
+
+const ANALYSIS_MODEL = MODEL_PRESETS[ACTIVE_MODEL];
 
 type AnalyzeMealConfig = {
   temperature: number;
@@ -25,10 +33,10 @@ type AnalyzeMealConfig = {
 export const analyzeMealConfig: AnalyzeMealConfig = {
   temperature: 0.2,
   candidatesPerItem: 3,
-  imageProcessingModel: openrouter.chat(GROK_MODEL), // google("gemini-2.5-flash"),
+  imageProcessingModel: openrouter.chat(ANALYSIS_MODEL),
   embeddingsModel: google.textEmbeddingModel("gemini-embedding-001"),
-  candidateSelectionModel: openrouter.chat(GROK_MODEL),
-  namingModel: openrouter.chat(GROK_MODEL),
+  candidateSelectionModel: openrouter.chat(ANALYSIS_MODEL),
+  namingModel: openrouter.chat(ANALYSIS_MODEL),
   maxUserInputLength: 500,
 };
 
