@@ -12,8 +12,8 @@ import { openrouter } from "@/convex/ai";
 // grok-4.3 — рекомендованная вендором замена, самая дешёвая в текущей линейке
 // Grok, $1.25/$2.50 за 1M токенов входа/выхода.
 const MODEL_PRESETS = {
-  grok: "x-ai/grok-4.3",
-  geminiFlash: "google/gemini-3-flash-preview",
+  grok: "x-ai/grok-4.3", //grok
+  geminiFlash: "google/gemini-3-flash-preview", //geminiFlash
 } as const;
 
 const ACTIVE_MODEL: keyof typeof MODEL_PRESETS = "grok";
