@@ -1,4 +1,5 @@
 import HomeDaySelector from "@/components/home/HomeDaySelector";
+import HomeGlucoseSummary from "@/components/home/HomeGlucoseSummary";
 import HomeHeader from "@/components/home/HomeHeader";
 import HomeMacroSummary from "@/components/home/HomeMacroSummary";
 import HomeMicroSummary from "@/components/home/HomeMicroSummary";
@@ -18,11 +19,23 @@ export default function HomeScreen() {
   const dimensions = useWindowDimensions();
   const [selectedDay, setSelectedDay] = useState((getDay(new Date()) + 6) % 7);
 
+  const profile = useQuery(api.profiles.getProfile.default);
+  const isGlucometerTrack = profile?.data?.goalTrack === "glucometer";
+
   const rawWeekMeals = useQuery(api.meals.getWeekMeals.default, {
     timezoneOffsetMinutes: new Date().getTimezoneOffset(),
   });
   const weekMeals = rawWeekMeals ?? Array.from({ length: 7 }, () => []);
   const dayMeals = weekMeals.at(selectedDay) ?? [];
+
+  const rawWeekReadings = useQuery(
+    api.glucose.getWeekReadings.default,
+    isGlucometerTrack
+      ? { timezoneOffsetMinutes: new Date().getTimezoneOffset() }
+      : "skip"
+  );
+  const weekReadings = rawWeekReadings ?? Array.from({ length: 7 }, () => []);
+  const dayReadings = weekReadings.at(selectedDay) ?? [];
 
   const weekTotalMacros = weekMeals.map((meals) =>
     meals.reduce(
@@ -63,6 +76,7 @@ export default function HomeScreen() {
           />
         </Carousel>
         <HomeRecentlyLogged meals={dayMeals} />
+        {isGlucometerTrack && <HomeGlucoseSummary readings={dayReadings} />}
       </ScrollView>
     </SafeArea>
   );

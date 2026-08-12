@@ -11,11 +11,12 @@ import Animated, {
 } from "react-native-reanimated";
 import Card from "../ui/Card";
 import Text from "../ui/Text";
-import { LucideIcon, PenLineIcon, ScanIcon } from "lucide-react-native";
+import { DropletIcon, LucideIcon, PenLineIcon, ScanIcon } from "lucide-react-native";
 import getColor from "../../lib/ui/getColor";
 import Button from "../ui/Button";
 import { Href, useRouter } from "expo-router";
 import { useRateLimit } from "@convex-dev/rate-limiter/react";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Toast } from "../ui/Toast";
 import ProLabel from "../ProLabel";
@@ -54,22 +55,33 @@ type Option = {
   icon: LucideIcon;
   href: Href;
   isPro: boolean;
+  isAiFeature: boolean;
 };
 
-const options: Option[] = [
+const baseOptions: Option[] = [
   {
     label: "Описать",
     icon: PenLineIcon,
     href: "/app/(add)/describe",
     isPro: true,
+    isAiFeature: true,
   },
   {
     label: "Сканировать",
     icon: ScanIcon,
     href: "/app/(add)/camera",
     isPro: false,
+    isAiFeature: true,
   },
 ];
+
+const glucoseOption: Option = {
+  label: "Сахар",
+  icon: DropletIcon,
+  href: "/app/(add)/glucose",
+  isPro: false,
+  isAiFeature: false,
+};
 
 export default function TabsAddOptions() {
   const router = useRouter();
@@ -79,6 +91,12 @@ export default function TabsAddOptions() {
   const { status } = useRateLimit(api.rateLimit.getAiFeaturesRateLimit, {
     getServerTimeMutation: api.rateLimit.getServerTime,
   });
+  const profile = useQuery(api.profiles.getProfile.default);
+
+  const options: Option[] =
+    profile?.data?.goalTrack === "glucometer"
+      ? [...baseOptions, glucoseOption]
+      : baseOptions;
 
   const handleOptionPress = (option: Option) => {
     popoverTriggerRef.current?.close();
@@ -94,7 +112,7 @@ export default function TabsAddOptions() {
       return;
     }
 
-    if (status && !status.ok) {
+    if (option.isAiFeature && status && !status.ok) {
       Toast.show({
         text: "Вы достигли дневного лимита функций ИИ.",
         variant: "error",

@@ -38,6 +38,14 @@ const deleteUser = mutation({
       await ctx.db.delete(meal._id);
     }
 
+    const glucoseReadings = await ctx.db
+      .query("glucoseReadings")
+      .withIndex("byUserId", (q) => q.eq("userId", userId))
+      .collect();
+    for (const reading of glucoseReadings) {
+      await ctx.db.delete(reading._id);
+    }
+
     const sessions = await ctx.db
       .query("authSessions")
       .filter((q) => q.eq(q.field("userId"), userId))

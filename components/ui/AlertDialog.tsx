@@ -95,7 +95,7 @@ export default function AlertDialog({
                     setOpen(false);
                   }}
                 >
-                  Cancelar
+                  Отмена
                 </Button>
                 <Button
                   variant={destructive ? "destructive" : "primary"}
@@ -106,7 +106,7 @@ export default function AlertDialog({
                     onConfirm();
                   }}
                 >
-                  Confirmar
+                  Подтвердить
                 </Button>
               </View>
             </Card>
