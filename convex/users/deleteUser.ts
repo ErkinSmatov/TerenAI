@@ -46,6 +46,14 @@ const deleteUser = mutation({
       await ctx.db.delete(reading._id);
     }
 
+    const bloodPressureReadings = await ctx.db
+      .query("bloodPressureReadings")
+      .withIndex("byUserId", (q) => q.eq("userId", userId))
+      .collect();
+    for (const reading of bloodPressureReadings) {
+      await ctx.db.delete(reading._id);
+    }
+
     const sessions = await ctx.db
       .query("authSessions")
       .filter((q) => q.eq(q.field("userId"), userId))

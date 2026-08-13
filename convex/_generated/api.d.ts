@@ -11,6 +11,10 @@
 import type * as ResendOTP from "../ResendOTP.js";
 import type * as ai from "../ai.js";
 import type * as auth from "../auth.js";
+import type * as bloodPressure_createReading from "../bloodPressure/createReading.js";
+import type * as bloodPressure_deleteReading from "../bloodPressure/deleteReading.js";
+import type * as bloodPressure_getAllReadings from "../bloodPressure/getAllReadings.js";
+import type * as bloodPressure_getWeekReadings from "../bloodPressure/getWeekReadings.js";
 import type * as foods_createFood from "../foods/createFood.js";
 import type * as foods_getFoodByIdentity from "../foods/getFoodByIdentity.js";
 import type * as foods_ingestFoods from "../foods/ingestFoods.js";
@@ -54,6 +58,7 @@ import type * as profiles_updateProStatus from "../profiles/updateProStatus.js";
 import type * as profiles_updateProfile from "../profiles/updateProfile.js";
 import type * as rateLimit from "../rateLimit.js";
 import type * as storage_generateUploadUrl from "../storage/generateUploadUrl.js";
+import type * as tables_bloodPressureReadings from "../tables/bloodPressureReadings.js";
 import type * as tables_foods from "../tables/foods.js";
 import type * as tables_glucoseReadings from "../tables/glucoseReadings.js";
 import type * as tables_mealItems from "../tables/mealItems.js";
@@ -82,6 +87,10 @@ declare const fullApi: ApiFromModules<{
   ResendOTP: typeof ResendOTP;
   ai: typeof ai;
   auth: typeof auth;
+  "bloodPressure/createReading": typeof bloodPressure_createReading;
+  "bloodPressure/deleteReading": typeof bloodPressure_deleteReading;
+  "bloodPressure/getAllReadings": typeof bloodPressure_getAllReadings;
+  "bloodPressure/getWeekReadings": typeof bloodPressure_getWeekReadings;
   "foods/createFood": typeof foods_createFood;
   "foods/getFoodByIdentity": typeof foods_getFoodByIdentity;
   "foods/ingestFoods": typeof foods_ingestFoods;
@@ -125,6 +134,7 @@ declare const fullApi: ApiFromModules<{
   "profiles/updateProfile": typeof profiles_updateProfile;
   rateLimit: typeof rateLimit;
   "storage/generateUploadUrl": typeof storage_generateUploadUrl;
+  "tables/bloodPressureReadings": typeof tables_bloodPressureReadings;
   "tables/foods": typeof tables_foods;
   "tables/glucoseReadings": typeof tables_glucoseReadings;
   "tables/mealItems": typeof tables_mealItems;

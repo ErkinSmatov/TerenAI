@@ -1,3 +1,4 @@
+import HomeBloodPressureSummary from "@/components/home/HomeBloodPressureSummary";
 import HomeDaySelector from "@/components/home/HomeDaySelector";
 import HomeGlucoseSummary from "@/components/home/HomeGlucoseSummary";
 import HomeHeader from "@/components/home/HomeHeader";
@@ -36,6 +37,16 @@ export default function HomeScreen() {
   );
   const weekReadings = rawWeekReadings ?? Array.from({ length: 7 }, () => []);
   const dayReadings = weekReadings.at(selectedDay) ?? [];
+
+  const rawWeekBloodPressure = useQuery(
+    api.bloodPressure.getWeekReadings.default,
+    isGlucometerTrack
+      ? { timezoneOffsetMinutes: new Date().getTimezoneOffset() }
+      : "skip"
+  );
+  const weekBloodPressure =
+    rawWeekBloodPressure ?? Array.from({ length: 7 }, () => []);
+  const dayBloodPressure = weekBloodPressure.at(selectedDay) ?? [];
 
   const weekTotalMacros = weekMeals.map((meals) =>
     meals.reduce(
@@ -77,6 +88,9 @@ export default function HomeScreen() {
         </Carousel>
         <HomeRecentlyLogged meals={dayMeals} />
         {isGlucometerTrack && <HomeGlucoseSummary readings={dayReadings} />}
+        {isGlucometerTrack && (
+          <HomeBloodPressureSummary readings={dayBloodPressure} />
+        )}
       </ScrollView>
     </SafeArea>
   );

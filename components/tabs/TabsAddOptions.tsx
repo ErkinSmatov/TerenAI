@@ -11,7 +11,13 @@ import Animated, {
 } from "react-native-reanimated";
 import Card from "../ui/Card";
 import Text from "../ui/Text";
-import { DropletIcon, LucideIcon, PenLineIcon, ScanIcon } from "lucide-react-native";
+import {
+  DropletIcon,
+  HeartPulseIcon,
+  LucideIcon,
+  PenLineIcon,
+  ScanIcon,
+} from "lucide-react-native";
 import getColor from "../../lib/ui/getColor";
 import Button from "../ui/Button";
 import { Href, useRouter } from "expo-router";
@@ -83,6 +89,14 @@ const glucoseOption: Option = {
   isAiFeature: false,
 };
 
+const bloodPressureOption: Option = {
+  label: "Давление",
+  icon: HeartPulseIcon,
+  href: "/app/(add)/bloodPressure",
+  isPro: false,
+  isAiFeature: false,
+};
+
 export default function TabsAddOptions() {
   const router = useRouter();
   const popoverTriggerRef = useRef<TriggerRef>(null);
@@ -95,7 +109,7 @@ export default function TabsAddOptions() {
 
   const options: Option[] =
     profile?.data?.goalTrack === "glucometer"
-      ? [...baseOptions, glucoseOption]
+      ? [...baseOptions, glucoseOption, bloodPressureOption]
       : baseOptions;
 
   const handleOptionPress = (option: Option) => {
