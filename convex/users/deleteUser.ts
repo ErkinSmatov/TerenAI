@@ -54,6 +54,14 @@ const deleteUser = mutation({
       await ctx.db.delete(reading._id);
     }
 
+    const movementData = await ctx.db
+      .query("movementData")
+      .withIndex("byUserIdAndDate", (q) => q.eq("userId", userId))
+      .collect();
+    for (const day of movementData) {
+      await ctx.db.delete(day._id);
+    }
+
     const sessions = await ctx.db
       .query("authSessions")
       .filter((q) => q.eq(q.field("userId"), userId))

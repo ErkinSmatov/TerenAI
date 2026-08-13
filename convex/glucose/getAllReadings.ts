@@ -10,7 +10,7 @@ const getAllReadings = query({
 
       return await ctx.db
         .query("glucoseReadings")
-        .withIndex("byUserId", (idx) => idx.eq("userId", userId))
+        .withIndex("byUserIdAndRecordedAt", (idx) => idx.eq("userId", userId))
         .order("desc")
         .collect();
     } catch (error) {

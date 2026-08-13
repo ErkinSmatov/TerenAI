@@ -13,9 +13,12 @@ export const glucoseReadingsFields = {
       v.literal("random")
     )
   ),
+  recordedAt: v.number(),
+  source: v.union(v.literal("manual"), v.literal("healthkit")),
+  healthKitUuid: v.optional(v.string()),
 };
 
-export const glucoseReadings = defineTable(glucoseReadingsFields).index(
-  "byUserId",
-  ["userId"]
-);
+export const glucoseReadings = defineTable(glucoseReadingsFields)
+  .index("byUserId", ["userId"])
+  .index("byUserIdAndRecordedAt", ["userId", "recordedAt"])
+  .index("byHealthKitUuid", ["healthKitUuid"]);

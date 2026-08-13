@@ -5,7 +5,11 @@ import logError from "@/lib/utils/logError";
 
 const dayMs = 24 * 60 * 60 * 1000;
 
-const getWeekReadings = query({
+function toDateString(ms: number): string {
+  return new Date(ms).toISOString().slice(0, 10);
+}
+
+const getWeekMovement = query({
   args: {
     timezoneOffsetMinutes: v.number(),
   },
@@ -23,40 +27,27 @@ const getWeekReadings = query({
       const daysFromMonday = (localDayOfWeek + 6) % 7;
       const localMondayStartMs = localMidnightMs - daysFromMonday * dayMs;
 
-      const weekStartUtc = localMondayStartMs + offsetMs;
-      const weekEndUtc = weekStartUtc + 7 * dayMs;
+      const dateStrings = Array.from({ length: 7 }, (_, i) =>
+        toDateString(localMondayStartMs + i * dayMs)
+      );
 
-      const readings = await ctx.db
-        .query("glucoseReadings")
-        .withIndex("byUserIdAndRecordedAt", (idx) =>
+      const rows = await ctx.db
+        .query("movementData")
+        .withIndex("byUserIdAndDate", (idx) =>
           idx
             .eq("userId", userId)
-            .gte("recordedAt", weekStartUtc)
-            .lt("recordedAt", weekEndUtc)
+            .gte("date", dateStrings[0])
+            .lte("date", dateStrings[6])
         )
         .collect();
 
-      const week = Array.from({ length: 7 }, () => [] as typeof readings);
-      for (const reading of readings) {
-        const localReadingMs = reading.recordedAt - offsetMs;
-        const dayIndex = Math.floor(
-          (localReadingMs - localMondayStartMs) / dayMs
-        );
-        if (dayIndex >= 0 && dayIndex < 7) {
-          week[dayIndex].push(reading);
-        }
-      }
-
-      for (const dayReadings of week) {
-        dayReadings.sort((a, b) => b.recordedAt - a.recordedAt);
-      }
-
-      return week;
+      const rowsByDate = new Map(rows.map((row) => [row.date, row]));
+      return dateStrings.map((date) => rowsByDate.get(date) ?? null);
     } catch (error) {
-      logError("getWeekReadings error", error);
+      logError("getWeekMovement error", error);
       throw error;
     }
   },
 });
 
-export default getWeekReadings;
+export default getWeekMovement;

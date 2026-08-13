@@ -22,7 +22,12 @@ const createReading = mutation({
       const userId = await getAuthUserId(ctx);
       if (userId === null) throw new Error("Unauthorized");
 
-      return await ctx.db.insert("glucoseReadings", { userId, ...args });
+      return await ctx.db.insert("glucoseReadings", {
+        userId,
+        ...args,
+        recordedAt: Date.now(),
+        source: "manual",
+      });
     } catch (error) {
       logError("createReading error", error);
       throw error;

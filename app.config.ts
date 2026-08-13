@@ -1,5 +1,7 @@
 import type { ExpoConfig } from "expo/config";
 import { withSentry } from "@sentry/react-native/expo";
+import withIosMinDeploymentTarget from "./plugins/withIosMinDeploymentTarget";
+import withHealthkitSwiftCompileFix from "./plugins/withHealthkitSwiftCompileFix";
 
 const appVariant = process.env.APP_VARIANT;
 const isDevelopment = appVariant === "development";
@@ -73,6 +75,32 @@ const config: ExpoConfig = {
           "TerenAI нужен доступ к фотографиям, чтобы вы могли загружать снимки еды для анализа калорийности.",
       },
     ],
+    [
+      "@kingstinct/react-native-healthkit",
+      {
+        NSHealthShareUsageDescription:
+          "TerenAI использует Apple Health, чтобы показывать вашу активность и (если есть) данные о глюкозе.",
+        NSHealthUpdateUsageDescription:
+          "TerenAI не записывает данные в Apple Health.",
+        background: false,
+      },
+    ],
+    [
+      "expo-build-properties",
+      {
+        // react-native-nitro-modules (используется @kingstinct/react-native-healthkit)
+        // требует C++ interop, для которого CxxStdlib собран с минимальным
+        // deployment target iOS 16.0 — ниже этого сборка падает на этапе EmitSwiftModule.
+        ios: {
+          deploymentTarget: "16.0",
+        },
+      },
+    ],
+    [withIosMinDeploymentTarget, { deploymentTarget: "16.0" }] as unknown as [
+      string,
+      unknown,
+    ],
+    withHealthkitSwiftCompileFix as unknown as string,
   ],
 
   experiments: {

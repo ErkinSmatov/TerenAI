@@ -16,8 +16,9 @@ import {
   CrownIcon,
   CreditCardIcon,
   RefreshCwIcon,
+  HeartPulseIcon,
 } from "lucide-react-native";
-import { Alert, ScrollView, StyleSheet } from "react-native";
+import { Alert, Platform, ScrollView, StyleSheet } from "react-native";
 
 export default function SettingsScreen() {
   const { signOut } = useAuthContext();
@@ -64,6 +65,11 @@ export default function SettingsScreen() {
           <Link href="/app/(settings)/adjustMacroTargets" asChild>
             <SettingsItem text="Настроить БЖУ" Icon={PieChartIcon} />
           </Link>
+          {Platform.OS === "ios" && (
+            <Link href="/app/(settings)/health" asChild>
+              <SettingsItem text="Здоровье" Icon={HeartPulseIcon} isLast />
+            </Link>
+          )}
         </SettingsGroup>
         {isMonetizationEnabled && (
           <SettingsGroup>

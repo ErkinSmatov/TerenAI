@@ -1,6 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import { format } from "date-fns";
-import { DropletIcon } from "lucide-react-native";
+import { FlameIcon, FootprintsIcon, RouteIcon } from "lucide-react-native";
 import Text from "../ui/Text";
 import Card from "../ui/Card";
 import Button from "../ui/Button";
@@ -8,69 +7,77 @@ import SafeArea from "../ui/SafeArea";
 import { Doc } from "@/convex/_generated/dataModel";
 import getColor from "@/lib/ui/getColor";
 import { Link } from "expo-router";
-import { glucoseContextLabels } from "@/config/glucoseConfig";
 
-type ReadingRowProps = {
-  reading: Doc<"glucoseReadings">;
+type StatProps = {
+  Icon: typeof FootprintsIcon;
+  value: string;
+  label: string;
 };
 
-function ReadingRow({ reading }: ReadingRowProps) {
+function Stat({ Icon, value, label }: StatProps) {
   return (
-    <View style={styles.row}>
-      <View style={styles.rowIcon}>
-        <DropletIcon size={16} color={getColor("blue")} />
+    <View style={styles.stat}>
+      <View style={styles.statIcon}>
+        <Icon size={16} color={getColor("green")} />
       </View>
-      <View style={styles.rowTextContainer}>
+      <View>
         <Text size="16" weight="600">
-          {reading.value} {reading.unit}
+          {value}
         </Text>
-        {reading.context && (
-          <Text size="12" color={getColor("mutedForeground")}>
-            {glucoseContextLabels[reading.context]}
-          </Text>
-        )}
+        <Text size="12" color={getColor("mutedForeground")}>
+          {label}
+        </Text>
       </View>
-      <Text size="14" color={getColor("mutedForeground")}>
-        {format(reading.recordedAt, "HH:mm")}
-      </Text>
     </View>
   );
 }
 
 type Props = {
-  readings: Doc<"glucoseReadings">[];
+  movement: Doc<"movementData"> | null;
 };
 
-export default function HomeGlucoseSummary({ readings }: Props) {
-  const latestReadings = readings.slice(0, 3);
-
+export default function HomeMovementSummary({ movement }: Props) {
   return (
     <SafeArea edges={["left", "right"]} style={styles.safeArea}>
       <View style={styles.header}>
         <Text size="20" weight="600">
-          Уровень сахара
+          Активность
         </Text>
-        <Link href="/app/(home)/glucoseLog" asChild>
+        <Link href="/app/(home)/movementLog" asChild>
           <Button variant="text" size="sm">
             Все
           </Button>
         </Link>
       </View>
 
-      <Link href="/app/(home)/glucoseLog" asChild>
+      <Link href={movement ? "/app/(home)/movementLog" : "/app/(settings)/health"} asChild>
         <Button variant="base" size="base">
           <Card style={styles.card}>
-            {latestReadings.length > 0 ? (
-              latestReadings.map((reading) => (
-                <ReadingRow key={reading._id} reading={reading} />
-              ))
+            {movement ? (
+              <>
+                <Stat
+                  Icon={FootprintsIcon}
+                  value={movement.steps.toLocaleString("ru-RU")}
+                  label="Шаги"
+                />
+                <Stat
+                  Icon={FlameIcon}
+                  value={`${movement.activeEnergyKcal}`}
+                  label="Ккал"
+                />
+                <Stat
+                  Icon={RouteIcon}
+                  value={(movement.distanceMeters / 1000).toFixed(1)}
+                  label="Км"
+                />
+              </>
             ) : (
               <Text
                 size="14"
                 color={getColor("mutedForeground", 0.5)}
                 style={styles.empty}
               >
-                Добавьте показание, чтобы увидеть его здесь&hellip;
+                Подключите Apple Health, чтобы видеть активность&hellip;
               </Text>
             )}
           </Card>
@@ -93,27 +100,25 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   card: {
-    gap: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   empty: {
     textAlign: "center",
     paddingVertical: 8,
+    flex: 1,
   },
-  row: {
+  stat: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 8,
   },
-  rowIcon: {
+  statIcon: {
     height: 32,
     width: 32,
     borderRadius: 999,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: getColor("muted"),
-  },
-  rowTextContainer: {
-    flex: 1,
-    gap: 2,
   },
 });
