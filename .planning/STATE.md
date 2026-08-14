@@ -87,6 +87,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-05
-Stopped at: ROADMAP.md, STATE.md и REQUIREMENTS.md (traceability) созданы для v1.3; фазы ожидают `/gsd-plan-phase 1`
-Resume file: None
+Last session: 2026-08-14
+Stopped at: Phase 6 (Наблюдатель за пользователем) — контекст собран, ждёт `/gsd-plan-phase 6`. Phase 2 обсуждение было начато и прервано пользователем в пользу Phase 6 — `/gsd-discuss-phase 2` не завершено, вернуться к нему отдельно
+Resume file: .planning/phases/06-observer-access/06-CONTEXT.md
