@@ -87,6 +87,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-14
-Stopped at: Phase 6 (Наблюдатель за пользователем) — контекст собран, ждёт `/gsd-plan-phase 6`. Phase 2 обсуждение было начато и прервано пользователем в пользу Phase 6 — `/gsd-discuss-phase 2` не завершено, вернуться к нему отдельно
-Resume file: .planning/phases/06-observer-access/06-CONTEXT.md
+Last session: 2026-08-15
+Stopped at: Phase 6 (Наблюдатель за пользователем) — CONTEXT.md, RESEARCH.md, VALIDATION.md и UI-SPEC.md готовы (UI-SPEC approved чекером, Dimension 2 non-blocking flag устранён правкой). Готово к `/gsd-plan-phase 6`. Phase 2 обсуждение было начато и прервано пользователем в пользу Phase 6 — `/gsd-discuss-phase 2` не завершено, вернуться к нему отдельно
+Resume file: .planning/phases/06-observer-access/06-UI-SPEC.md
