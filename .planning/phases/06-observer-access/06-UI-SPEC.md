@@ -1,10 +1,11 @@
 ---
 phase: 6
 slug: observer-access
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-08-15
+reviewed_at: 2026-08-15
 ---
 
 # Phase 6 — UI Design Contract
@@ -26,6 +27,11 @@ created: 2026-08-15
 | `ObservedPatientCard` | `components/observer/ObservedPatientCard.tsx` | OBSV-04, OBSV-05 |
 | `ObserverListItem` | `components/observer/ObserverListItem.tsx` | OBSV-02, OBSV-07 |
 | Детальный вид пациента (только чтение) | `app/app/(settings)/observedPatient/[patientId].tsx` (или аналог) — переиспользует `HomeMacroSummary`, `HomeGlucoseSummary`, `HomeBloodPressureSummary`, `HomeMovementSummary` с внешними (observer-scoped) данными вместо `useQuery` собственных | OBSV-06 |
+
+**Визуальный якорь каждого нового экрана (Dimension 2):**
+- «Мой код» — крупное число кода (Display 28) — первое, на что падает взгляд
+- «Кого я наблюдаю» — имя пациента + бейдж предупреждения на карточке (если есть) — глаз должен сразу отличить «всё в порядке» от «нужно посмотреть»
+- Детальный вид пациента — тот же фокус, что на главном экране владельца (имя/дата вверху, сводка калорий/БЖУ следующим блоком)
 
 Типографика/цвет/spacing ниже — контракт **для нового UI** этого списка. Переиспользуемые как есть компоненты (`SettingsItem`, `SettingsGroup`, `OTPInput`, `AlertDialog`, `ScreenHeader`, `Card`, `Button`, `Toast`) сохраняют свою уже установленную визуальную форму без изменений — эта фаза их не редизайнит, только компонует.
 
@@ -61,7 +67,7 @@ Exceptions (переиспользование существующих, не н
 - Строка `SettingsItem`: высота 52px (фиксирована в существующем компоненте, используется для строки «Мой код» в настройках и для строк списка наблюдателей, если они компонуются как `SettingsItem`)
 - Блок кода на экране «Мой код»: высота 100px, `padding: 12/16`, `gap: 16` между цифро-боксами — визуально повторяет статический вариант `OTPInputBox` (не редактируемый, без caret), не новое значение
 - Круглая иконка-контейнер (32px) внутри строк списка — повтор паттерна `HomeGlucoseSummary`/`SettingsItem` rowIcon
-- Минимальный тач-таргет для любой новой иконки-кнопки без текста (например, кнопка «Отозвать» рядом со строкой наблюдателя) — 44×44px, даже если визуальная иконка меньше (18–20px), с прозрачным hit-slop
+- Минимальный тач-таргет для любой новой иконки-кнопки без текста (например, кнопка «Отозвать» рядом со строкой наблюдателя) — 44×44px, даже если визуальная иконка меньше (18–20px), с прозрачным hit-slop. Обязателен `accessibilityLabel` («Отозвать доступ», «Убрать из списка наблюдаемых») — иконка без видимого текста не должна быть немой для screen reader
 
 ---
 
@@ -124,11 +130,11 @@ Accent reserved for: **только** бейджи предупреждений 
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: FLAG (non-blocking — фокальные точки и accessibilityLabel добавлены выше по итогам ревью)
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved 2026-08-15
