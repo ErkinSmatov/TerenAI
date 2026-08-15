@@ -67,6 +67,7 @@ import type * as tables_glucoseReadings from "../tables/glucoseReadings.js";
 import type * as tables_mealItems from "../tables/mealItems.js";
 import type * as tables_meals from "../tables/meals.js";
 import type * as tables_movementData from "../tables/movementData.js";
+import type * as tables_observerLinks from "../tables/observerLinks.js";
 import type * as tables_profiles from "../tables/profiles.js";
 import type * as testing_getOrCreateTestUser from "../testing/getOrCreateTestUser.js";
 import type * as users_deleteUser from "../users/deleteUser.js";
@@ -147,6 +148,7 @@ declare const fullApi: ApiFromModules<{
   "tables/mealItems": typeof tables_mealItems;
   "tables/meals": typeof tables_meals;
   "tables/movementData": typeof tables_movementData;
+  "tables/observerLinks": typeof tables_observerLinks;
   "tables/profiles": typeof tables_profiles;
   "testing/getOrCreateTestUser": typeof testing_getOrCreateTestUser;
   "users/deleteUser": typeof users_deleteUser;

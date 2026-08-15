@@ -6,6 +6,7 @@ import { glucoseReadings } from "./tables/glucoseReadings";
 import { meals } from "./tables/meals";
 import { mealItems } from "./tables/mealItems";
 import { movementData } from "./tables/movementData";
+import { observerLinks } from "./tables/observerLinks";
 import { profiles } from "./tables/profiles";
 
 export default defineSchema({
@@ -16,5 +17,6 @@ export default defineSchema({
   meals,
   mealItems,
   movementData,
+  observerLinks,
   profiles,
 });
