@@ -54,6 +54,7 @@ import type * as migrations from "../migrations.js";
 import type * as movement_getWeekMovement from "../movement/getWeekMovement.js";
 import type * as movement_syncDays from "../movement/syncDays.js";
 import type * as nutrition_computeNutritionTargets from "../nutrition/computeNutritionTargets.js";
+import type * as observers_redeemCode from "../observers/redeemCode.js";
 import type * as observers_utils_thresholds from "../observers/utils/thresholds.js";
 import type * as profiles_completeOnboarding from "../profiles/completeOnboarding.js";
 import type * as profiles_getProfile from "../profiles/getProfile.js";
@@ -138,6 +139,7 @@ declare const fullApi: ApiFromModules<{
   "movement/getWeekMovement": typeof movement_getWeekMovement;
   "movement/syncDays": typeof movement_syncDays;
   "nutrition/computeNutritionTargets": typeof nutrition_computeNutritionTargets;
+  "observers/redeemCode": typeof observers_redeemCode;
   "observers/utils/thresholds": typeof observers_utils_thresholds;
   "profiles/completeOnboarding": typeof profiles_completeOnboarding;
   "profiles/getProfile": typeof profiles_getProfile;
