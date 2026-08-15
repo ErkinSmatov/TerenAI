@@ -10,6 +10,11 @@ export const rateLimiter = new RateLimiter(components.rateLimiter, {
     rate: 50,
     period: DAY,
   },
+  observerCodeRedeem: {
+    kind: "fixed window",
+    rate: 10,
+    period: HOUR,
+  },
 });
 
 export const { getRateLimit: getAiFeaturesRateLimit, getServerTime } =
