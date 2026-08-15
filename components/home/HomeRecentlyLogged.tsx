@@ -15,9 +15,10 @@ import SafeArea from "../ui/SafeArea";
 
 type LogItemProps = {
   meal: Doc<"meals">;
+  readOnly?: boolean;
 };
 
-function LogItem({ meal }: LogItemProps) {
+function LogItem({ meal, readOnly = false }: LogItemProps) {
   const macros = [
     { value: meal.totalMacros?.carbs, Icon: CarbIcon },
     { value: meal.totalMacros?.protein, Icon: ProteinIcon },
@@ -26,59 +27,67 @@ function LogItem({ meal }: LogItemProps) {
 
   const isLoading = meal.status !== "done";
 
+  const cardContent = (
+    <Card style={styles.itemCard}>
+      <View style={styles.itemHeaderContainer}>
+        <WithSkeleton
+          loading={isLoading}
+          containerStyle={{ flex: 1, marginRight: 8 }}
+          skeletonStyle={{ height: 16, width: "100%" }}
+        >
+          <Text
+            size="16"
+            weight="600"
+            numberOfLines={1}
+            style={styles.itemName}
+          >
+            {meal.name ?? "Блюдо без названия"}
+          </Text>
+        </WithSkeleton>
+        <Text size="14">{format(meal._creationTime, "HH:mm")}</Text>
+      </View>
+      <View style={styles.itemDetailsContainer}>
+        <View style={[styles.itemMacroContainer, { marginRight: "auto" }]}>
+          <View style={styles.itemMacroIcon}>
+            <CalorieIcon size={16} strokeWidth={2.25} />
+          </View>
+          <WithSkeleton
+            loading={isLoading}
+            skeletonStyle={{ height: 14, width: "100%" }}
+          >
+            <Text size="14" weight="500">
+              {Math.round(meal.totalMacros?.calories ?? 200)}
+            </Text>
+          </WithSkeleton>
+        </View>
+        {macros.map((macro, index) => (
+          <View key={`macro-${index}`} style={styles.itemMacroContainer}>
+            <View style={styles.itemMacroIcon}>
+              <macro.Icon size={16} strokeWidth={2.25} />
+            </View>
+            <WithSkeleton
+              loading={isLoading}
+              skeletonStyle={{ height: 14, width: "100%" }}
+            >
+              <Text size="14">{Math.round(macro.value ?? 20)}</Text>
+            </WithSkeleton>
+          </View>
+        ))}
+      </View>
+    </Card>
+  );
+
+  if (readOnly) {
+    return cardContent;
+  }
+
   return (
     <Link
       href={{ pathname: "/app/(meal)/meal", params: { mealId: meal._id } }}
       asChild
     >
       <Button variant="base" size="base">
-        <Card style={styles.itemCard}>
-          <View style={styles.itemHeaderContainer}>
-            <WithSkeleton
-              loading={isLoading}
-              containerStyle={{ flex: 1, marginRight: 8 }}
-              skeletonStyle={{ height: 16, width: "100%" }}
-            >
-              <Text
-                size="16"
-                weight="600"
-                numberOfLines={1}
-                style={styles.itemName}
-              >
-                {meal.name ?? "Блюдо без названия"}
-              </Text>
-            </WithSkeleton>
-            <Text size="14">{format(meal._creationTime, "HH:mm")}</Text>
-          </View>
-          <View style={styles.itemDetailsContainer}>
-            <View style={[styles.itemMacroContainer, { marginRight: "auto" }]}>
-              <View style={styles.itemMacroIcon}>
-                <CalorieIcon size={16} strokeWidth={2.25} />
-              </View>
-              <WithSkeleton
-                loading={isLoading}
-                skeletonStyle={{ height: 14, width: "100%" }}
-              >
-                <Text size="14" weight="500">
-                  {Math.round(meal.totalMacros?.calories ?? 200)}
-                </Text>
-              </WithSkeleton>
-            </View>
-            {macros.map((macro, index) => (
-              <View key={`macro-${index}`} style={styles.itemMacroContainer}>
-                <View style={styles.itemMacroIcon}>
-                  <macro.Icon size={16} strokeWidth={2.25} />
-                </View>
-                <WithSkeleton
-                  loading={isLoading}
-                  skeletonStyle={{ height: 14, width: "100%" }}
-                >
-                  <Text size="14">{Math.round(macro.value ?? 20)}</Text>
-                </WithSkeleton>
-              </View>
-            ))}
-          </View>
-        </Card>
+        {cardContent}
       </Button>
     </Link>
   );
@@ -86,9 +95,10 @@ function LogItem({ meal }: LogItemProps) {
 
 type Props = {
   meals: Doc<"meals">[];
+  readOnly?: boolean;
 };
 
-export default function HomeRecentlyLogged({ meals }: Props) {
+export default function HomeRecentlyLogged({ meals, readOnly = false }: Props) {
   return (
     <SafeArea edges={["left", "right"]} style={styles.safeArea}>
       <Text size="20" weight="600" style={styles.title}>
@@ -96,7 +106,11 @@ export default function HomeRecentlyLogged({ meals }: Props) {
       </Text>
       <View style={styles.itemsContainer}>
         {meals.map((meal, index) => (
-          <LogItem key={`log-item-${index}-${meal.name}`} meal={meal} />
+          <LogItem
+            key={`log-item-${index}-${meal.name}`}
+            meal={meal}
+            readOnly={readOnly}
+          />
         ))}
         {meals.length === 0 && (
           <Text

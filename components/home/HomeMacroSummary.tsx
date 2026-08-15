@@ -24,12 +24,23 @@ type Macro = {
 
 type Props = {
   totalMacros: MacrosType;
+  targets?: {
+    calories: number;
+    carbs: number;
+    protein: number;
+    fat: number;
+  };
 };
 
-export default function HomeMacroSummary({ totalMacros }: Props) {
+export default function HomeMacroSummary({
+  totalMacros,
+  targets: targetsProp,
+}: Props) {
+  // useQuery остаётся безусловным вызовом на каждый рендер — хуки нельзя
+  // вызывать условно. Приоритет источника целей выбирается ниже через `??`.
+  const profileTargets = useQuery(api.profiles.getProfile.default)?.targets;
   const targets =
-    useQuery(api.profiles.getProfile.default)?.targets ??
-    profilesConfig.defaultValues.targets;
+    targetsProp ?? profileTargets ?? profilesConfig.defaultValues.targets;
 
   const progress = useProgress();
 
