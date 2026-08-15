@@ -78,6 +78,22 @@ const deleteUser = mutation({
       await ctx.db.delete(account._id);
     }
 
+    const observedLinks = await ctx.db
+      .query("observerLinks")
+      .withIndex("byObserverId", (q) => q.eq("observerId", userId))
+      .collect();
+    for (const link of observedLinks) {
+      await ctx.db.delete(link._id);
+    }
+
+    const observingLinks = await ctx.db
+      .query("observerLinks")
+      .withIndex("byPatientId", (q) => q.eq("patientId", userId))
+      .collect();
+    for (const link of observingLinks) {
+      await ctx.db.delete(link._id);
+    }
+
     await ctx.db.delete(userId);
   },
 });

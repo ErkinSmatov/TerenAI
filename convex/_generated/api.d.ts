@@ -54,6 +54,7 @@ import type * as migrations from "../migrations.js";
 import type * as movement_getWeekMovement from "../movement/getWeekMovement.js";
 import type * as movement_syncDays from "../movement/syncDays.js";
 import type * as nutrition_computeNutritionTargets from "../nutrition/computeNutritionTargets.js";
+import type * as observers_utils_thresholds from "../observers/utils/thresholds.js";
 import type * as profiles_completeOnboarding from "../profiles/completeOnboarding.js";
 import type * as profiles_getProfile from "../profiles/getProfile.js";
 import type * as profiles_syncSubscriptionStatus from "../profiles/syncSubscriptionStatus.js";
@@ -67,11 +68,14 @@ import type * as tables_glucoseReadings from "../tables/glucoseReadings.js";
 import type * as tables_mealItems from "../tables/mealItems.js";
 import type * as tables_meals from "../tables/meals.js";
 import type * as tables_movementData from "../tables/movementData.js";
+import type * as tables_observerLinks from "../tables/observerLinks.js";
 import type * as tables_profiles from "../tables/profiles.js";
 import type * as testing_getOrCreateTestUser from "../testing/getOrCreateTestUser.js";
 import type * as users_deleteUser from "../users/deleteUser.js";
 import type * as utils_backfillFoodEmbeddings from "../utils/backfillFoodEmbeddings.js";
 import type * as utils_countFoodEmbeddings from "../utils/countFoodEmbeddings.js";
+import type * as utils_localDayBoundaries from "../utils/localDayBoundaries.js";
+import type * as utils_observerAuth from "../utils/observerAuth.js";
 
 import type {
   ApiFromModules,
@@ -134,6 +138,7 @@ declare const fullApi: ApiFromModules<{
   "movement/getWeekMovement": typeof movement_getWeekMovement;
   "movement/syncDays": typeof movement_syncDays;
   "nutrition/computeNutritionTargets": typeof nutrition_computeNutritionTargets;
+  "observers/utils/thresholds": typeof observers_utils_thresholds;
   "profiles/completeOnboarding": typeof profiles_completeOnboarding;
   "profiles/getProfile": typeof profiles_getProfile;
   "profiles/syncSubscriptionStatus": typeof profiles_syncSubscriptionStatus;
@@ -147,11 +152,14 @@ declare const fullApi: ApiFromModules<{
   "tables/mealItems": typeof tables_mealItems;
   "tables/meals": typeof tables_meals;
   "tables/movementData": typeof tables_movementData;
+  "tables/observerLinks": typeof tables_observerLinks;
   "tables/profiles": typeof tables_profiles;
   "testing/getOrCreateTestUser": typeof testing_getOrCreateTestUser;
   "users/deleteUser": typeof users_deleteUser;
   "utils/backfillFoodEmbeddings": typeof utils_backfillFoodEmbeddings;
   "utils/countFoodEmbeddings": typeof utils_countFoodEmbeddings;
+  "utils/localDayBoundaries": typeof utils_localDayBoundaries;
+  "utils/observerAuth": typeof utils_observerAuth;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

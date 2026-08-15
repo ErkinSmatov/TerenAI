@@ -12,6 +12,7 @@ export const profilesFields = {
   }),
   isPro: v.optional(v.boolean()),
   hasCompletedOnboarding: v.boolean(),
+  observerCode: v.optional(v.string()),
   data: v.optional(
     v.object({
       measurementSystem: v.union(v.literal("metric"), v.literal("imperial")),
@@ -70,8 +71,8 @@ export const profilesFields = {
   ),
 };
 
-export const profiles = defineTable(profilesFields).index("byUserId", [
-  "userId",
-]);
+export const profiles = defineTable(profilesFields)
+  .index("byUserId", ["userId"])
+  .index("byObserverCode", ["observerCode"]);
 
 export type ProfileData = NonNullable<Doc<"profiles">["data"]>;
