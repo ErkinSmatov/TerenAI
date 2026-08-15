@@ -34,55 +34,72 @@ function Stat({ Icon, value, label }: StatProps) {
 
 type Props = {
   movement: Doc<"movementData"> | null;
+  readOnly?: boolean;
 };
 
-export default function HomeMovementSummary({ movement }: Props) {
+export default function HomeMovementSummary({
+  movement,
+  readOnly = false,
+}: Props) {
+  const cardContent = (
+    <Card style={styles.card}>
+      {movement ? (
+        <>
+          <Stat
+            Icon={FootprintsIcon}
+            value={movement.steps.toLocaleString("ru-RU")}
+            label="Шаги"
+          />
+          <Stat
+            Icon={FlameIcon}
+            value={`${movement.activeEnergyKcal}`}
+            label="Ккал"
+          />
+          <Stat
+            Icon={RouteIcon}
+            value={(movement.distanceMeters / 1000).toFixed(1)}
+            label="Км"
+          />
+        </>
+      ) : (
+        <Text
+          size="14"
+          color={getColor("mutedForeground", 0.5)}
+          style={styles.empty}
+        >
+          Подключите Apple Health, чтобы видеть активность&hellip;
+        </Text>
+      )}
+    </Card>
+  );
+
   return (
     <SafeArea edges={["left", "right"]} style={styles.safeArea}>
       <View style={styles.header}>
         <Text size="20" weight="600">
           Активность
         </Text>
-        <Link href="/app/(home)/movementLog" asChild>
-          <Button variant="text" size="sm">
-            Все
-          </Button>
-        </Link>
+        {!readOnly && (
+          <Link href="/app/(home)/movementLog" asChild>
+            <Button variant="text" size="sm">
+              Все
+            </Button>
+          </Link>
+        )}
       </View>
 
-      <Link href={movement ? "/app/(home)/movementLog" : "/app/(settings)/health"} asChild>
-        <Button variant="base" size="base">
-          <Card style={styles.card}>
-            {movement ? (
-              <>
-                <Stat
-                  Icon={FootprintsIcon}
-                  value={movement.steps.toLocaleString("ru-RU")}
-                  label="Шаги"
-                />
-                <Stat
-                  Icon={FlameIcon}
-                  value={`${movement.activeEnergyKcal}`}
-                  label="Ккал"
-                />
-                <Stat
-                  Icon={RouteIcon}
-                  value={(movement.distanceMeters / 1000).toFixed(1)}
-                  label="Км"
-                />
-              </>
-            ) : (
-              <Text
-                size="14"
-                color={getColor("mutedForeground", 0.5)}
-                style={styles.empty}
-              >
-                Подключите Apple Health, чтобы видеть активность&hellip;
-              </Text>
-            )}
-          </Card>
-        </Button>
-      </Link>
+      {readOnly ? (
+        cardContent
+      ) : (
+        <Link
+          href={movement ? "/app/(home)/movementLog" : "/app/(settings)/health"}
+          asChild
+        >
+          <Button variant="base" size="base">
+            {cardContent}
+          </Button>
+        </Link>
+      )}
     </SafeArea>
   );
 }
