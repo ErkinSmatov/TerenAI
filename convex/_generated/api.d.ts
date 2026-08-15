@@ -9,6 +9,8 @@
  */
 
 import type * as ResendOTP from "../ResendOTP.js";
+import type * as TelegramOTP from "../TelegramOTP.js";
+import type * as WhatsAppOTP from "../WhatsAppOTP.js";
 import type * as ai from "../ai.js";
 import type * as auth from "../auth.js";
 import type * as bloodPressure_createReading from "../bloodPressure/createReading.js";
@@ -54,6 +56,10 @@ import type * as migrations from "../migrations.js";
 import type * as movement_getWeekMovement from "../movement/getWeekMovement.js";
 import type * as movement_syncDays from "../movement/syncDays.js";
 import type * as nutrition_computeNutritionTargets from "../nutrition/computeNutritionTargets.js";
+import type * as observers_generateCode from "../observers/generateCode.js";
+import type * as observers_getMyObservers from "../observers/getMyObservers.js";
+import type * as observers_regenerateCode from "../observers/regenerateCode.js";
+import type * as observers_revokeLink from "../observers/revokeLink.js";
 import type * as observers_utils_thresholds from "../observers/utils/thresholds.js";
 import type * as profiles_completeOnboarding from "../profiles/completeOnboarding.js";
 import type * as profiles_getProfile from "../profiles/getProfile.js";
@@ -76,6 +82,7 @@ import type * as utils_backfillFoodEmbeddings from "../utils/backfillFoodEmbeddi
 import type * as utils_countFoodEmbeddings from "../utils/countFoodEmbeddings.js";
 import type * as utils_localDayBoundaries from "../utils/localDayBoundaries.js";
 import type * as utils_observerAuth from "../utils/observerAuth.js";
+import type * as utils_otp from "../utils/otp.js";
 
 import type {
   ApiFromModules,
@@ -93,6 +100,8 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   ResendOTP: typeof ResendOTP;
+  TelegramOTP: typeof TelegramOTP;
+  WhatsAppOTP: typeof WhatsAppOTP;
   ai: typeof ai;
   auth: typeof auth;
   "bloodPressure/createReading": typeof bloodPressure_createReading;
@@ -138,6 +147,10 @@ declare const fullApi: ApiFromModules<{
   "movement/getWeekMovement": typeof movement_getWeekMovement;
   "movement/syncDays": typeof movement_syncDays;
   "nutrition/computeNutritionTargets": typeof nutrition_computeNutritionTargets;
+  "observers/generateCode": typeof observers_generateCode;
+  "observers/getMyObservers": typeof observers_getMyObservers;
+  "observers/regenerateCode": typeof observers_regenerateCode;
+  "observers/revokeLink": typeof observers_revokeLink;
   "observers/utils/thresholds": typeof observers_utils_thresholds;
   "profiles/completeOnboarding": typeof profiles_completeOnboarding;
   "profiles/getProfile": typeof profiles_getProfile;
@@ -160,6 +173,7 @@ declare const fullApi: ApiFromModules<{
   "utils/countFoodEmbeddings": typeof utils_countFoodEmbeddings;
   "utils/localDayBoundaries": typeof utils_localDayBoundaries;
   "utils/observerAuth": typeof utils_observerAuth;
+  "utils/otp": typeof utils_otp;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 
