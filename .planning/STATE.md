@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: milestone
 status: executing
-stopped_at: Phase 6 (Наблюдатель за пользователем) — CONTEXT.md, RESEARCH.md, VALIDATION.md и UI-SPEC.md готовы (UI-SPEC approved чекером, Dimension 2 non-blocking flag устранён правкой). Готово к `/gsd-plan-phase 6`. Phase 2 обсуждение было начато и прервано пользователем в пользу Phase 6 — `/gsd-discuss-phase 2` не завершено, вернуться к нему отдельно
-last_updated: "2026-08-15T08:05:48.270Z"
-last_activity: 2026-08-15 -- Phase 06 execution started
+stopped_at: Phase 6 (Наблюдатель за пользователем) — 06-01 и 06-02 выполнены (wave 1 complete, wave 2 частично: 06-02 done, 06-03 pending). Готово к выполнению 06-03-PLAN.md (сторона наблюдателя, тот же wave 2), затем wave 3 (06-04, 06-05)
+last_updated: "2026-08-15T08:22:02.000Z"
+last_activity: 2026-08-15 -- Phase 06 Plan 02 executed (observer code issuance/rotation, patient's observer roster, symmetric link revoke)
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 11
-  completed_plans: 4
+  completed_plans: 6
   percent: 14
 ---
 
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-08-05)
 ## Current Position
 
 Phase: 06 (observer-access) — EXECUTING
-Plan: 1 of 7
+Plan: 2 of 7 complete (06-01, 06-02 done; 06-03 pending — same wave, independent side)
 Status: Executing Phase 06
-Last activity: 2026-08-15 -- Phase 06 execution started
+Last activity: 2026-08-15 -- Phase 06 Plan 02 executed (observer code issuance/rotation, patient's observer roster, symmetric link revoke)
 
 Progress: [██░░░░░░░░] 20% (Phase 1 частично закрыта, 4/5 фаз впереди)
 
@@ -63,6 +63,7 @@ Recent decisions affecting current work:
 - Гостевой режим строится на Anonymous-провайдере `@convex-dev/auth` (не local-only хранилище), чтобы получить настоящий `userId` и не переписывать 20 auth-гейтнутых Convex-функций и `<Stack.Protected>`
 - Майлстоун ограничен стабильным TestFlight-билдом — Apple/Google Sign In, email/OTP, миграция на `convex-better-auth`, релиз в App Store отложены на v2
 - Краш-репортинг (Phase 1) подключается до попытки чинить краш (Phase 2) — без логов причина краша непроверяема на практике
+- Phase 6 плана 02: код доступа пациента (`generateCode`/`regenerateCode`) переиспользует общий хелпер `issueUniqueCode` (named export рядом с `export default`, по прецеденту `convex/rateLimit.ts`) — ротация никогда не трогает `observerLinks`, разрыв связей — отдельная функция `revokeLink` с обязательной проверкой участия по обоим полям (`observerId`/`patientId`), закрывающей IDOR
 
 ### Roadmap Evolution
 
@@ -106,5 +107,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-08-15
-Stopped at: Phase 6 (Наблюдатель за пользователем) — CONTEXT.md, RESEARCH.md, VALIDATION.md и UI-SPEC.md готовы (UI-SPEC approved чекером, Dimension 2 non-blocking flag устранён правкой). Готово к `/gsd-plan-phase 6`. Phase 2 обсуждение было начато и прервано пользователем в пользу Phase 6 — `/gsd-discuss-phase 2` не завершено, вернуться к нему отдельно
-Resume file: .planning/phases/06-observer-access/06-UI-SPEC.md
+Stopped at: Phase 6 Plan 02 (Convex-функции стороны пациента: код доступа, список наблюдателей, разрыв связи) завершён и закоммичен. Wave 2 наполовину готова — 06-03-PLAN.md (сторона наблюдателя) ещё не выполнен. Phase 2 обсуждение было начато и прервано пользователем в пользу Phase 6 — `/gsd-discuss-phase 2` не завершено, вернуться к нему отдельно
+Resume file: .planning/phases/06-observer-access/06-03-PLAN.md
