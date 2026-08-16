@@ -69,7 +69,7 @@ export default function ObservedListScreen() {
   };
 
   const codeEntry = isEnteringCode ? (
-    <Card style={styles.codeCard}>
+    <Card>
       <OTPInput
         ref={inputRef}
         length={6}
@@ -135,9 +135,6 @@ export default function ObservedListScreen() {
 const styles = StyleSheet.create({
   list: {
     gap: 16,
-  },
-  codeCard: {
-    alignItems: "center",
   },
   emptyState: {
     alignItems: "center",
