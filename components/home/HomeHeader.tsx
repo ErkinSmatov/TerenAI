@@ -8,8 +8,10 @@ import Button from "../ui/Button";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import SafeArea from "../ui/SafeArea";
+import { useRouter } from "expo-router";
 
 export default function HomeHeader() {
+  const router = useRouter();
   const streak = useQuery(api.home.getStreak.default, {
     timezoneOffsetMinutes: new Date().getTimezoneOffset(),
   });
@@ -22,7 +24,14 @@ export default function HomeHeader() {
           TerenAI
         </Text>
       </View>
-      <Button variant="base" size="base">
+      <Button
+        variant="base"
+        size="base"
+        accessibilityLabel="Кого я наблюдаю"
+        onPress={() => {
+          router.push("/app/(settings)/observedList");
+        }}
+      >
         <Card style={styles.streakContainer}>
           <FlameIcon
             size={20}
