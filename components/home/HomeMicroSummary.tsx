@@ -24,9 +24,14 @@ type Micro = {
 type Props = {
   totalMicros: MicrosType;
   dayIndex: number;
+  readOnly?: boolean;
 };
 
-export default function HomeMicroSummary({ totalMicros, dayIndex }: Props) {
+export default function HomeMicroSummary({
+  totalMicros,
+  dayIndex,
+  readOnly = false,
+}: Props) {
   const targets = {
     score: 100,
     fiber: getTargets("carbs", "fiber")[1],
@@ -60,23 +65,31 @@ export default function HomeMicroSummary({ totalMicros, dayIndex }: Props) {
     },
   ];
 
+  const scoreCard = (
+    <HomeSummaryCardBig
+      item={{
+        name: "Качество",
+        value: totalMicros.score,
+        target: targets.score,
+        Icon: HealthIcon,
+        color: getColor("health"),
+      }}
+      progress={progress}
+    />
+  );
+
   return (
     <View style={styles.container}>
-      <Link
-        href={{ pathname: "/app/(home)/nutrients", params: { dayIndex } }}
-        asChild
-      >
-        <HomeSummaryCardBig
-          item={{
-            name: "Качество",
-            value: totalMicros.score,
-            target: targets.score,
-            Icon: HealthIcon,
-            color: getColor("health"),
-          }}
-          progress={progress}
-        />
-      </Link>
+      {readOnly ? (
+        scoreCard
+      ) : (
+        <Link
+          href={{ pathname: "/app/(home)/nutrients", params: { dayIndex } }}
+          asChild
+        >
+          {scoreCard}
+        </Link>
+      )}
       <View style={styles.cardsContainer}>
         {micros.map((nutrient) => (
           <HomeSummaryCard

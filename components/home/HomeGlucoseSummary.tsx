@@ -39,10 +39,32 @@ function ReadingRow({ reading }: ReadingRowProps) {
 
 type Props = {
   readings: Doc<"glucoseReadings">[];
+  readOnly?: boolean;
 };
 
-export default function HomeGlucoseSummary({ readings }: Props) {
+export default function HomeGlucoseSummary({
+  readings,
+  readOnly = false,
+}: Props) {
   const latestReadings = readings.slice(0, 3);
+
+  const cardContent = (
+    <Card style={styles.card}>
+      {latestReadings.length > 0 ? (
+        latestReadings.map((reading) => (
+          <ReadingRow key={reading._id} reading={reading} />
+        ))
+      ) : (
+        <Text
+          size="14"
+          color={getColor("mutedForeground", 0.5)}
+          style={styles.empty}
+        >
+          Добавьте показание, чтобы увидеть его здесь&hellip;
+        </Text>
+      )}
+    </Card>
+  );
 
   return (
     <SafeArea edges={["left", "right"]} style={styles.safeArea}>
@@ -50,32 +72,24 @@ export default function HomeGlucoseSummary({ readings }: Props) {
         <Text size="20" weight="600">
           Уровень сахара
         </Text>
-        <Link href="/app/(home)/glucoseLog" asChild>
-          <Button variant="text" size="sm">
-            Все
-          </Button>
-        </Link>
+        {!readOnly && (
+          <Link href="/app/(home)/glucoseLog" asChild>
+            <Button variant="text" size="sm">
+              Все
+            </Button>
+          </Link>
+        )}
       </View>
 
-      <Link href="/app/(home)/glucoseLog" asChild>
-        <Button variant="base" size="base">
-          <Card style={styles.card}>
-            {latestReadings.length > 0 ? (
-              latestReadings.map((reading) => (
-                <ReadingRow key={reading._id} reading={reading} />
-              ))
-            ) : (
-              <Text
-                size="14"
-                color={getColor("mutedForeground", 0.5)}
-                style={styles.empty}
-              >
-                Добавьте показание, чтобы увидеть его здесь&hellip;
-              </Text>
-            )}
-          </Card>
-        </Button>
-      </Link>
+      {readOnly ? (
+        cardContent
+      ) : (
+        <Link href="/app/(home)/glucoseLog" asChild>
+          <Button variant="base" size="base">
+            {cardContent}
+          </Button>
+        </Link>
+      )}
     </SafeArea>
   );
 }
