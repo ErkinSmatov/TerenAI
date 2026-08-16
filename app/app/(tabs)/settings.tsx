@@ -17,6 +17,7 @@ import {
   CreditCardIcon,
   RefreshCwIcon,
   HeartPulseIcon,
+  UsersIcon,
 } from "lucide-react-native";
 import { Alert, Platform, ScrollView, StyleSheet } from "react-native";
 
@@ -67,9 +68,16 @@ export default function SettingsScreen() {
           </Link>
           {Platform.OS === "ios" && (
             <Link href="/app/(settings)/health" asChild>
-              <SettingsItem text="Здоровье" Icon={HeartPulseIcon} isLast />
+              <SettingsItem text="Здоровье" Icon={HeartPulseIcon} />
             </Link>
           )}
+          <Link href="/app/(settings)/observerCode" asChild>
+            <SettingsItem
+              text="Доступ наблюдателя"
+              Icon={UsersIcon}
+              isLast
+            />
+          </Link>
         </SettingsGroup>
         {isMonetizationEnabled && (
           <SettingsGroup>
