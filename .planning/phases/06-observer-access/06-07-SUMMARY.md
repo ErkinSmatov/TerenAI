@@ -26,34 +26,34 @@ key-files:
     - .planning/phases/06-observer-access/06-VALIDATION.md
 
 key-decisions:
-  - "No decision made on the assertion-test open question — explicitly left for the user per plan instruction (not the agent's call)"
-  - "06-VALIDATION.md frontmatter status left as draft — plan requires Task 2 human confirmation before flipping to complete"
+  - "Task 2 assertion-test question answered by the user (2026-08-16): add a point assertion test for assertObserverAccess (requires installing convex-test). Implementation deferred to a separate plan 06-08 — not this plan, per the plan's own instruction."
+  - "06-VALIDATION.md frontmatter status flipped draft -> complete after user confirmed the manual UAT pass"
 
 patterns-established: []
 
-requirements-completed: []  # OBSV-01..07 are NOT closed by this run — Task 1 only audits sources; the plan requires Task 2 (human two-device manual run) to close them. See "Pending: Task 2" below.
+requirements-completed: [OBSV-01, OBSV-02, OBSV-03, OBSV-04, OBSV-05, OBSV-06, OBSV-07]  # Closed 2026-08-16 by user-confirmed manual UAT pass (Task 2)
 
 # Metrics
-duration: ~35min
+duration: ~35min (Task 1) + checkpoint round-trip (Task 2, user-executed)
 completed: 2026-08-16
 ---
 
-# Phase 06 Plan 07 (Task 1 only): Source Security Audit Summary
+# Phase 06 Plan 07: Source Security Audit + Manual UAT Summary
 
-**Grep-based audit of 5 phase-wide security invariants across `convex/observers/`, `convex/utils/observerAuth.ts`, `convex/users/deleteUser.ts`, and `convex/rateLimit.ts` — all 5 pass with actual numbers; `06-VALIDATION.md` Per-Task Verification Map filled for all 7 OBSV requirements. Task 2 (blocking human-verify checkpoint) explicitly NOT attempted.**
+**Grep-based audit of 5 phase-wide security invariants across `convex/observers/`, `convex/utils/observerAuth.ts`, `convex/users/deleteUser.ts`, and `convex/rateLimit.ts` — all 5 pass with actual numbers. User-run manual UAT pass across two accounts confirmed all 12 scenarios / 7 OBSV requirements, with three cosmetic remarks fixed same-day. Assertion-test question answered: yes, deferred to plan 06-08.**
 
 ## Scope of this run
 
 This plan (`06-07-PLAN.md`) has two tasks:
-- **Task 1** (`type="auto"`) — automated source-security audit + fill `06-VALIDATION.md`. **Done, this SUMMARY covers it.**
-- **Task 2** (`type="checkpoint:human-verify"`, `gate="blocking"`) — a 12-scenario manual test pass across two real accounts/devices, plus an explicit open question the plan text says must not be decided by the planner/agent ("Не решать за пользователя ни в ту, ни в другую сторону"). **NOT attempted** — no physical devices, no second account session, no ability to observe warning badges against real glucose readings. Listed in full below for the orchestrator to hand to the user.
+- **Task 1** (`type="auto"`) — automated source-security audit + fill `06-VALIDATION.md`. Done by the executor agent, 2026-08-16.
+- **Task 2** (`type="checkpoint:human-verify"`, `gate="blocking"`) — a 12-scenario manual test pass across two real accounts/devices, plus an open question on whether to add an assertion test for `assertObserverAccess`. Run by the user (not the agent — no physical devices/second account session were available to the agent). Reported "прогон пройден" (pass) with three remarks, addressed same-day by the orchestrator (see below). Question answered: add the assertion test, as a separate plan.
 
 ## Performance
 
-- **Duration:** ~35 min
+- **Duration:** ~35 min (Task 1, agent) + interactive checkpoint round-trip (Task 2, user)
 - **Completed:** 2026-08-16
-- **Tasks:** 1 of 2 (Task 1 only, by design)
-- **Files modified:** 1 (`06-VALIDATION.md`)
+- **Tasks:** 2 of 2
+- **Files modified:** `06-VALIDATION.md`, plus checkpoint-driven fixes below
 
 ## Task 1: Five security invariants — audit results with actual numbers
 
@@ -110,13 +110,26 @@ None — Task 1 executed exactly as written. Task 2 was deliberately not attempt
 - Worktree HEAD was behind the required base commit (`f3c1a339...`, on `main`) at session start — `dbc40fe...` (an unrelated later feature commit `feat(health): integrate Apple Health...`) was checked out instead, and was NOT an ancestor of the expected base. Working tree was clean, so `git reset --hard f3c1a33929e389fab947556ab05eb708f9a3f9b4` was applied per the branch-check protocol before any plan work began.
 - `npx convex dev --once` cannot run non-interactively in this worktree (prompts for deployment config). Not required by Task 1's own verify list; noted above.
 
-## Pending: Task 2 (NOT executed — blocking human-verify checkpoint)
+## Task 2: Manual UAT results (user-executed, 2026-08-16)
 
-Task 2 is a physical two-device manual test pass. It requires two real accounts on two live app instances against one Convex dev deployment, patient-side data entry (glucose readings, meals) to trigger real threshold badges, and visual confirmation of UI states (badges, revoke propagation, rotation behavior) that cannot be observed or simulated from source code or grep. This was correctly not attempted.
+User ran the manual pass across two accounts and reported: **«прогон пройден»** (pass), with three remarks — none functional failures of an OBSV requirement, all cosmetic/UX. Per-scenario breakdown below is inferred from the user's summary report (pass + 3 named remarks), not a scenario-by-scenario transcript — the user did not itemize pass/fail per numbered scenario individually, only confirmed the overall pass and named specific issues.
 
-**Precondition check the plan asks Task 2 to run before starting** (not run here, since Task 2 itself is out of scope): `npx convex dev --once` passes, `npx tsc --noEmit` is clean (confirmed clean above), and all six `06-01`…`06-06` SUMMARY files exist (should be verified by whoever runs Task 2).
+**Remarks raised and resolved same day (commit `d0278f7`):**
+1. Requested code length change: 6 → 5 digits. Implemented in `generateCode.ts` (`generateNumericToken(5)`), `observerCode.tsx` (`CODE_LENGTH`), `observedList.tsx` (`OTPInput length`). **Found and fixed in the same pass:** `redeemCode.ts`'s `CODE_FORMAT` regex was still `/^\d{6}$/` and would have rejected every newly issued 5-digit code — updated to `/^\d{5}$/`.
+2. OTP digit boxes overlapping/squished on the code-entry screen (`observedList.tsx`, empty-state path). Root cause: the `Card` wrapping `OTPInput` sat inside a parent `View` with `alignItems: "center"` (`styles.emptyState`), which shrinks a flex-row child to its content width instead of stretching it — collapsing the six (now five) `flex: 1` digit boxes. Fixed with `alignSelf: "stretch"` on the Card.
+3. Button height inconsistency: "Ввести код" (`observedList.tsx`), "Поделиться кодом"/"Обновить код" (`observerCode.tsx`), and "Подключить Apple Health" (`health.tsx` — pre-existing screen, outside this phase's original scope but fixed for consistency at user's request) all used `size="base"` with no explicit height, rendering shorter than `ScreenFooterButton`'s standard 48px. Set `height: 48` on each.
 
-### The 12 manual scenarios (verbatim from plan, for the user to run)
+All three fixes verified: `npx tsc --noEmit`, `npx eslint`, `npx convex dev --once` clean after the change.
+
+**Two clarifying questions answered by the orchestrator (not remarks on the build):**
+- How to test scenarios 9 and 10 (revoke from each side) — walked through the two directions.
+- Why code rotation exists alongside per-observer revoke — explained: revoke closes a known, identified connection; rotation closes an *unknown* leak (code shared with/seen by someone unidentifiable) without affecting already-connected observers.
+
+**Unrelated bug also surfaced during this checkpoint (NOT part of phase 06, NOT fixed by this run):** a `SITE_URL`-related crash in the separate, uncommitted phone/Telegram/WhatsApp sign-in feature (`@convex-dev/auth`'s `redirects.ts` throwing `Invalid URL: 'http:/'` when `SITE_URL` is unset). Diagnosed but explicitly deferred — orthogonal to observer-access, touches a different, incomplete feature the user is still building. Flagged here only so it isn't lost.
+
+**Open question resolved:** assertion-test for `assertObserverAccess` — **user answered yes**, add one (`convex-test` install required). Per the plan's explicit instruction, implementation is a separate plan (`06-08`), not a revision of this plan or this SUMMARY. Recorded in `06-VALIDATION.md` Wave 0 section with date.
+
+### The 12 manual scenarios (verbatim from plan, as handed to the user)
 
 1. **Код пациента (OBSV-02).** На П открыть «Настройки → Доступ наблюдателя». Ожидается: шесть цифр крупным шрифтом. Закрыть экран и открыть заново — код должен быть ТОТ ЖЕ. Нажать «Поделиться кодом» — открывается системный лист с текстом, содержащим код.
 
@@ -142,16 +155,20 @@ Task 2 is a physical two-device manual test pass. It requires two real accounts 
 
 12. **Каскад при удалении аккаунта.** На любом тестовом аккаунте-наблюдателе выполнить «Настройки → Удалить аккаунт». Ожидается: у пациента, за которым он наблюдал, строка этого наблюдателя исчезла из списка, и приложение не показывает ошибок.
 
-### The open question (verbatim from plan, for the user to answer — NOT answered here)
+### The open question (verbatim from plan) — ANSWERED
 
 > Отдельный вопрос, на который нужен ваш ответ (не проверка, а решение): в проекте нет тест-фреймворка, и его установка отложена на v2. `assertObserverAccess` — первая и пока единственная функция в приложении, где один пользователь читает данные другого; ошибка в ней означает утечку медицинских данных. Хотите ли вы сделать для неё исключение и добавить точечный assertion-тест (потребуется установка `convex-test` — отдельный небольшой план), или оставить проверку ручной, как для всей остальной фазы?
 
-**Resume signal expected from the user (per plan):** «прогон пройден» и ответ по вопросу об assertion-тесте, либо перечень пунктов, которые не сработали.
+**User's answer (2026-08-16):** Add the assertion test. Implementation is out of scope for this plan — tracked as a follow-up plan `06-08` (not yet created).
+
+**Resume signal received:** «прогон пройден, пару замечаний» + the three remarks above (addressed) + the assertion-test answer (add it).
 
 ## Next Phase Readiness
 
-Task 1 is complete and committed. The phase (`06-observer-access`) cannot be closed and `06-VALIDATION.md` cannot flip to `status: complete` until a human runs Task 2's 12 scenarios on two real devices/accounts and answers the assertion-test question. This blocks `/gsd-verify-work` for this phase until resolved — the orchestrator should surface the 12 scenarios and the open question above directly to the user rather than attempting them.
+Both tasks complete. `06-VALIDATION.md` flipped to `status: complete`, all 7 OBSV requirements marked `✅ green` in the Per-Task Verification Map. Phase `06-observer-access` is ready to close pending the orchestrator's remaining gates (code review, regression, schema/codebase drift, phase-goal verification).
+
+**Follow-up not part of this phase's plan set:** plan `06-08` (assertion test for `assertObserverAccess`, requires `convex-test`) should be created via the normal planning flow before it can execute — it does not exist yet and was not run here.
 
 ---
 *Phase: 06-observer-access*
-*Completed (Task 1 only): 2026-08-16*
+*Completed: 2026-08-16*
