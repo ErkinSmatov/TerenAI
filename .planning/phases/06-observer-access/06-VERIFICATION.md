@@ -1,7 +1,7 @@
 ---
 phase: 06-observer-access
 verified: 2026-08-17T19:40:00Z
-status: human_needed
+status: passed
 score: 21/21 must-haves verified
 overrides_applied: 0
 human_verification:
@@ -17,8 +17,9 @@ human_verification:
 
 **Phase Goal:** Родитель/ребёнок/врач подключается к аккаунту пациента по коду и видит сегодняшние данные наблюдаемого (глюкоза, приёмы пищи, калории, шаги) с визуальными предупреждениями при нарушении режима
 **Verified:** 2026-08-17
-**Status:** human_needed
+**Status:** passed
 **Re-verification:** No — initial verification
+**Human verification resolved:** 2026-08-18 — user approved both items in `06-HUMAN-UAT.md` (CR-01 rate-limit-by-code, CR-02 duplicate-link revoke), tested on a pre-existing device build against the current Convex dev deployment
 
 ## Goal Achievement
 
