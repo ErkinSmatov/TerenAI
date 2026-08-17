@@ -24,6 +24,7 @@ type Macro = {
 
 type Props = {
   totalMacros: MacrosType;
+  readOnly?: boolean;
   targets?: {
     calories: number;
     carbs: number;
@@ -34,13 +35,20 @@ type Props = {
 
 export default function HomeMacroSummary({
   totalMacros,
+  readOnly = false,
   targets: targetsProp,
 }: Props) {
-  // useQuery остаётся безусловным вызовом на каждый рендер — хуки нельзя
-  // вызывать условно. Приоритет источника целей выбирается ниже через `??`.
-  const profileTargets = useQuery(api.profiles.getProfile.default)?.targets;
-  const targets =
-    targetsProp ?? profileTargets ?? profilesConfig.defaultValues.targets;
+  // В readOnly-режиме (наблюдатель смотрит чужой детальный вид) запрос
+  // вообще не выполняется ("skip") — targetsProp может легитимно быть
+  // undefined (у пациента ещё нет profiles.targets), и в этом случае
+  // нельзя незаметно подставить цели наблюдателя вместо целей пациента.
+  const profileTargets = useQuery(
+    api.profiles.getProfile.default,
+    readOnly ? "skip" : {}
+  )?.targets;
+  const targets = readOnly
+    ? (targetsProp ?? profilesConfig.defaultValues.targets)
+    : (targetsProp ?? profileTargets ?? profilesConfig.defaultValues.targets);
 
   const progress = useProgress();
 

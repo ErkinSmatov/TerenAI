@@ -20,7 +20,20 @@ const revokeLink = mutation({
         throw new Error("Forbidden");
       }
 
-      await ctx.db.delete(linkId);
+      // Удаляем ВСЕ строки для этой пары (observerId, patientId), а не
+      // только linkId: redeemCode не гарантирует уникальность на уровне
+      // схемы (check-then-insert), и гонка конкурентных редемпшенов может
+      // создать дубликат. Если отозвать только по linkId, assertObserverAccess
+      // найдёт уцелевший дубликат через .first() — отзыв станет фиктивным.
+      const pairLinks = await ctx.db
+        .query("observerLinks")
+        .withIndex("byObserverAndPatient", (q) =>
+          q.eq("observerId", link.observerId).eq("patientId", link.patientId)
+        )
+        .collect();
+      for (const duplicate of pairLinks) {
+        await ctx.db.delete(duplicate._id);
+      }
       return null;
     } catch (error) {
       logError("revokeLink error", error);

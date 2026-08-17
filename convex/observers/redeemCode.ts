@@ -21,10 +21,18 @@ const redeemCode = mutation({
       // «неверный формат» от «нет такого кода».
       if (!CODE_FORMAT.test(code)) throw new Error("Code not found");
 
-      // Лимит применяется по observerId (не по коду) и до поиска профиля —
-      // иначе атакующий обходит лимит, меняя перебираемое значение.
+      // Два независимых лимита, оба до поиска профиля:
+      // - по observerId — ограничивает одного вызывающего;
+      // - по самому коду — ограничивает попытки против ОДНОГО кода
+      //   независимо от числа аккаунтов, которыми его перебирают
+      //   (5-значный код — 100 000 значений, per-account лимит один
+      //   тривиально обходится созданием новых аккаунтов).
       await rateLimiter.limit(ctx, "observerCodeRedeem", {
         key: observerId,
+        throws: true,
+      });
+      await rateLimiter.limit(ctx, "observerCodeGuess", {
+        key: code,
         throws: true,
       });
 

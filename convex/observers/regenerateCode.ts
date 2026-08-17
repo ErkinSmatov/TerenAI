@@ -12,7 +12,7 @@ const regenerateCode = mutation({
 
       const profile = await ctx.db
         .query("profiles")
-        .filter((q) => q.eq(q.field("userId"), userId))
+        .withIndex("byUserId", (q) => q.eq("userId", userId))
         .first();
       if (!profile) throw new Error("Profile not found");
 

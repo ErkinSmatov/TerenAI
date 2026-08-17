@@ -104,6 +104,7 @@ export default function ObservedPatientScreen() {
           <HomeMacroSummary
             totalMacros={dayTotals.macros}
             targets={data.targets ?? undefined}
+            readOnly
           />
           <HomeMicroSummary
             totalMicros={dayTotals.micros}

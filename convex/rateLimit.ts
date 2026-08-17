@@ -15,6 +15,16 @@ export const rateLimiter = new RateLimiter(components.rateLimiter, {
     rate: 10,
     period: HOUR,
   },
+  // Ключ — сам угадываемый код, а не вызывающий аккаунт. observerCodeRedeem
+  // выше сбрасывается созданием нового аккаунта (100 000 значений кода —
+  // перебираемое пространство при неограниченном числе аккаунтов); этот
+  // лимитер ограничивает попытки против ОДНОГО конкретного кода независимо
+  // от того, сколько аккаунтов их делает.
+  observerCodeGuess: {
+    kind: "fixed window",
+    rate: 10,
+    period: HOUR,
+  },
 });
 
 export const { getRateLimit: getAiFeaturesRateLimit, getServerTime } =
