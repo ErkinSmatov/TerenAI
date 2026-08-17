@@ -159,5 +159,6 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 16,
+    height: 48,
   },
 });

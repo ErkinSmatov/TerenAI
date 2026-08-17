@@ -69,10 +69,10 @@ export default function ObservedListScreen() {
   };
 
   const codeEntry = isEnteringCode ? (
-    <Card>
+    <Card style={styles.codeEntryCard}>
       <OTPInput
         ref={inputRef}
-        length={6}
+        length={5}
         autoFocus
         onFilled={(code) => void handleFilled(code)}
       />
@@ -81,6 +81,7 @@ export default function ObservedListScreen() {
     <Button
       variant="primary"
       size="base"
+      style={styles.enterCodeButton}
       onPress={() => {
         setIsEnteringCode(true);
       }}
@@ -146,5 +147,11 @@ const styles = StyleSheet.create({
   },
   emptyBody: {
     textAlign: "center",
+  },
+  codeEntryCard: {
+    alignSelf: "stretch",
+  },
+  enterCodeButton: {
+    height: 48,
   },
 });

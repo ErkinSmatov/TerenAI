@@ -24,7 +24,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import getColor from "@/lib/ui/getColor";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
 
-const CODE_LENGTH = 6;
+const CODE_LENGTH = 5;
 
 export default function ObserverCodeScreen() {
   const { scrollY, onScroll } = useScrollY();
@@ -182,6 +182,7 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     flex: 1,
+    height: 48,
   },
   observersSection: {
     marginTop: 24,

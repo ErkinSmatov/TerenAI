@@ -5,7 +5,7 @@ import { v } from "convex/values";
 import logError from "@/lib/utils/logError";
 import { rateLimiter } from "../rateLimit";
 
-const CODE_FORMAT = /^\d{6}$/;
+const CODE_FORMAT = /^\d{5}$/;
 
 const redeemCode = mutation({
   args: {

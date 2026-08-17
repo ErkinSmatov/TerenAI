@@ -7,7 +7,7 @@ import logError from "@/lib/utils/logError";
 const MAX_ATTEMPTS = 10;
 
 /**
- * Генерирует уникальный шестизначный код доступа и записывает его в профиль.
+ * Генерирует уникальный пятизначный код доступа и записывает его в профиль.
  * Общий хелпер для generateCode (первичная выдача) и regenerateCode (ротация).
  */
 export async function issueUniqueCode(
@@ -15,7 +15,7 @@ export async function issueUniqueCode(
   profileId: Id<"profiles">
 ): Promise<string> {
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
-    const code = generateNumericToken(6);
+    const code = generateNumericToken(5);
 
     const existing = await ctx.db
       .query("profiles")
