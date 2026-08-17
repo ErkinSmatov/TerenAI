@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: milestone
 status: executing
-stopped_at: Phase 6 (Наблюдатель за пользователем) — 06-01 и 06-02 выполнены (wave 1 complete, wave 2 частично: 06-02 done, 06-03 pending). Готово к выполнению 06-03-PLAN.md (сторона наблюдателя, тот же wave 2), затем wave 3 (06-04, 06-05)
-last_updated: "2026-08-15T08:22:02.000Z"
-last_activity: 2026-08-15 -- Phase 06 Plan 02 executed (observer code issuance/rotation, patient's observer roster, symmetric link revoke)
+stopped_at: "Phase 6 (Наблюдатель за пользователем) завершена — все 7 планов выполнены, код-ревью и верификация пройдены, ручной UAT подтверждён пользователем 2026-08-18. Phase 2 обсуждение было начато и прервано пользователем в пользу Phase 6 — `/gsd-discuss-phase 2` не завершено, вернуться к нему отдельно. Phases 2-5 остаются невыполненными."
+last_updated: "2026-08-18T00:05:00.000Z"
+last_activity: 2026-08-18
 progress:
   total_phases: 7
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 11
-  completed_plans: 6
-  percent: 14
+  completed_plans: 11
+  percent: 29
 ---
 
 # Project State
@@ -21,22 +21,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-05)
 
 **Core value:** Пользователь фотографирует еду и через несколько секунд видит достоверные калории и БЖУ — без ручного ввода и поиска по базе.
-**Current focus:** Phase 06 — observer-access
+**Current focus:** Phase 2 — Стабильный запуск и дистрибуция (обсуждение начато ранее, прервано)
 
 ## Current Position
 
-Phase: 06 (observer-access) — EXECUTING
-Plan: 2 of 7 complete (06-01, 06-02 done; 06-03 pending — same wave, independent side)
-Status: Executing Phase 06
-Last activity: 2026-08-15 -- Phase 06 Plan 02 executed (observer code issuance/rotation, patient's observer roster, symmetric link revoke)
+Phase: 6 of 6 — Complete (Наблюдатель за пользователем)
+Plan: 7/7 complete
+Status: Ready — Phases 2-5 not yet started; Phase 999.1 (backlog, Phase 1 follow-up) also pending
+Last activity: 2026-08-18
 
-Progress: [██░░░░░░░░] 20% (Phase 1 частично закрыта, 4/5 фаз впереди)
+Progress: [███░░░░░░░] 29% (Phases 1 и 6 закрыты, 4 фазы + backlog впереди)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 0
+- Total plans completed: 7
 - Average duration: -
 - Total execution time: 0 hours
 
@@ -44,7 +44,7 @@ Progress: [██░░░░░░░░] 20% (Phase 1 частично зак�
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 06 | 7 | - | - |
 
 **Recent Trend:**
 
