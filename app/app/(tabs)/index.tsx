@@ -12,6 +12,7 @@ import { api } from "@/convex/_generated/api";
 import useHealthKitSync from "@/lib/hooks/useHealthKitSync";
 import { calculateDayTotals } from "@/lib/nutrition/calculateDayTotals";
 import getColor from "@/lib/ui/getColor";
+import getLocalWeekBounds from "@/lib/utils/getLocalWeekBounds";
 import { useQuery } from "convex/react";
 import { getDay } from "date-fns";
 import { LinearGradient } from "expo-linear-gradient";
@@ -32,26 +33,24 @@ export default function HomeScreen() {
 
   useHealthKitSync(isGlucometerTrack);
 
+  const weekBounds = getLocalWeekBounds();
+
   const rawWeekMeals = useQuery(api.meals.getWeekMeals.default, {
-    timezoneOffsetMinutes: new Date().getTimezoneOffset(),
+    dayStartsUtc: weekBounds.dayStartsUtc,
   });
   const weekMeals = rawWeekMeals ?? Array.from({ length: 7 }, () => []);
   const dayMeals = weekMeals.at(selectedDay) ?? [];
 
   const rawWeekReadings = useQuery(
     api.glucose.getWeekReadings.default,
-    isGlucometerTrack
-      ? { timezoneOffsetMinutes: new Date().getTimezoneOffset() }
-      : "skip"
+    isGlucometerTrack ? { dayStartsUtc: weekBounds.dayStartsUtc } : "skip"
   );
   const weekReadings = rawWeekReadings ?? Array.from({ length: 7 }, () => []);
   const dayReadings = weekReadings.at(selectedDay) ?? [];
 
   const rawWeekBloodPressure = useQuery(
     api.bloodPressure.getWeekReadings.default,
-    isGlucometerTrack
-      ? { timezoneOffsetMinutes: new Date().getTimezoneOffset() }
-      : "skip"
+    isGlucometerTrack ? { dayStartsUtc: weekBounds.dayStartsUtc } : "skip"
   );
   const weekBloodPressure =
     rawWeekBloodPressure ?? Array.from({ length: 7 }, () => []);
@@ -59,9 +58,7 @@ export default function HomeScreen() {
 
   const rawWeekMovement = useQuery(
     api.movement.getWeekMovement.default,
-    Platform.OS === "ios"
-      ? { timezoneOffsetMinutes: new Date().getTimezoneOffset() }
-      : "skip"
+    Platform.OS === "ios" ? { weekDates: weekBounds.weekDates } : "skip"
   );
   const weekMovement = rawWeekMovement ?? Array.from({ length: 7 }, () => null);
   const dayMovement = weekMovement.at(selectedDay) ?? null;

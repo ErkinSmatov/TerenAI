@@ -1,6 +1,7 @@
 import Nutrients from "@/components/nutrients/Nutrients";
 import { api } from "@/convex/_generated/api";
 import { calculateDayTotals } from "@/lib/nutrition/calculateDayTotals";
+import getLocalWeekBounds from "@/lib/utils/getLocalWeekBounds";
 import { useQuery } from "convex/react";
 import { useLocalSearchParams } from "expo-router";
 import { addDays, format, startOfWeek } from "date-fns";
@@ -9,8 +10,10 @@ import { ru } from "date-fns/locale";
 export default function NutrientsScreen() {
   const { dayIndex } = useLocalSearchParams<{ dayIndex: string }>();
 
+  const weekBounds = getLocalWeekBounds();
+
   const rawWeekMeals = useQuery(api.meals.getWeekMeals.default, {
-    timezoneOffsetMinutes: new Date().getTimezoneOffset(),
+    dayStartsUtc: weekBounds.dayStartsUtc,
   });
 
   const index = dayIndex ? parseInt(dayIndex, 10) : 0;
