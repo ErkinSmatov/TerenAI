@@ -346,17 +346,19 @@ if (error) {
 | A1 | Convex's default (non-Node) V8-isolate runtime supports `Intl.DateTimeFormat` with an arbitrary `timeZone` option (full ICU), by analogy to Cloudflare Workers | FLOW-03 / Architecture Patterns | If false, an IANA-timezone-based fix would silently fall back to the host's default locale/timezone data or throw at runtime. Mitigated by recommending the per-day-offset-array approach as the primary fix, which does not depend on this claim at all |
 | A2 | No `preview`/`testflight` EAS build profile exists beyond `development` and `production` | Common Pitfalls #3 | Low — directly read from `eas.json`, high confidence; listed as assumption only because DIST-01's resolution timeline (Phase 2, still Pending) could change this before Phase 4 executes |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should the DST fix extend to `getWeekReadings.ts` (glucose, blood pressure) and `getWeekMovement.ts`, or stay scoped to `getWeekMeals.ts` only?**
    - What we know: identical bug exists in all 4 files, all rendered on the same home screen carousel.
    - What's unclear: ROADMAP's FLOW-03 text names only `getWeekMeals.ts`; CONTEXT.md's discretion note also only mentions `getWeekMeals.ts`.
    - Recommendation: planner should make this an explicit decision point (not silently skip or silently expand scope) — likely worth extending given it's the same fix effort either way once a shared helper is extracted, but this is a legitimate scope call the user may want to weigh in on given it wasn't discussed in `/gsd:discuss-phase`.
+   - **RESOLVED: see CONTEXT.md D-04** — user confirmed extending the fix to all 4 files; `04-02-PLAN.md` implements it.
 
 2. **Does `correctMeal.ts`'s internal `item.food.name.en` usage (line 44) count as in-scope for D-01, given CONTEXT.md didn't mention it?**
    - What we know: it's a direct, provable consequence of the D-01 data-shape change; without a matching fix, D-02's "user can retry on error" produces a new guaranteed-failure path.
    - What's unclear: whether the user considers this part of "the D-01 fix" or a separate, undiscovered bug.
    - Recommendation: treat as in-scope — it's not a new bug being introduced by this phase's work being incomplete, it's a direct consequence of shipping D-01 without it.
+   - **RESOLVED: see CONTEXT.md D-05** — treated as in-scope; `04-01-PLAN.md` Task 1 fixes it alongside `getMeal.ts`/`getMealItem.ts`.
 
 ## Environment Availability
 
