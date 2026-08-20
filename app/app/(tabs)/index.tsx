@@ -58,9 +58,7 @@ export default function HomeScreen() {
 
   const rawWeekMovement = useQuery(
     api.movement.getWeekMovement.default,
-    Platform.OS === "ios"
-      ? { timezoneOffsetMinutes: new Date().getTimezoneOffset() }
-      : "skip"
+    Platform.OS === "ios" ? { weekDates: weekBounds.weekDates } : "skip"
   );
   const weekMovement = rawWeekMovement ?? Array.from({ length: 7 }, () => null);
   const dayMovement = weekMovement.at(selectedDay) ?? null;

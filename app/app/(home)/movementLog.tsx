@@ -18,6 +18,7 @@ import { api } from "@/convex/_generated/api";
 import { Doc } from "@/convex/_generated/dataModel";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
 import getColor from "@/lib/ui/getColor";
+import getLocalWeekBounds from "@/lib/utils/getLocalWeekBounds";
 
 type DayRowProps = {
   date: string;
@@ -58,21 +59,9 @@ function DayRow({ date, movement }: DayRowProps) {
 
 export default function MovementLogScreen() {
   const { scrollY, onScroll } = useScrollY();
+  const weekBounds = getLocalWeekBounds();
   const week = useQuery(api.movement.getWeekMovement.default, {
-    timezoneOffsetMinutes: new Date().getTimezoneOffset(),
-  });
-
-  const today = new Date();
-  const localMonday = new Date(today);
-  localMonday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
-
-  const dateStrings = Array.from({ length: 7 }, (_, i) => {
-    const day = new Date(localMonday);
-    day.setDate(localMonday.getDate() + i);
-    const year = day.getFullYear();
-    const month = String(day.getMonth() + 1).padStart(2, "0");
-    const date = String(day.getDate()).padStart(2, "0");
-    return `${year}-${month}-${date}`;
+    weekDates: weekBounds.weekDates,
   });
 
   return (
@@ -89,7 +78,7 @@ export default function MovementLogScreen() {
         <View style={styles.container}>
           {week === undefined
             ? null
-            : dateStrings
+            : weekBounds.weekDates
                 .map((date, index) => (
                   <DayRow key={date} date={date} movement={week[index]} />
                 ))
