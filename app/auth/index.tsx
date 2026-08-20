@@ -67,7 +67,7 @@ export default function AuthScreen() {
             }
           >
             <SignInButtons
-              onEmailLogin={() => bottomSheetRef.current?.close()}
+              onPhoneLogin={() => bottomSheetRef.current?.close()}
             />
           </BottomSheet>
         </View>

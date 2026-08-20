@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { makeRedirectUri } from "expo-auth-session";
 import { openAuthSessionAsync } from "expo-web-browser";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { Phone as PhoneIcon } from "lucide-react-native";
 import Text from "@/components/ui/Text";
 import GoogleLogo from "@/assets/svg/google-logo.svg";
 import getColor from "@/lib/ui/getColor";
@@ -15,7 +16,7 @@ import { Toast } from "@/components/ui/Toast";
 const signInErrorText = "Не удалось войти. Попробуйте ещё раз";
 
 type Props = {
-  onEmailLogin?: () => void;
+  onPhoneLogin?: () => void;
   onSuccess?: () => Promise<void>;
   disabled?: boolean;
   shouldRedirect?: boolean;
@@ -24,7 +25,7 @@ type Props = {
 const redirectTo = makeRedirectUri();
 
 export default function SignInButtons({
-  onEmailLogin,
+  onPhoneLogin,
   onSuccess,
   disabled = false,
   shouldRedirect = true,
@@ -73,10 +74,10 @@ export default function SignInButtons({
     }
   };
 
-  // const handleEmailLogin = () => {
-  //   onEmailLogin?.();
-  //   router.navigate("/auth/sign-in");
-  // };
+  const handlePhoneLogin = () => {
+    onPhoneLogin?.();
+    router.navigate("/auth/phone-sign-in");
+  };
 
   return (
     <View style={styles.container}>
@@ -115,18 +116,18 @@ export default function SignInButtons({
           Продолжить с Google
         </Text>
       </Button>
-      {/* <Button
+      <Button
         size="lg"
         variant="outline"
         style={styles.button}
-        onPress={handleEmailLogin}
+        onPress={handlePhoneLogin}
         disabled={disabled || isAuthenticating}
       >
-        <MailIcon size={24} color={getColor("foreground")} />
+        <PhoneIcon size={24} color={getColor("foreground")} />
         <Text size="16" weight="500">
-          Continuar con Email
+          Войти по номеру телефона
         </Text>
-      </Button> */}
+      </Button>
     </View>
   );
 }

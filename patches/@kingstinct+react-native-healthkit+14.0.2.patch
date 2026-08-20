@@ -1,0 +1,39 @@
+diff --git a/node_modules/@kingstinct/react-native-healthkit/ios/Helpers.swift b/node_modules/@kingstinct/react-native-healthkit/ios/Helpers.swift
+index 859de1b..847ac24 100644
+--- a/node_modules/@kingstinct/react-native-healthkit/ios/Helpers.swift
++++ b/node_modules/@kingstinct/react-native-healthkit/ios/Helpers.swift
+@@ -105,7 +105,7 @@ func sampleQueryAsync(
+       sampleType: sampleType,
+       predicate: predicate,
+       limit: limit,
+-      sortDescriptors: sortDescriptors,
++      sortDescriptors: sortDescriptors
+     ) { (_: HKSampleQuery, samples: [HKSample]?, error: Error?) in
+       DispatchQueue.main.async {
+         if let error = error {
+diff --git a/node_modules/@kingstinct/react-native-healthkit/ios/MedicationModule.swift b/node_modules/@kingstinct/react-native-healthkit/ios/MedicationModule.swift
+index 834aa60..51f951d 100644
+--- a/node_modules/@kingstinct/react-native-healthkit/ios/MedicationModule.swift
++++ b/node_modules/@kingstinct/react-native-healthkit/ios/MedicationModule.swift
+@@ -142,7 +142,7 @@ import NitroModules
+         relatedCodings: medication.medication.relatedCodings.map({ c in
+           return RelatedCoding(system: c.system, code: c.code, version: c.version)
+         })
+-      ),
++      )
+     )
+   }
+ 
+diff --git a/node_modules/@kingstinct/react-native-healthkit/ios/PredicateHelpers.swift b/node_modules/@kingstinct/react-native-healthkit/ios/PredicateHelpers.swift
+index f3c3d65..ee6363b 100644
+--- a/node_modules/@kingstinct/react-native-healthkit/ios/PredicateHelpers.swift
++++ b/node_modules/@kingstinct/react-native-healthkit/ios/PredicateHelpers.swift
+@@ -75,7 +75,7 @@ func getPredicateForWorkoutBase(_ filter: FilterForWorkouts?) -> FilterForWorkou
+       uuid: filter.uuid,
+       sources: filter.sources,
+       uuids: filter.uuids,
+-      date: filter.date,
++      date: filter.date
+     )
+   }
+   return nil

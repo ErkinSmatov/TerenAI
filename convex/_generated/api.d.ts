@@ -70,6 +70,7 @@ import type * as profiles_syncSubscriptionStatus from "../profiles/syncSubscript
 import type * as profiles_updateProStatus from "../profiles/updateProStatus.js";
 import type * as profiles_updateProfile from "../profiles/updateProfile.js";
 import type * as rateLimit from "../rateLimit.js";
+import type * as reports_getMonthlyReport from "../reports/getMonthlyReport.js";
 import type * as storage_generateUploadUrl from "../storage/generateUploadUrl.js";
 import type * as tables_bloodPressureReadings from "../tables/bloodPressureReadings.js";
 import type * as tables_foods from "../tables/foods.js";
@@ -84,6 +85,7 @@ import type * as users_deleteUser from "../users/deleteUser.js";
 import type * as utils_backfillFoodEmbeddings from "../utils/backfillFoodEmbeddings.js";
 import type * as utils_countFoodEmbeddings from "../utils/countFoodEmbeddings.js";
 import type * as utils_localDayBoundaries from "../utils/localDayBoundaries.js";
+import type * as utils_localWeekBounds from "../utils/localWeekBounds.js";
 import type * as utils_observerAuth from "../utils/observerAuth.js";
 import type * as utils_otp from "../utils/otp.js";
 
@@ -164,6 +166,7 @@ declare const fullApi: ApiFromModules<{
   "profiles/updateProStatus": typeof profiles_updateProStatus;
   "profiles/updateProfile": typeof profiles_updateProfile;
   rateLimit: typeof rateLimit;
+  "reports/getMonthlyReport": typeof reports_getMonthlyReport;
   "storage/generateUploadUrl": typeof storage_generateUploadUrl;
   "tables/bloodPressureReadings": typeof tables_bloodPressureReadings;
   "tables/foods": typeof tables_foods;
@@ -178,6 +181,7 @@ declare const fullApi: ApiFromModules<{
   "utils/backfillFoodEmbeddings": typeof utils_backfillFoodEmbeddings;
   "utils/countFoodEmbeddings": typeof utils_countFoodEmbeddings;
   "utils/localDayBoundaries": typeof utils_localDayBoundaries;
+  "utils/localWeekBounds": typeof utils_localWeekBounds;
   "utils/observerAuth": typeof utils_observerAuth;
   "utils/otp": typeof utils_otp;
 }>;

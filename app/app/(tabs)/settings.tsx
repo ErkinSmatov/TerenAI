@@ -4,11 +4,16 @@ import SettingsItem from "@/components/settings/SettingsItem";
 import AlertDialog from "@/components/ui/AlertDialog";
 import SafeArea from "@/components/ui/SafeArea";
 import Title from "@/components/ui/Title";
+import { Toast } from "@/components/ui/Toast";
 import { useAuthContext } from "@/context/AuthContext";
 import { useSubscriptionContext } from "@/context/SubscriptionContext";
 import { api } from "@/convex/_generated/api";
-import { useMutation } from "convex/react";
+import buildMonthlyReportHtml from "@/lib/reports/buildMonthlyReportHtml";
+import tryCatch from "@/lib/utils/tryCatch";
+import { useConvex, useMutation } from "convex/react";
 import { Link, useRouter } from "expo-router";
+import * as Print from "expo-print";
+import * as Sharing from "expo-sharing";
 import {
   LogOutIcon,
   PieChartIcon,
@@ -18,8 +23,13 @@ import {
   RefreshCwIcon,
   HeartPulseIcon,
   UsersIcon,
+  FileDownIcon,
 } from "lucide-react-native";
+import { useState } from "react";
 import { Alert, Platform, ScrollView, StyleSheet } from "react-native";
+
+const exportReportErrorText =
+  "Не удалось собрать отчёт. Попробуйте ещё раз";
 
 export default function SettingsScreen() {
   const { signOut } = useAuthContext();
@@ -31,7 +41,9 @@ export default function SettingsScreen() {
     restorePurchases,
   } = useSubscriptionContext();
   const deleteUser = useMutation(api.users.deleteUser.default);
+  const convex = useConvex();
   const router = useRouter();
+  const [isExportingReport, setIsExportingReport] = useState(false);
 
   const handleRestorePurchases = async () => {
     const customerInfo = await restorePurchases();
@@ -55,6 +67,43 @@ export default function SettingsScreen() {
     router.replace("/auth");
   };
 
+  const handleExportReport = async () => {
+    if (isExportingReport) return;
+    setIsExportingReport(true);
+
+    const { data: report, error: reportError } = await tryCatch(
+      convex.query(api.reports.getMonthlyReport.default, {
+        timezoneOffsetMinutes: new Date().getTimezoneOffset(),
+      })
+    );
+
+    if (reportError) {
+      Toast.show({ text: exportReportErrorText, variant: "error" });
+      setIsExportingReport(false);
+      return;
+    }
+
+    const html = buildMonthlyReportHtml(report);
+    const { data: file, error: printError } = await tryCatch(
+      Print.printToFileAsync({ html, base64: false })
+    );
+
+    if (printError) {
+      Toast.show({ text: exportReportErrorText, variant: "error" });
+      setIsExportingReport(false);
+      return;
+    }
+
+    if (await Sharing.isAvailableAsync()) {
+      await Sharing.shareAsync(file.uri, {
+        mimeType: "application/pdf",
+        UTI: "com.adobe.pdf",
+      });
+    }
+
+    setIsExportingReport(false);
+  };
+
   return (
     <SafeArea edges={["top", "left", "right"]}>
       <Title style={styles.title}>Настройки</Title>
@@ -72,12 +121,14 @@ export default function SettingsScreen() {
             </Link>
           )}
           <Link href="/app/(settings)/observerCode" asChild>
-            <SettingsItem
-              text="Доступ наблюдателя"
-              Icon={UsersIcon}
-              isLast
-            />
+            <SettingsItem text="Доступ наблюдателя" Icon={UsersIcon} />
           </Link>
+          <SettingsItem
+            text="Импорт анализа"
+            Icon={FileDownIcon}
+            onPress={() => void handleExportReport()}
+            isLast
+          />
         </SettingsGroup>
         {isMonetizationEnabled && (
           <SettingsGroup>
