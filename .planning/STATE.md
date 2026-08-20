@@ -4,8 +4,8 @@ milestone: v1.3
 milestone_name: milestone
 status: executing
 stopped_at: Phase 4 context gathered
-last_updated: "2026-08-20T13:19:07.833Z"
-last_activity: 2026-08-20 -- Phase 4 planning complete
+last_updated: "2026-08-20T13:24:25.974Z"
+last_activity: 2026-08-20 -- Phase 4 execution started
 progress:
   total_phases: 8
   completed_phases: 2
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-05)
 
 **Core value:** Пользователь фотографирует еду и через несколько секунд видит достоверные калории и БЖУ — без ручного ввода и поиска по базе.
-**Current focus:** Phase 4 — Сквозной сценарий тестера (следующая к планированию)
+**Current focus:** Phase 4 — e2e-flow
 
 ## Current Position
 
-Phase: 4 of 6 — Not started (Сквозной сценарий тестера)
-Plan: 0/TBD — план ещё не создан
-Status: Ready to execute
-Last activity: 2026-08-20 -- Phase 4 planning complete
+Phase: 4 (e2e-flow) — EXECUTING
+Plan: 1 of 3
+Status: Executing Phase 4
+Last activity: 2026-08-20 -- Phase 4 execution started
 
 Progress: [████░░░░░░] 43% (Phases 1 (частично), 3, 3.1, 6 закрыты, 3 интеграционные фазы + backlog впереди)
 
