@@ -13,6 +13,7 @@ import processLibraryImage from "@/lib/image/processLibraryImage";
 import cropImageToAspect from "@/lib/image/cropImageToAspect";
 import { getLocales } from "expo-localization";
 import { fetchProduct } from "@/lib/off/fetchProduct";
+import getFoodName from "@/lib/utils/getFoodName";
 
 export default function MealScreen() {
   const dimensions = useWindowDimensions();
@@ -180,7 +181,7 @@ export default function MealScreen() {
   const items = isDone
     ? mealItems.map((item) => ({
         id: item._id,
-        name: item.food.name.ru ?? item.food.name.en,
+        name: getFoodName(item.food),
         calories: macrosToKcal(item.macrosPer100g) * (item.grams / 100),
         grams: item.grams,
       }))
