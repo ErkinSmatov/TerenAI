@@ -18,13 +18,12 @@ const getMealItem = query({
       if (meal.userId !== userId) throw new Error("Forbidden");
 
       const food = await ctx.db.get(mealItem.foodId);
-      if (!food) throw new Error("Food not found");
 
       const mealItemWithFood = { ...mealItem, food };
 
       return mealItemWithFood;
     } catch (error) {
-      logError("getMeal error", error);
+      logError("getMealItem error", error);
       throw error;
     }
   },

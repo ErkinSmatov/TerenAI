@@ -41,7 +41,7 @@ export const correctMeal = action({
     if (!imageUrl) throw new Error("Image not found");
 
     const previousItems = mealItems.map((item) => ({
-      name: item.food.name.en,
+      name: item.food ? item.food.name.en : "unknown food",
       grams: item.grams,
     }));
 

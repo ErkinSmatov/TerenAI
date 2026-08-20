@@ -3,6 +3,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { useLocalSearchParams } from "expo-router";
+import getFoodName from "@/lib/utils/getFoodName";
 
 export default function MealItemScreen() {
   const { mealItemId } = useLocalSearchParams<{
@@ -18,7 +19,7 @@ export default function MealItemScreen() {
   return (
     <MealItem
       mealItemId={mealItemId}
-      name={mealItem?.food.name.ru ?? mealItem?.food.name.en}
+      name={mealItem ? getFoodName(mealItem.food) : undefined}
       mealItem={mealItem ?? undefined}
       loading={isLoading}
     />

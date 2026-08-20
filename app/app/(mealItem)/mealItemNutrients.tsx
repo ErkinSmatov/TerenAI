@@ -4,6 +4,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import scaleNutrientsPer100g from "@/lib/utils/nutrition/scaleNutrientsPer100g";
 import { useQuery } from "convex/react";
 import { useLocalSearchParams } from "expo-router";
+import getFoodName from "@/lib/utils/getFoodName";
 
 export default function MealItemNutrientsScreen() {
   const { mealItemId } = useLocalSearchParams<{
@@ -17,7 +18,7 @@ export default function MealItemNutrientsScreen() {
         nutrientsPer100g: mealItem.nutrientsPer100g,
       })
     : undefined;
-  const name = mealItem?.food.name.ru ?? mealItem?.food.name.en ?? "";
+  const name = mealItem ? getFoodName(mealItem.food) : "";
 
   return <Nutrients nutrients={nutrients} title={name} />;
 }
