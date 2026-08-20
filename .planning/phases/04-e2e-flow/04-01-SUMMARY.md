@@ -113,3 +113,11 @@ Worktree был создан от устаревшей базы (`dbc40fe`, пр
 ---
 *Phase: 04-e2e-flow*
 *Completed: 2026-08-20*
+
+## Self-Check: PASSED
+
+- FOUND: lib/utils/getFoodName.ts
+- FOUND: .planning/phases/04-e2e-flow/04-01-SUMMARY.md
+- FOUND: b42e245 (Task 1 commit)
+- FOUND: e8d4b09 (Task 2 commit)
+- FOUND: a0734ba (SUMMARY commit)
