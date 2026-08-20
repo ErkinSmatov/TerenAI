@@ -71,6 +71,8 @@ npm run ios:prod
 - окружение соответствует ожидаемому (`testflight` для TestFlight-сборок, `local-release` для локальных)
 - платформа и версия сборки заполнены
 
+**Подтверждённый образец (Phase 4, сборка EAS production #7, 2026-08-20):** `release` = `com.codetau.terenai@1.2.1+7` — sourcemaps этой сборки подтверждены в Sentry (Settings → Source Maps) до заливки в TestFlight.
+
 ---
 
 ## 4. Где искать ошибки, которые НЕ попадают в Sentry
