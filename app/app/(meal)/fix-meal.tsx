@@ -19,6 +19,7 @@ import { Toast } from "@/components/ui/Toast";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import SafeArea, { useSafeArea } from "@/components/ui/SafeArea";
 import { analyzeMealConfig } from "@/convex/meals/analyze/analyzeMealConfig";
+import tryCatch from "@/lib/utils/tryCatch";
 
 export default function FixMealScreen() {
   const { mealId } = useLocalSearchParams<{ mealId: Id<"meals"> }>();
@@ -26,12 +27,13 @@ export default function FixMealScreen() {
   const insets = useSafeArea();
   const correctMeal = useAction(api.meals.analyze.correctMeal.correctMeal);
   const [correction, setCorrection] = useState("");
+  const [isCorrecting, setIsCorrecting] = useState(false);
   const { status } = useRateLimit(api.rateLimit.getAiFeaturesRateLimit, {
     getServerTimeMutation: api.rateLimit.getServerTime,
   });
 
-  const handleCorrect = () => {
-    if (!mealId || !correction.trim()) return;
+  const handleCorrect = async () => {
+    if (!mealId || !correction.trim() || isCorrecting) return;
 
     if (status && !status.ok) {
       Toast.show({
@@ -41,13 +43,16 @@ export default function FixMealScreen() {
       return;
     }
 
-    try {
-      void correctMeal({ mealId, correction });
-      router.dismiss();
-    } catch (error) {
-      console.error(error);
-      alert("Ошибка при исправлении блюда");
+    setIsCorrecting(true);
+    const { error } = await tryCatch(correctMeal({ mealId, correction }));
+    setIsCorrecting(false);
+
+    if (error) {
+      Toast.show({ text: "Ошибка при исправлении блюда", variant: "error" });
+      return;
     }
+
+    router.dismiss();
   };
 
   return (
@@ -79,14 +84,18 @@ export default function FixMealScreen() {
 
         <ScreenFooter style={{ boxShadow: [] }}>
           <ScreenFooterButton
-            onPress={handleCorrect}
+            onPress={() => void handleCorrect()}
             disabled={
-              !correction.trim() || (status !== undefined && !status.ok)
+              !correction.trim() ||
+              (status !== undefined && !status.ok) ||
+              isCorrecting
             }
           >
             {status !== undefined && !status.ok
               ? "Лимит исчерпан"
-              : "Исправить"}
+              : isCorrecting
+                ? "Исправляем…"
+                : "Исправить"}
           </ScreenFooterButton>
         </ScreenFooter>
       </KeyboardAvoidingView>
