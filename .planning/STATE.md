@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: milestone
 status: executing
-stopped_at: "Phase 6 (Наблюдатель за пользователем) завершена — все 7 планов выполнены, код-ревью и верификация пройдены, ручной UAT подтверждён пользователем 2026-08-18. Phase 2 обсуждение было начато и прервано пользователем в пользу Phase 6 — `/gsd-discuss-phase 2` не завершено, вернуться к нему отдельно. Phases 2-5 остаются невыполненными."
-last_updated: "2026-08-18T00:05:00.000Z"
-last_activity: 2026-08-18
+stopped_at: "Phase 3 (Вход в конце онбординга + гостевой доступ) закрыта 2026-08-20 — пользователь подтвердил, что гостевой вход, Google и Telegram OTP работают. Вне GSD-цикла также обнаружены и заведены в роадмап: WhatsApp OTP через Twilio (реализован, но не работает — открытый пункт, AUTH-07) и новая Phase 3.1 (экспорт месячного PDF-отчёта, полностью готова). Переходим к Phase 4 (Сквозной сценарий тестера) — план ещё не создан. Phase 2 обсуждение было начато и прервано пользователем в пользу Phase 6 — `/gsd-discuss-phase 2` не завершено, вернуться к нему отдельно."
+last_updated: "2026-08-20T00:00:00.000Z"
+last_activity: 2026-08-20
 progress:
   total_phases: 7
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 11
   completed_plans: 11
-  percent: 29
+  percent: 43
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-05)
 
 **Core value:** Пользователь фотографирует еду и через несколько секунд видит достоверные калории и БЖУ — без ручного ввода и поиска по базе.
-**Current focus:** Phase 2 — Стабильный запуск и дистрибуция (обсуждение начато ранее, прервано)
+**Current focus:** Phase 4 — Сквозной сценарий тестера (следующая к планированию)
 
 ## Current Position
 
-Phase: 6 of 6 — Complete (Наблюдатель за пользователем)
-Plan: 7/7 complete
-Status: Ready — Phases 2-5 not yet started; Phase 999.1 (backlog, Phase 1 follow-up) also pending
-Last activity: 2026-08-18
+Phase: 4 of 6 — Not started (Сквозной сценарий тестера)
+Plan: 0/TBD — план ещё не создан
+Status: Ready to plan — Phases 2, 4, 5 остаются; Phase 999.1 (backlog, Phase 1 follow-up) также pending. Phases 1, 3, 6 закрыты (частично/полностью), Phase 3.1 закрыта
+Last activity: 2026-08-20
 
-Progress: [███░░░░░░░] 29% (Phases 1 и 6 закрыты, 4 фазы + backlog впереди)
+Progress: [████░░░░░░] 43% (Phases 1 (частично), 3, 3.1, 6 закрыты, 3 интеграционные фазы + backlog впереди)
 
 ## Performance Metrics
 
@@ -64,12 +64,16 @@ Recent decisions affecting current work:
 - Майлстоун ограничен стабильным TestFlight-билдом — Apple/Google Sign In, email/OTP, миграция на `convex-better-auth`, релиз в App Store отложены на v2
 - Краш-репортинг (Phase 1) подключается до попытки чинить краш (Phase 2) — без логов причина краша непроверяема на практике
 - Phase 6 плана 02: код доступа пациента (`generateCode`/`regenerateCode`) переиспользует общий хелпер `issueUniqueCode` (named export рядом с `export default`, по прецеденту `convex/rateLimit.ts`) — ротация никогда не трогает `observerLinks`, разрыв связей — отдельная функция `revokeLink` с обязательной проверкой участия по обоим полям (`observerId`/`patientId`), закрывающей IDOR
+- 2026-08-20: вход по телефону реализован через провайдер `Phone` из `@convex-dev/auth/providers/Phone` с двумя параллельными реализациями (`convex/TelegramOTP.ts`, `convex/WhatsAppOTP.ts`), а не через единый универсальный OTP-провайдер — экран `phone-sign-in.tsx` предлагает выбор канала (WhatsApp/Telegram) явными кнопками, `confirm-phone.tsx` переиспользует общий `OTPInput`
+- 2026-08-20: работа велась вне GSD-цикла (без `/gsd-discuss-phase`/`/gsd-plan-phase`) — задним числом сверена с REQUIREMENTS.md и встроена в Phase 3 (AUTH-06, AUTH-07) и новую Phase 3.1 (REPORT-01)
 
 ### Roadmap Evolution
 
 - Phase 3 переопределена (2026-08-05): вместо «гостевой доступ без регистрации» — «вход в конце онбординга + гостевой доступ». Проверка кода показала, что шаг входа уже существует и стоит в верном месте потока; реальный блокер — отсутствие OAuth-ключей на бэкенде. Вход остаётся необязательным
 - Phase 5 добавлена (2026-08-05): OTA-обновления через EAS Update. `expo-updates` не установлен, поэтому любая правка JS требует полного цикла пересборки и заливки
 - Phase 6 добавлена (2026-08-14): Наблюдатель за пользователем (родитель/ребёнок/врач). Изначально зафиксирована как seed после `/gsd-explore` с пометкой «дождаться следующего майлстоуна»; по решению пользователя встроена в текущий роадмап v1.3 как Phase 6, а не отложена в v2. Идея и весь обсуждённый скоуп — в `.planning/seeds/observer-access.md`
+- Phase 3.1 добавлена (2026-08-20): экспорт месячного PDF-отчёта. Обнаружена как незакоммиченная работа вне GSD-цикла (`convex/reports/`, `lib/reports/`); функциональность полностью готова, поэтому встроена в роадмап как отдельная завершённая decimal-фаза, а не backlog-пункт
+- Phase 3 расширена (2026-08-20): вход по телефону (Telegram OTP, WhatsApp OTP через Twilio) добавлен в скоуп фазы задним числом как AUTH-06/AUTH-07 — обнаружен как незакоммиченная работа вне GSD-цикла, Telegram подтверждён рабочим, WhatsApp/Twilio — нет
 
 ### Pending Todos
 
@@ -81,6 +85,8 @@ Recent decisions affecting current work:
 - **Риск:** баланс OpenRouter отрицательный (−$0.18, кредитов куплено на $0). Запросы пока проходят в долг; на пороге отсечения анализ блюд перестанет работать целиком. Пополнение — только пользователем.
 - **Ожидает человека:** включить Rate Limits на Client Key в Sentry (рекомендовано 100 событий в час) — DSN публичен, без лимита квота уязвима.
 - Ключи RevenueCat (`EXPO_PUBLIC_REVENUECAT_APPLE_API_KEY`, `EXPO_PUBLIC_REVENUECAT_GOOGLE_API_KEY`) отсутствуют и в `.env.local`, и в EAS. Краш не вызывают (инициализация защищена проверкой `if (apiKey)`), но подписки не работают нигде. Всплывёт в Phase 3 при GUEST-07.
+- **Открыто 2026-08-20 (AUTH-07):** WhatsApp OTP через Twilio Verify (`convex/WhatsAppOTP.ts`) не работает — код реализован, но интеграция не подтверждена. Кандидаты причины: неверные/отсутствующие `TWILIO_ACCOUNT_SID`/`TWILIO_AUTH_TOKEN`/`TWILIO_VERIFY_SERVICE_SID`, либо WhatsApp-канал не подключён к Verify Service в консоли Twilio. Не блокирует ничего — Telegram OTP уже даёт рабочий путь входа по телефону.
+- **Не закоммичено 2026-08-20:** вся работа по телефонному входу и PDF-отчёту (`app/auth/phone-sign-in.tsx`, `app/auth/confirm-phone.tsx`, `convex/TelegramOTP.ts`, `convex/WhatsAppOTP.ts`, `convex/reports/`, `lib/reports/`, изменения в `settings.tsx`, `SignInButtons.tsx`, `auth.ts`, `package.json`, `.env.example`) сидит в рабочей директории незакоммиченной — стоит закоммитить отдельно от Phase 4.
 
 ### Blockers/Concerns
 
@@ -106,6 +112,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-15
-Stopped at: Phase 6 Plan 02 (Convex-функции стороны пациента: код доступа, список наблюдателей, разрыв связи) завершён и закоммичен. Wave 2 наполовину готова — 06-03-PLAN.md (сторона наблюдателя) ещё не выполнен. Phase 2 обсуждение было начато и прервано пользователем в пользу Phase 6 — `/gsd-discuss-phase 2` не завершено, вернуться к нему отдельно
-Resume file: .planning/phases/06-observer-access/06-03-PLAN.md
+Last session: 2026-08-20
+Stopped at: Phase 3 закрыта пользователем («всё работает»), Phase 3.1 (экспорт отчёта) заведена в роадмап как готовая. Следующий шаг — `/gsd-discuss-phase 4` → `/gsd-plan-phase 4` для «Сквозного сценария тестера» (FLOW-01…04: `getMeal.ts` деградация при отсутствующем food, `fix-meal.tsx` потеря ошибки из-за `void` без `await`, `getWeekMeals.ts` DST-баг, сквозной прогон на TestFlight). Phase 2 обсуждение было начато и прервано пользователем в пользу Phase 6 — `/gsd-discuss-phase 2` не завершено, вернуться к нему отдельно
+Resume file: .planning/phases/04-* (ещё не создан — начать с `/gsd-discuss-phase 4`)
