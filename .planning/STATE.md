@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: milestone
 status: planning
-stopped_at: Phase 2 и Phase 5 убраны из роадмапа, скоуп объединён в Phase 67 — готова к обсуждению
-last_updated: "2026-08-21T06:27:31.469Z"
+stopped_at: Phase 7 добавлена (двухэтапное распознавание блюда); Phase 2 и Phase 5 объединены в Phase 67 — обе готовы к обсуждению
+last_updated: "2026-08-21T06:40:16.810Z"
 last_activity: 2026-08-21
 progress:
-  total_phases: 7
+  total_phases: 8
   completed_phases: 3
   total_plans: 14
   completed_plans: 14
-  percent: 43
+  percent: 38
 ---
 
 # Project State
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-05)
 
 **Core value:** Пользователь фотографирует еду и через несколько секунд видит достоверные калории и БЖУ — без ручного ввода и поиска по базе.
-**Current focus:** Phase 67 — дистрибуция и OTA-обновления (объединяет бывшие Phase 2 и Phase 5)
+**Current focus:** Phase 7 — двухэтапное распознавание блюда (следующая в порядке исполнения; Phase 67 — дистрибуция и OTA, объединяет бывшие Phase 2 и Phase 5 — идёт следом)
 
 ## Current Position
 
-Phase: 67
+Phase: 7
 Plan: Not started
-Status: Ready to discuss (`/gsd-discuss-phase 67`)
+Status: Ready to discuss (`/gsd-discuss-phase 7`, затем `/gsd-discuss-phase 67`)
 Last activity: 2026-08-21
 
 Progress: [████░░░░░░] 43% (Phases 1 (частично), 3, 3.1, 6 закрыты, 3 интеграционные фазы + backlog впереди)
@@ -78,6 +78,7 @@ Recent decisions affecting current work:
 - Phase 2 removed: Убрана из активного роадмапа 2026-08-21 (решение пользователя, /gsd-discuss-phase 5) — незакрытые BOOT-02/03/04, DIST-01/02 перенесены в новую Phase 67. BOOT-01 остаётся закрытым, не переносился
 - Phase 5 removed: Убрана из активного роадмапа 2026-08-21 (решение пользователя, /gsd-discuss-phase 5) — весь скоуп OTA/EAS Update перенесён в новую Phase 67 вместе с незакрытым скоупом бывшей Phase 2
 - Phase 67 added: Дистрибуция и OTA-обновления — намеренно вне обычной последовательности номеров, объединяет незакрытый скоуп бывших Phase 2 и Phase 5 (2026-08-21)
+- Phase 7 added: Двухэтапное распознавание блюда: список ингредиентов показывается сразу (без поиска по базе), пользователь редактирует, тяжёлая часть (поиск кандидатов + КБЖУ) уходит в фон после подтверждения, уведомление по готовности. Требования MEAL-01...05 добавлены в REQUIREMENTS.md
 
 ### Pending Todos
 
