@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: milestone
-status: executing
-stopped_at: Phase 4 context gathered
-last_updated: "2026-08-20T13:24:25.974Z"
-last_activity: 2026-08-20 -- Phase 4 execution started
+status: planning
+stopped_at: Phase 2 и Phase 5 убраны из роадмапа, скоуп объединён в Phase 67 — готова к обсуждению
+last_updated: "2026-08-21T06:27:31.469Z"
+last_activity: 2026-08-21
 progress:
-  total_phases: 8
-  completed_phases: 2
+  total_phases: 7
+  completed_phases: 3
   total_plans: 14
-  completed_plans: 11
-  percent: 25
+  completed_plans: 14
+  percent: 43
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-05)
 
 **Core value:** Пользователь фотографирует еду и через несколько секунд видит достоверные калории и БЖУ — без ручного ввода и поиска по базе.
-**Current focus:** Phase 4 — e2e-flow
+**Current focus:** Phase 67 — дистрибуция и OTA-обновления (объединяет бывшие Phase 2 и Phase 5)
 
 ## Current Position
 
-Phase: 4 (e2e-flow) — EXECUTING
-Plan: 1 of 3
-Status: Executing Phase 4
-Last activity: 2026-08-20 -- Phase 4 execution started
+Phase: 67
+Plan: Not started
+Status: Ready to discuss (`/gsd-discuss-phase 67`)
+Last activity: 2026-08-21
 
 Progress: [████░░░░░░] 43% (Phases 1 (частично), 3, 3.1, 6 закрыты, 3 интеграционные фазы + backlog впереди)
 
@@ -36,7 +36,7 @@ Progress: [████░░░░░░] 43% (Phases 1 (частично), 3, 
 
 **Velocity:**
 
-- Total plans completed: 7
+- Total plans completed: 10
 - Average duration: -
 - Total execution time: 0 hours
 
@@ -45,6 +45,7 @@ Progress: [████░░░░░░] 43% (Phases 1 (частично), 3, 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 06 | 7 | - | - |
+| 4 | 3 | - | - |
 
 **Recent Trend:**
 
@@ -74,6 +75,9 @@ Recent decisions affecting current work:
 - Phase 6 добавлена (2026-08-14): Наблюдатель за пользователем (родитель/ребёнок/врач). Изначально зафиксирована как seed после `/gsd-explore` с пометкой «дождаться следующего майлстоуна»; по решению пользователя встроена в текущий роадмап v1.3 как Phase 6, а не отложена в v2. Идея и весь обсуждённый скоуп — в `.planning/seeds/observer-access.md`
 - Phase 3.1 добавлена (2026-08-20): экспорт месячного PDF-отчёта. Обнаружена как незакоммиченная работа вне GSD-цикла (`convex/reports/`, `lib/reports/`); функциональность полностью готова, поэтому встроена в роадмап как отдельная завершённая decimal-фаза, а не backlog-пункт
 - Phase 3 расширена (2026-08-20): вход по телефону (Telegram OTP, WhatsApp OTP через Twilio) добавлен в скоуп фазы задним числом как AUTH-06/AUTH-07 — обнаружен как незакоммиченная работа вне GSD-цикла, Telegram подтверждён рабочим, WhatsApp/Twilio — нет
+- Phase 2 removed: Убрана из активного роадмапа 2026-08-21 (решение пользователя, /gsd-discuss-phase 5) — незакрытые BOOT-02/03/04, DIST-01/02 перенесены в новую Phase 67. BOOT-01 остаётся закрытым, не переносился
+- Phase 5 removed: Убрана из активного роадмапа 2026-08-21 (решение пользователя, /gsd-discuss-phase 5) — весь скоуп OTA/EAS Update перенесён в новую Phase 67 вместе с незакрытым скоупом бывшей Phase 2
+- Phase 67 added: Дистрибуция и OTA-обновления — намеренно вне обычной последовательности номеров, объединяет незакрытый скоуп бывших Phase 2 и Phase 5 (2026-08-21)
 
 ### Pending Todos
 
@@ -113,6 +117,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-20T12:34:17.838Z
-Stopped at: Phase 4 context gathered
-Resume file: .planning/phases/04-e2e-flow/04-CONTEXT.md
+Last session: 2026-08-21
+Stopped at: Phase 2 и Phase 5 убраны из активного роадмапа, скоуп объединён в Phase 67 (см. ROADMAP.md, PROJECT.md Key Decisions)
+Resume file: .planning/ROADMAP.md (§Phase 67)
