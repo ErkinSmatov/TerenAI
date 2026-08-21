@@ -7,6 +7,7 @@ import { processDetectedItems } from "./processDetectedItems";
 import { rateLimiter } from "../../rateLimit";
 import { subscriptionConfig } from "@/config/subscriptionConfig";
 import { analyzeMealConfig } from "./analyzeMealConfig";
+import logError from "@/lib/utils/logError";
 
 export const correctMeal = action({
   args: {
@@ -37,26 +38,39 @@ export const correctMeal = action({
       meal: { status: "processing" },
     });
 
-    const imageUrl = await ctx.storage.getUrl(meal.photoStorageId);
-    if (!imageUrl) throw new Error("Image not found");
+    try {
+      const imageUrl = await ctx.storage.getUrl(meal.photoStorageId);
+      if (!imageUrl) throw new Error("Image not found");
 
-    const previousItems = mealItems.map((item) => ({
-      name: item.food ? item.food.name.en : "unknown food",
-      grams: item.grams,
-    }));
+      const previousItems = mealItems.map((item) => ({
+        name: item.food ? item.food.name.en : "unknown food",
+        grams: item.grams,
+      }));
 
-    const { mealName, items: newDetectedItems } = await correctMealItems({
-      imageUrl,
-      previousItems,
-      correction,
-    });
+      const { mealName, items: newDetectedItems } = await correctMealItems({
+        imageUrl,
+        previousItems,
+        correction,
+      });
 
-    await processDetectedItems({
-      ctx,
-      mealId,
-      detectedItems: newDetectedItems,
-      imageUrl,
-      mealName,
-    });
+      await processDetectedItems({
+        ctx,
+        mealId,
+        detectedItems: newDetectedItems,
+        imageUrl,
+        mealName,
+      });
+    } catch (error) {
+      logError("correctMeal error", error);
+      try {
+        await ctx.runMutation(api.meals.updateMeal.default, {
+          id: mealId,
+          meal: { status: "error" },
+        });
+      } catch (updateError) {
+        logError("Failed to mark meal as error", updateError);
+      }
+      throw error;
+    }
   },
 });
