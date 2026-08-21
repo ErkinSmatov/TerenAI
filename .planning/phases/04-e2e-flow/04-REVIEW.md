@@ -29,6 +29,7 @@ findings:
   info: 4
   total: 11
 status: issues_found
+resolution: "CR-01 fixed (commit 1fd0a73, 2026-08-21). WR-01..06 and IN-01..04 deferred to backlog by user decision — not blocking Phase 4 closure."
 ---
 
 # Phase 04: Code Review Report
@@ -48,7 +49,7 @@ The meal-correction flow has one clear blocker: `correctMeal.ts` sets a meal's s
 
 ## Critical Issues
 
-### CR-01: `correctMeal` leaves the meal stuck in `"processing"` forever on any failure
+### CR-01: `correctMeal` leaves the meal stuck in `"processing"` forever on any failure — ✓ FIXED (commit `1fd0a73`, 2026-08-21)
 
 **File:** `convex/meals/analyze/correctMeal.ts:35-60`
 **Issue:** The action flips the meal to `status: "processing"` (line 35-38) and then calls `correctMealItems` and `processDetectedItems`, both of which can throw (network failure calling the image URL, LLM/API failure inside `correctMealItems`, or any of the several `ctx.runQuery`/`ctx.runMutation` calls inside `processDetectedItems`, which only sets `status: "done"` as its very last statement). There is no `try/catch` here, unlike the sibling action `analyzeMealPhoto.ts`, which wraps its equivalent logic in a `try/catch` and explicitly reverts the meal to `status: "error"` on any failure (see `convex/meals/analyze/analyzeMealPhoto.ts:54-67`).
