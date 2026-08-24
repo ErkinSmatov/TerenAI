@@ -39,6 +39,8 @@ import type * as meals_analyze_analyzeMealPhoto from "../meals/analyze/analyzeMe
 import type * as meals_analyze_calculateHealthScore from "../meals/analyze/calculateHealthScore.js";
 import type * as meals_analyze_correctMeal from "../meals/analyze/correctMeal.js";
 import type * as meals_analyze_correctMealItems from "../meals/analyze/correctMealItems.js";
+import type * as meals_analyze_detectMealFromPhoto from "../meals/analyze/detectMealFromPhoto.js";
+import type * as meals_analyze_detectMealFromText from "../meals/analyze/detectMealFromText.js";
 import type * as meals_analyze_detectMealItems from "../meals/analyze/detectMealItems.js";
 import type * as meals_analyze_detectMealItemsFromText from "../meals/analyze/detectMealItemsFromText.js";
 import type * as meals_analyze_nameMeal from "../meals/analyze/nameMeal.js";
@@ -50,7 +52,9 @@ import type * as meals_createMeal from "../meals/createMeal.js";
 import type * as meals_getMeal from "../meals/getMeal.js";
 import type * as meals_getWeekMeals from "../meals/getWeekMeals.js";
 import type * as meals_replaceMealItems from "../meals/replaceMealItems.js";
+import type * as meals_replaceMealItemsInternal from "../meals/replaceMealItemsInternal.js";
 import type * as meals_updateMeal from "../meals/updateMeal.js";
+import type * as meals_updateMealInternal from "../meals/updateMealInternal.js";
 import type * as meals_updateMealTotals from "../meals/updateMealTotals.js";
 import type * as migrations from "../migrations.js";
 import type * as movement_getWeekMovement from "../movement/getWeekMovement.js";
@@ -135,6 +139,8 @@ declare const fullApi: ApiFromModules<{
   "meals/analyze/calculateHealthScore": typeof meals_analyze_calculateHealthScore;
   "meals/analyze/correctMeal": typeof meals_analyze_correctMeal;
   "meals/analyze/correctMealItems": typeof meals_analyze_correctMealItems;
+  "meals/analyze/detectMealFromPhoto": typeof meals_analyze_detectMealFromPhoto;
+  "meals/analyze/detectMealFromText": typeof meals_analyze_detectMealFromText;
   "meals/analyze/detectMealItems": typeof meals_analyze_detectMealItems;
   "meals/analyze/detectMealItemsFromText": typeof meals_analyze_detectMealItemsFromText;
   "meals/analyze/nameMeal": typeof meals_analyze_nameMeal;
@@ -146,7 +152,9 @@ declare const fullApi: ApiFromModules<{
   "meals/getMeal": typeof meals_getMeal;
   "meals/getWeekMeals": typeof meals_getWeekMeals;
   "meals/replaceMealItems": typeof meals_replaceMealItems;
+  "meals/replaceMealItemsInternal": typeof meals_replaceMealItemsInternal;
   "meals/updateMeal": typeof meals_updateMeal;
+  "meals/updateMealInternal": typeof meals_updateMealInternal;
   "meals/updateMealTotals": typeof meals_updateMealTotals;
   migrations: typeof migrations;
   "movement/getWeekMovement": typeof movement_getWeekMovement;
