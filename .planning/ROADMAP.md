@@ -189,7 +189,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 07-01-PLAN.md — Backend contracts: meals schema fields, mealRetry rate-limit bucket, internal mutations with explicit userId (wave 1)
+- [x] 07-01-PLAN.md — Backend contracts: meals schema fields, mealRetry rate-limit bucket, internal mutations with explicit userId (wave 1)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -250,7 +250,7 @@ Phases execute in numeric order: 1 → 3 → 3.1 → 4 → 6 → 7 → 67
 | 3.1. Экспорт месячного отчёта (INSERTED) | - | Complete: PDF-экспорт из настроек реализован и встроен в роадмап задним числом | 2026-08-20 |
 | 4. Сквозной сценарий тестера | 3/3 | Complete    | 2026-08-21 |
 | 6. Наблюдатель за пользователем | 7/7 | Complete: код-ревью и верификация пройдены, ручной UAT подтверждён пользователем | 2026-08-18 |
-| 7. Двухэтапное распознавание блюда | 0/TBD | Not started | - |
+| 7. Двухэтапное распознавание блюда | 1/6 | In Progress|  |
 | 67. Дистрибуция и OTA-обновления | 0/TBD | Not started — объединяет незакрытый скоуп бывших Phase 2 (BOOT-02, BOOT-03, BOOT-04, DIST-01, DIST-02) и Phase 5 (OTA) | - |
 
 ## Backlog
