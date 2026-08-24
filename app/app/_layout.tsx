@@ -1,6 +1,7 @@
 import { useAuthContext } from "@/context/AuthContext";
 import useProfileStatus from "@/lib/hooks/useProfileStatus";
 import { Redirect, Stack } from "expo-router";
+import MealCompletionWatcher from "@/components/meal/MealCompletionWatcher";
 
 export default function AppLayout() {
   const { isAuthenticated, isLoading } = useAuthContext();
@@ -18,5 +19,10 @@ export default function AppLayout() {
     return <Redirect href="/onboarding" />;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <>
+      <MealCompletionWatcher />
+      <Stack screenOptions={{ headerShown: false }} />
+    </>
+  );
 }
