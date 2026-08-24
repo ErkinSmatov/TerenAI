@@ -2,44 +2,26 @@ import Meal from "@/components/meal/Meal";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import macrosToKcal from "@/lib/utils/macrosToKcal";
-import { useAction, useMutation, useQuery, useConvex } from "convex/react";
+import { useAction, useQuery, useConvex } from "convex/react";
 import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useWindowDimensions } from "react-native";
 import { Toast } from "@/components/ui/Toast";
-import { z } from "zod";
 import logError from "@/lib/utils/logError";
-import processLibraryImage from "@/lib/image/processLibraryImage";
-import cropImageToAspect from "@/lib/image/cropImageToAspect";
 import { getLocales } from "expo-localization";
 import { fetchProduct } from "@/lib/off/fetchProduct";
 import getFoodName from "@/lib/utils/getFoodName";
 
 export default function MealScreen() {
-  const dimensions = useWindowDimensions();
   const router = useRouter();
   const convex = useConvex();
   const {
-    photoUri,
-    description,
     mealId: initialMealId,
-    source,
     barcode,
   } = useLocalSearchParams<{
-    photoUri?: string;
-    description?: string;
     mealId?: Id<"meals">;
-    source?: "camera" | "library";
     barcode?: string;
   }>();
 
-  const generateUploadUrl = useMutation(api.storage.generateUploadUrl.default);
-  const analyzeMealPhoto = useAction(
-    api.meals.analyze.analyzeMealPhoto.default
-  );
-  const analyzeMealDescription = useAction(
-    api.meals.analyze.analyzeMealDescription.default
-  );
   const analyzeMealBarcode = useAction(
     api.meals.analyze.analyzeMealBarcode.default
   );
@@ -50,51 +32,6 @@ export default function MealScreen() {
   const data = useQuery(
     api.meals.getMeal.default,
     mealId ? { mealId } : "skip"
-  );
-
-  const fromCamera = source === "camera";
-
-  const createMealFromPhoto = useCallback(
-    async (uri: string) => {
-      const croppedUri = fromCamera
-        ? await cropImageToAspect({ uri, dimensions })
-        : await processLibraryImage(uri);
-
-      const uploadUrl = await generateUploadUrl();
-
-      const fileRes = await fetch(croppedUri);
-      const blob = await fileRes.blob();
-
-      const uploadRes = await fetch(uploadUrl, {
-        method: "POST",
-        headers: { "Content-Type": blob.type || "image/jpeg" },
-        body: blob,
-      });
-      if (!uploadRes.ok) {
-        throw new Error(`Upload failed: ${uploadRes.status}`);
-      }
-      const json: unknown = await uploadRes.json();
-      const schema = z.object({
-        storageId: z.string(),
-      });
-
-      const { data, success } = schema.safeParse(json);
-
-      if (!success) {
-        throw new Error("Upload response missing storageId");
-      }
-      const storageId = data.storageId as Id<"_storage">;
-
-      return await analyzeMealPhoto({ storageId });
-    },
-    [analyzeMealPhoto, dimensions, fromCamera, generateUploadUrl]
-  );
-
-  const createMealFromDescription = useCallback(
-    async (description: string) => {
-      return await analyzeMealDescription({ description });
-    },
-    [analyzeMealDescription]
   );
 
   const createMealFromBarcode = useCallback(
@@ -123,42 +60,18 @@ export default function MealScreen() {
   );
 
   const startMealAnalysis = useCallback(async () => {
-    if (
-      (!photoUri && !description && !barcode) ||
-      initialMealId ||
-      startedRef.current ||
-      mealId
-    )
-      return;
+    if (!barcode || initialMealId || startedRef.current || mealId) return;
     startedRef.current = true;
 
     try {
-      if (photoUri) {
-        const mealId = await createMealFromPhoto(photoUri);
-        setMealId(mealId);
-      } else if (description) {
-        const mealId = await createMealFromDescription(description);
-        setMealId(mealId);
-      } else if (barcode) {
-        const mealId = await createMealFromBarcode(barcode);
-        setMealId(mealId);
-      }
+      const mealId = await createMealFromBarcode(barcode);
+      setMealId(mealId);
     } catch (e) {
       logError("Start meal error", e);
       Toast.show({ text: "Ошибка при анализе блюда", variant: "error" });
       router.replace("/app");
     }
-  }, [
-    createMealFromDescription,
-    createMealFromPhoto,
-    createMealFromBarcode,
-    description,
-    initialMealId,
-    mealId,
-    photoUri,
-    barcode,
-    router,
-  ]);
+  }, [createMealFromBarcode, initialMealId, mealId, barcode, router]);
 
   useEffect(() => {
     void startMealAnalysis();
@@ -194,6 +107,7 @@ export default function MealScreen() {
       loading={isLoading}
       name={meal?.name}
       mealId={meal?._id}
+      status={meal?.status}
       totalMacros={meal?.totalMacros}
       totalMicros={meal?.totalMicros}
       mealItems={items}
