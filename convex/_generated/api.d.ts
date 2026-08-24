@@ -43,9 +43,11 @@ import type * as meals_analyze_detectMealItems from "../meals/analyze/detectMeal
 import type * as meals_analyze_detectMealItemsFromText from "../meals/analyze/detectMealItemsFromText.js";
 import type * as meals_analyze_nameMeal from "../meals/analyze/nameMeal.js";
 import type * as meals_analyze_processDetectedItems from "../meals/analyze/processDetectedItems.js";
+import type * as meals_analyze_processDetectedItemsAction from "../meals/analyze/processDetectedItemsAction.js";
 import type * as meals_analyze_searchFdcCandidates from "../meals/analyze/searchFdcCandidates.js";
 import type * as meals_analyze_selectCandidates from "../meals/analyze/selectCandidates.js";
 import type * as meals_analyze_translateFood from "../meals/analyze/translateFood.js";
+import type * as meals_confirmMeal from "../meals/confirmMeal.js";
 import type * as meals_createMeal from "../meals/createMeal.js";
 import type * as meals_getMeal from "../meals/getMeal.js";
 import type * as meals_getWeekMeals from "../meals/getWeekMeals.js";
@@ -141,9 +143,11 @@ declare const fullApi: ApiFromModules<{
   "meals/analyze/detectMealItemsFromText": typeof meals_analyze_detectMealItemsFromText;
   "meals/analyze/nameMeal": typeof meals_analyze_nameMeal;
   "meals/analyze/processDetectedItems": typeof meals_analyze_processDetectedItems;
+  "meals/analyze/processDetectedItemsAction": typeof meals_analyze_processDetectedItemsAction;
   "meals/analyze/searchFdcCandidates": typeof meals_analyze_searchFdcCandidates;
   "meals/analyze/selectCandidates": typeof meals_analyze_selectCandidates;
   "meals/analyze/translateFood": typeof meals_analyze_translateFood;
+  "meals/confirmMeal": typeof meals_confirmMeal;
   "meals/createMeal": typeof meals_createMeal;
   "meals/getMeal": typeof meals_getMeal;
   "meals/getWeekMeals": typeof meals_getWeekMeals;
