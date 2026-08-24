@@ -53,6 +53,7 @@ import type * as meals_getMeal from "../meals/getMeal.js";
 import type * as meals_getWeekMeals from "../meals/getWeekMeals.js";
 import type * as meals_replaceMealItems from "../meals/replaceMealItems.js";
 import type * as meals_replaceMealItemsInternal from "../meals/replaceMealItemsInternal.js";
+import type * as meals_retryProcessDetectedItems from "../meals/retryProcessDetectedItems.js";
 import type * as meals_updateMeal from "../meals/updateMeal.js";
 import type * as meals_updateMealInternal from "../meals/updateMealInternal.js";
 import type * as meals_updateMealTotals from "../meals/updateMealTotals.js";
@@ -153,6 +154,7 @@ declare const fullApi: ApiFromModules<{
   "meals/getWeekMeals": typeof meals_getWeekMeals;
   "meals/replaceMealItems": typeof meals_replaceMealItems;
   "meals/replaceMealItemsInternal": typeof meals_replaceMealItemsInternal;
+  "meals/retryProcessDetectedItems": typeof meals_retryProcessDetectedItems;
   "meals/updateMeal": typeof meals_updateMeal;
   "meals/updateMealInternal": typeof meals_updateMealInternal;
   "meals/updateMealTotals": typeof meals_updateMealTotals;
