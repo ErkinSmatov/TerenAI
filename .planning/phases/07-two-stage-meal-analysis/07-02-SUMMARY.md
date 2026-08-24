@@ -114,3 +114,7 @@ None - no external service configuration required. (Codegen used an already-auth
 ---
 *Phase: 07-two-stage-meal-analysis*
 *Completed: 2026-08-24*
+
+## Self-Check: PASSED
+
+All created files (`detectMealFromPhoto.ts`, `detectMealFromText.ts`) verified present on disk; both deleted files (`analyzeMealPhoto.ts`, `analyzeMealDescription.ts`) verified absent from disk; all task commit hashes (`6ffa948`, `d52a70d`, `198e81d`) and the plan-completion commit (`a05da5c`) verified present in `git log`.
