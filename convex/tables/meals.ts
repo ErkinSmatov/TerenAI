@@ -13,6 +13,10 @@ export const mealsFields = {
   ),
   name: v.optional(v.string()),
   photoStorageId: v.optional(v.id("_storage")),
+  description: v.optional(v.string()),
+  confirmedItems: v.optional(
+    v.array(v.object({ name: v.string(), grams: v.number() }))
+  ),
   totalMacros: v.optional(v.object(macrosFields)),
   totalMicros: v.optional(v.object(microsFields)),
   totalNutrients: v.optional(v.object(nutrientsFields)),

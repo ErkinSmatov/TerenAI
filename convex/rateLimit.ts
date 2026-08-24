@@ -25,6 +25,14 @@ export const rateLimiter = new RateLimiter(components.rateLimiter, {
     rate: 10,
     period: HOUR,
   },
+  // Ключ — mealId (см. retryProcessDetectedItems.ts, план 07-03), а не
+  // userId: ограничивает число повторных попыток фонового шага для ОДНОГО
+  // конкретного блюда независимо от общего лимита aiFeatures.
+  mealRetry: {
+    kind: "fixed window",
+    rate: 10,
+    period: HOUR,
+  },
 });
 
 export const { getRateLimit: getAiFeaturesRateLimit, getServerTime } =
