@@ -184,7 +184,7 @@ Plans:
 - Обработка ошибки на фоновой (второй) стадии, если пользователь уже ушёл с экрана подтверждения — куда доставляется ошибка и как пользователь о ней узнаёт (сейчас `catch` в `analyzeMealPhoto`/`analyzeMealDescription` привязан к экрану вызова)
 - Что видно в истории блюд/на главном экране, пока блюдо ещё не подтверждено или фоновая обработка не завершена
 
-**Plans**: 6 plans
+**Plans**: 8 plans
 
 Plans:
 **Wave 1**
@@ -210,6 +210,16 @@ Plans:
 **Wave 6** *(blocked on Wave 5 completion)*
 
 - [ ] 07-06-PLAN.md — End-to-end human verification of the full flow (wave 6, требует человека)
+
+**Wave 7** *(gap closure — wave 6 human verification FAILED, see 07-06-SUMMARY.md)*
+
+- [ ] 07-07-PLAN.md — getFoodByIdentityInternal: internalQuery for the auth-less scheduler context, fixes `Unauthorized` crash in background processing (wave 7)
+
+**Wave 8** *(blocked on Wave 7 completion)*
+
+- [ ] 07-08-PLAN.md — Russian ingredient display names (`nameRu`) on the confirm screen, English `name` preserved as the FDC search key (wave 8)
+
+*После закрытия 07-07 и 07-08 план 07-06 (human-verify) перезапускается целиком, включая шаги 6–11, которые не были достигнуты: `/gsd-execute-phase 7 --wave 6`*
 
 ### Phase 67: Дистрибуция и OTA-обновления
 
