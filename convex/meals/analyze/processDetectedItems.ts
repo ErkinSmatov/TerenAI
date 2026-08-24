@@ -16,6 +16,7 @@ type Params = {
   imageUrl?: string;
   mealName: string;
   description?: string;
+  userId: Id<"users">;
 };
 
 export async function processDetectedItems({
@@ -25,6 +26,7 @@ export async function processDetectedItems({
   imageUrl,
   mealName,
   description,
+  userId,
 }: Params) {
   const candidatesByItem = await searchFdcCandidates({
     ctx,
@@ -79,13 +81,15 @@ export async function processDetectedItems({
   const results = await Promise.all(itemPromises);
   const foods = results.filter((food) => food !== null);
 
-  await ctx.runMutation(api.meals.replaceMealItems.default, {
+  await ctx.runMutation(internal.meals.replaceMealItemsInternal.default, {
     mealId,
+    userId,
     foods,
   });
 
-  await ctx.runMutation(api.meals.updateMeal.default, {
+  await ctx.runMutation(internal.meals.updateMealInternal.default, {
     id: mealId,
+    userId,
     meal: { status: "done", name: mealName },
   });
 }

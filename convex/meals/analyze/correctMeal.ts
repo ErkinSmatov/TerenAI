@@ -59,6 +59,7 @@ export const correctMeal = action({
         detectedItems: newDetectedItems,
         imageUrl,
         mealName,
+        userId,
       });
     } catch (error) {
       logError("correctMeal error", error);
