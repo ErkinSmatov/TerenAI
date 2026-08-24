@@ -39,7 +39,7 @@ export default function DescribeScreen() {
     }
 
     router.replace({
-      pathname: "/app/(meal)/meal",
+      pathname: "/app/(meal)/confirm-meal",
       params: { description },
     });
   };

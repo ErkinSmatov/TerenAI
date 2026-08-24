@@ -75,7 +75,7 @@ export default function CameraScreen() {
       const photo = await cameraRef.current.takePictureAsync();
       if (photo.uri) {
         router.replace({
-          pathname: "/app/(meal)/meal",
+          pathname: "/app/(meal)/confirm-meal",
           params: { photoUri: photo.uri, source: "camera" },
         });
       }
@@ -108,7 +108,7 @@ export default function CameraScreen() {
 
       isBusyRef.current = true;
       router.replace({
-        pathname: "/app/(meal)/meal",
+        pathname: "/app/(meal)/confirm-meal",
         params: { photoUri: asset.uri, source: "library" },
       });
     } catch (error) {
