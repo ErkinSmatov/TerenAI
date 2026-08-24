@@ -1,0 +1,108 @@
+import { v } from "convex/values";
+import { internalMutation } from "../_generated/server";
+import getFoodMacros from "../../lib/food/getFoodMacros";
+import getFoodNutrients from "../../lib/food/getFoodNutrients";
+import { MacrosType, MicrosType, NutrientsType } from "../tables/mealItems";
+import { WithoutSystemFields } from "convex/server";
+import { Doc } from "../_generated/dataModel";
+import getFoodMicros from "../../lib/food/getFoodMicros";
+import {
+  getEmptyNutrients,
+  addNutrients,
+  multiplyNutrients,
+} from "../../config/nutrientsConfig";
+
+export const replaceMealItemsInternal = internalMutation({
+  args: {
+    mealId: v.id("meals"),
+    userId: v.id("users"),
+    foods: v.array(v.object({ foodId: v.id("foods"), grams: v.number() })),
+  },
+  handler: async (ctx, { mealId, userId, foods }) => {
+    const meal = await ctx.db.get(mealId);
+    if (!meal) throw new Error("Meal not found");
+    if (meal.userId !== userId) throw new Error("Forbidden");
+
+    const existingItems = await ctx.db
+      .query("mealItems")
+      .withIndex("byMealId", (q) => q.eq("mealId", mealId))
+      .collect();
+
+    await Promise.all(existingItems.map((item) => ctx.db.delete(item._id)));
+
+    const totalMacros: MacrosType = {
+      calories: 0,
+      protein: 0,
+      fat: 0,
+      carbs: 0,
+    };
+    const totalMicros: MicrosType = {
+      score: 0,
+      fiber: 0,
+      sugar: 0,
+      sodium: 0,
+    };
+    let totalNutrients: NutrientsType = getEmptyNutrients();
+    let totalWeightedScore = 0;
+
+    const uniqueFoodIds = [...new Set(foods.map((f) => f.foodId))];
+    const foodDocs = await Promise.all(
+      uniqueFoodIds.map((id) => ctx.db.get(id))
+    );
+    const foodMap = new Map(foodDocs.map((f, i) => [uniqueFoodIds[i], f]));
+
+    const itemsToInsert: WithoutSystemFields<Doc<"mealItems">>[] = [];
+
+    for (const { foodId, grams } of foods) {
+      const food = foodMap.get(foodId);
+      if (!food) throw new Error(`Food not found: ${foodId}`);
+
+      const macrosPer100g = getFoodMacros(food);
+      const microsPer100g = getFoodMicros(food);
+      const nutrientsPer100g = getFoodNutrients(food);
+
+      itemsToInsert.push({
+        mealId,
+        foodId,
+        grams,
+        macrosPer100g,
+        microsPer100g,
+        nutrientsPer100g,
+      });
+
+      const ratio = grams / 100;
+      const itemCalories = macrosPer100g.calories * ratio;
+
+      totalMacros.calories += itemCalories;
+      totalMacros.protein += macrosPer100g.protein * ratio;
+      totalMacros.fat += macrosPer100g.fat * ratio;
+      totalMacros.carbs += macrosPer100g.carbs * ratio;
+
+      totalWeightedScore += microsPer100g.score * itemCalories;
+      totalMicros.fiber += microsPer100g.fiber * ratio;
+      totalMicros.sugar += microsPer100g.sugar * ratio;
+      totalMicros.sodium += microsPer100g.sodium * ratio;
+
+      const scaledNutrients = multiplyNutrients(nutrientsPer100g, ratio);
+      totalNutrients = addNutrients(totalNutrients, scaledNutrients);
+    }
+
+    if (totalMacros.calories > 0) {
+      totalMicros.score = totalWeightedScore / totalMacros.calories;
+    }
+
+    await Promise.all(
+      itemsToInsert.map((item) => ctx.db.insert("mealItems", item))
+    );
+
+    await ctx.db.patch(mealId, {
+      totalMacros,
+      totalMicros,
+      totalNutrients,
+    });
+
+    return null;
+  },
+});
+
+export default replaceMealItemsInternal;
