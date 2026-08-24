@@ -146,9 +146,11 @@ export default function Meal({
         scrollViewProps={{ onScroll }}
         safeAreaProps={{ edges: [] }}
       >
-        <SafeArea edges={["left", "right"]} style={{ flex: 0 }}>
-          <ScreenMainTitle title={name} loading={loading} />
-        </SafeArea>
+        {!isError && (
+          <SafeArea edges={["left", "right"]} style={{ flex: 0 }}>
+            <ScreenMainTitle title={name} loading={loading} />
+          </SafeArea>
+        )}
         {isError ? (
           <SafeArea edges={["left", "right"]} style={styles.errorContainer}>
             <TriangleAlertIcon size={48} color={getColor("red")} />
