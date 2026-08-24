@@ -11,7 +11,7 @@ const getMeal = query({
       if (userId === null) throw new Error("Unauthorized");
 
       const meal = await ctx.db.get(mealId);
-      if (!meal || meal.status === "error" || meal.status === "deleted") {
+      if (!meal || meal.status === "deleted") {
         return null;
       }
       if (meal.userId !== userId) throw new Error("Forbidden");
