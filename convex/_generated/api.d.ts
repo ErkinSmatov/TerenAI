@@ -34,8 +34,6 @@ import type * as mealItems_getMealItem from "../mealItems/getMealItem.js";
 import type * as mealItems_updateMealItem from "../mealItems/updateMealItem.js";
 import type * as meals_analyze_analyzeMealBarcode from "../meals/analyze/analyzeMealBarcode.js";
 import type * as meals_analyze_analyzeMealConfig from "../meals/analyze/analyzeMealConfig.js";
-import type * as meals_analyze_analyzeMealDescription from "../meals/analyze/analyzeMealDescription.js";
-import type * as meals_analyze_analyzeMealPhoto from "../meals/analyze/analyzeMealPhoto.js";
 import type * as meals_analyze_calculateHealthScore from "../meals/analyze/calculateHealthScore.js";
 import type * as meals_analyze_correctMeal from "../meals/analyze/correctMeal.js";
 import type * as meals_analyze_correctMealItems from "../meals/analyze/correctMealItems.js";
@@ -134,8 +132,6 @@ declare const fullApi: ApiFromModules<{
   "mealItems/updateMealItem": typeof mealItems_updateMealItem;
   "meals/analyze/analyzeMealBarcode": typeof meals_analyze_analyzeMealBarcode;
   "meals/analyze/analyzeMealConfig": typeof meals_analyze_analyzeMealConfig;
-  "meals/analyze/analyzeMealDescription": typeof meals_analyze_analyzeMealDescription;
-  "meals/analyze/analyzeMealPhoto": typeof meals_analyze_analyzeMealPhoto;
   "meals/analyze/calculateHealthScore": typeof meals_analyze_calculateHealthScore;
   "meals/analyze/correctMeal": typeof meals_analyze_correctMeal;
   "meals/analyze/correctMealItems": typeof meals_analyze_correctMealItems;
