@@ -117,3 +117,7 @@ None - no external service configuration required. (Codegen used an already-auth
 ---
 *Phase: 07-two-stage-meal-analysis*
 *Completed: 2026-08-24*
+
+## Self-Check: PASSED
+
+All created/modified files verified present on disk (`processDetectedItemsAction.ts`, `confirmMeal.ts`, `retryProcessDetectedItems.ts`, `getMeal.ts`, `getWeekMeals.ts`, this SUMMARY.md); all task commit hashes (`e1d9deb`, `1cb24e8`, `5fd282c`) verified present in `git log`.
