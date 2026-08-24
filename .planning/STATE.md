@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: milestone
-status: Ready to discuss (`/gsd-discuss-phase 7`, затем `/gsd-discuss-phase 67`)
+status: planning
 stopped_at: Phase 7 context gathered
 last_updated: "2026-08-24T05:39:46.203Z"
-last_activity: 2026-08-21
+last_activity: 2026-08-24
 progress:
   total_phases: 8
   completed_phases: 3
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-05)
 
 **Core value:** Пользователь фотографирует еду и через несколько секунд видит достоверные калории и БЖУ — без ручного ввода и поиска по базе.
-**Current focus:** Phase 7 — двухэтапное распознавание блюда (следующая в порядке исполнения; Phase 67 — дистрибуция и OTA, объединяет бывшие Phase 2 и Phase 5 — идёт следом)
+**Current focus:** Phase 7 — двухэтапное распознавание блюда (контекст собран, готова к планированию; Phase 67 — дистрибуция и OTA — идёт следом)
 
 ## Current Position
 
 Phase: 7
 Plan: Not started
-Status: Ready to discuss (`/gsd-discuss-phase 7`, затем `/gsd-discuss-phase 67`)
-Last activity: 2026-08-21
+Status: Ready to plan (`/gsd-plan-phase 7`)
+Last activity: 2026-08-24
 
 Progress: [████░░░░░░] 43% (Phases 1 (частично), 3, 3.1, 6 закрыты, 3 интеграционные фазы + backlog впереди)
 
