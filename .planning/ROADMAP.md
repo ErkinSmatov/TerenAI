@@ -197,7 +197,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 07-03-PLAN.md — confirmMeal + retryProcessDetectedItems mutations, scheduler entry point, error-status visibility fix (wave 3)
+- [x] 07-03-PLAN.md — confirmMeal + retryProcessDetectedItems mutations, scheduler entry point, error-status visibility fix (wave 3)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -250,7 +250,7 @@ Phases execute in numeric order: 1 → 3 → 3.1 → 4 → 6 → 7 → 67
 | 3.1. Экспорт месячного отчёта (INSERTED) | - | Complete: PDF-экспорт из настроек реализован и встроен в роадмап задним числом | 2026-08-20 |
 | 4. Сквозной сценарий тестера | 3/3 | Complete    | 2026-08-21 |
 | 6. Наблюдатель за пользователем | 7/7 | Complete: код-ревью и верификация пройдены, ручной UAT подтверждён пользователем | 2026-08-18 |
-| 7. Двухэтапное распознавание блюда | 2/6 | In Progress|  |
+| 7. Двухэтапное распознавание блюда | 3/6 | In Progress|  |
 | 67. Дистрибуция и OTA-обновления | 0/TBD | Not started — объединяет незакрытый скоуп бывших Phase 2 (BOOT-02, BOOT-03, BOOT-04, DIST-01, DIST-02) и Phase 5 (OTA) | - |
 
 ## Backlog
