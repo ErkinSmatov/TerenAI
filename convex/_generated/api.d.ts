@@ -19,6 +19,7 @@ import type * as bloodPressure_getAllReadings from "../bloodPressure/getAllReadi
 import type * as bloodPressure_getWeekReadings from "../bloodPressure/getWeekReadings.js";
 import type * as foods_createFood from "../foods/createFood.js";
 import type * as foods_getFoodByIdentity from "../foods/getFoodByIdentity.js";
+import type * as foods_getFoodByIdentityInternal from "../foods/getFoodByIdentityInternal.js";
 import type * as foods_ingestFoods from "../foods/ingestFoods.js";
 import type * as foods_updateFoodHealthScore from "../foods/updateFoodHealthScore.js";
 import type * as foods_updateFoodTranslation from "../foods/updateFoodTranslation.js";
@@ -120,6 +121,7 @@ declare const fullApi: ApiFromModules<{
   "bloodPressure/getWeekReadings": typeof bloodPressure_getWeekReadings;
   "foods/createFood": typeof foods_createFood;
   "foods/getFoodByIdentity": typeof foods_getFoodByIdentity;
+  "foods/getFoodByIdentityInternal": typeof foods_getFoodByIdentityInternal;
   "foods/ingestFoods": typeof foods_ingestFoods;
   "foods/updateFoodHealthScore": typeof foods_updateFoodHealthScore;
   "foods/updateFoodTranslation": typeof foods_updateFoodTranslation;

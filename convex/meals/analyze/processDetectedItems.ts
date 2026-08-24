@@ -3,7 +3,7 @@ import { Id } from "../../_generated/dataModel";
 import { DetectedItem } from "./detectMealItems";
 import searchFdcCandidates from "./searchFdcCandidates";
 import selectCandidates from "./selectCandidates";
-import { api, internal } from "../../_generated/api";
+import { internal } from "../../_generated/api";
 import translateFood from "./translateFood";
 import getFoodMacros from "../../../lib/food/getFoodMacros";
 import getFoodNutrients from "../../../lib/food/getFoodNutrients";
@@ -41,7 +41,7 @@ export async function processDetectedItems({
   });
 
   const itemPromises = selectedItems.map(async (selectedItem, i) => {
-    const fdcFood = await ctx.runQuery(api.foods.getFoodByIdentity.default, {
+    const fdcFood = await ctx.runQuery(internal.foods.getFoodByIdentityInternal.default, {
       identity: { source: "fdc", id: selectedItem.fdcId },
     });
     if (!fdcFood) return null;
