@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: milestone
 status: executing
-stopped_at: Phase 7 wave 6 (07-06) human-verify FAILED — background processing broken end-to-end
-last_updated: "2026-08-24T16:35:00.000Z"
-last_activity: 2026-08-24 -- Phase 07 waves 1-5 executed and merged; wave 6 human verification failed at step 5/11
+stopped_at: Phase 7 wave 7 (07-07) gap-closure fix merged — bug 1 (Unauthorized) resolved, bug 2 (07-08) still pending
+last_updated: "2026-08-25T09:00:00.000Z"
+last_activity: 2026-08-24/25 -- Phase 07 gap-closure planned (07-07, 07-08); wave 7 (07-07) executed with runtime proof via convex logs
 progress:
   total_phases: 8
   completed_phases: 3
-  total_plans: 20
-  completed_plans: 14
+  total_plans: 22
+  completed_plans: 15
   percent: 38
 ---
 
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-08-05)
 
 ## Current Position
 
-Phase: 07 (two-stage-meal-analysis) — BLOCKED (gap-closure needed)
-Plan: 5 of 6 code plans complete (07-01…07-05 merged); 07-06 (human-verify checkpoint) FAILED
-Status: `npx tsc --noEmit` clean across all 5 code plans, but the confirmed-meal background processing path is broken end-to-end — every confirmed meal errors out immediately
-Last activity: 2026-08-24 -- Phase 07 waves 1-5 executed; wave 6 human verification failed, root-caused, NOT patched (see 07-06-SUMMARY.md)
+Phase: 07 (two-stage-meal-analysis) — EXECUTING gap-closure (bug 1 fixed, bug 2 in progress)
+Plan: 7 of 8 plans complete (07-01…07-05, 07-07 merged); 07-06 (human-verify) FAILED and must be re-run after 07-08; 07-08 (Russian ingredient names) not yet executed
+Status: `npx tsc --noEmit` clean project-wide. 07-07 fixed the `getFoodByIdentity` Unauthorized bug with genuine runtime proof (real errored meal reprocessed via `processDetectedItemsAction`, confirmed `status: "done"` + confirmed via `npx convex logs` the error class is gone). Bug 2 (ingredient names render in English on confirm-meal screen) still open — plan 07-08 exists (checker-verified, 2 revision rounds) but not yet executed.
+Last activity: 2026-08-24/25 -- Phase 07 gap-closure planned (07-07, 07-08, both plan-checker verified); wave 7 (07-07) executed and merged with runtime proof
 
-Next step: `/gsd:plan-phase 07 --gaps` to create a gap-closure plan for the two items below, then re-run `/gsd-execute-phase 7 --wave 6` to redo the human verification in full.
+Next step: `/gsd-execute-phase 7 --wave 8` to execute 07-08, then re-run `/gsd-execute-phase 7 --wave 6` to redo the full human verification (including previously-unreached steps 6-11).
 
 Progress: [████░░░░░░] 43% (Phases 1 (частично), 3, 3.1, 6 закрыты, 3 интеграционные фазы + backlog впереди)
 
@@ -98,7 +98,7 @@ Recent decisions affecting current work:
 
 ### Blockers/Concerns
 
-- **Phase 7 (2026-08-24, blocking):** Human verification of the two-stage meal analysis flow (plan 07-06) FAILED at step 5/11 — every confirmed meal errors out ("Не удалось распознать блюдо") instead of finishing background processing. Root cause found via `npx convex logs`: `convex/foods/getFoodByIdentity.ts` is a public `query` that still calls `getAuthUserId(ctx)` and throws `Unauthorized` when invoked from the scheduled/auth-less `processDetectedItemsAction` context — the same class of bug plans 07-01/07-02/07-03 fixed for `updateMeal`/`replaceMealItems` via `internalMutation` variants, but this query was missed. Needs an `internalQuery` (or equivalent) variant. Second, separate finding: ingredient item names on the new confirm-meal screen render in English — `convex/meals/analyze/detectMealItems.ts`'s zod schema constrains `mealName` to Russian but leaves `items[].name` unconstrained. Neither issue was patched (per plan 07-06's explicit "route to gap-closure, don't silently patch" instruction). Full details in `.planning/phases/07-two-stage-meal-analysis/07-06-SUMMARY.md`. Steps 6-11 of the verification checklist were never reached and must be re-run after the fix.
+- **Phase 7 (2026-08-24/25, partially resolved):** Human verification of the two-stage meal analysis flow (plan 07-06) FAILED at step 5/11 — every confirmed meal errored out ("Не удалось распознать блюдо") instead of finishing background processing. Root cause found via `npx convex logs`: `convex/foods/getFoodByIdentity.ts` was a public `query` that called `getAuthUserId(ctx)` and threw `Unauthorized` when invoked from the scheduled/auth-less `processDetectedItemsAction` context. ✓ **Fixed 2026-08-25 (plan 07-07):** added `convex/foods/getFoodByIdentityInternal.ts` (internalQuery, no auth check), repointed `processDetectedItems.ts`'s call site; verified with genuine runtime proof (re-ran a real errored meal through `processDetectedItemsAction`, reached `status: "done"`, confirmed via `npx convex logs` the `Unauthorized` error class no longer occurs). **Still open:** ingredient item names on the confirm-meal screen render in English instead of Russian (`convex/meals/analyze/detectMealItems.ts`'s zod schema constrains `mealName` to Russian but leaves `items[].name` unconstrained) — plan 07-08 exists (plan-checker verified after 2 revision rounds, adds a separate `nameRu` field rather than changing `name` itself, since `name` is also the English-only FDC vector-search key) but has not been executed yet. Full details in `.planning/phases/07-two-stage-meal-analysis/07-06-SUMMARY.md` and `07-07-SUMMARY.md`. Steps 6-11 of the 07-06 verification checklist were never reached and must be re-run in full after 07-08 lands.
 
 - **Phase 2**: EAS-окружения `production` и `development` в проекте сейчас пусты (`eas env:list --environment production` — 0 переменных). Это подтверждённая причина краша 1.2.1 (1): `EXPO_PUBLIC_CONVEX_URL` не долетает до продакшн-бандла, а `components/RootLayoutProvider.tsx:29-33` бросает исключение на уровне модуля. Фикс требует реальных значений секретов — агент НЕ должен придумывать или изобретать значения; пользователь должен сам предоставить/подтвердить их и выполнить/одобрить шаги `eas env:create`. Клиентские `EXPO_PUBLIC_*` переменные — в EAS; серверные секреты (`AUTH_*`, `OPENROUTER_API_KEY`, `GOOGLE_GENERATIVE_AI_API_KEY`, `REVENUECAT_SECRET_KEY`, `INGEST_TOKEN`, `JWKS`, `JWT_PRIVATE_KEY`, `SITE_URL`) — в Convex deployment, не в мобильную сборку.
 - **Phase 3**: In-place-связывание анонимного аккаунта с Apple/Google (перенос того же `userId` при входе) технически возможно через кастомный `createOrUpdateUser` в `convex/auth.ts`, но не покрыто тестами апстрима (`test.todo` в `@convex-dev/auth`, открытый issue #231) — реализация самого связывания вне этого майлстоуна (v2), но дизайн гостевого режима не должен исключать эту возможность в будущем.
