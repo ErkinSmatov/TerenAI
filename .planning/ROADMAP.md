@@ -156,7 +156,15 @@ Plans:
 - Обработка ошибки на фоновой (второй) стадии, если пользователь уже ушёл с экрана подтверждения — куда доставляется ошибка и как пользователь о ней узнаёт (сейчас `catch` в `analyzeMealPhoto`/`analyzeMealDescription` привязан к экрану вызова)
 - Что видно в истории блюд/на главном экране, пока блюдо ещё не подтверждено или фоновая обработка не завершена
 
-**Plans**: TBD
+**Plans**: 6 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Backend contracts: meals schema fields, mealRetry rate-limit bucket, internal mutations with explicit userId (wave 1)
+- [ ] 07-02-PLAN.md — Stage-1 detect actions (no DB write) + processDetectedItems routed through internal mutations for scheduler safety (wave 2)
+- [ ] 07-03-PLAN.md — confirmMeal + retryProcessDetectedItems mutations, scheduler entry point, error-status visibility fix (wave 3)
+- [ ] 07-04-PLAN.md — Confirm-meal screen: GramsStepper, ConfirmMealItems, detect-on-mount + confirm + leave-dialog (wave 4)
+- [ ] 07-05-PLAN.md — meal.tsx surgical split, Meal.tsx error/retry branch, camera.tsx/describe.tsx routing (wave 5)
+- [ ] 07-06-PLAN.md — End-to-end human verification of the full flow (wave 6, требует человека)
 
 ### Phase 67: Дистрибуция и OTA-обновления
 **Goal**: TestFlight-сборка iOS доходит до первого экрана без краша, ошибки/опечатки в переменных окружения продакшена не роняют её молча, нативные модули согласованы с конфигом сборки, тестовый билд-профиль в EAS не смешивается с релизными кандидатами — и поверх стабильной дистрибуции работает OTA-канал (EAS Update) для доставки правок JS без пересборки и повторной заливки в App Store
