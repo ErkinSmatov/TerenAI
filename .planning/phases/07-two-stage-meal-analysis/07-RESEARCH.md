@@ -468,12 +468,13 @@ Not applicable in the "industry evolved" sense — this is an internal architect
 
 **Note:** Unlike most phases, this Assumptions Log is short because nearly every claim in this document was verified either by reading the actual source file (cited file:line) or by cross-checking official Convex/React Navigation documentation via WebSearch — see Sources below.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should retry have its own rate limit or attempt cap?**
    - What we know: D-17 explicitly says retry must NOT consume the 50/day `aiFeatures` limit. `processDetectedItems` makes its own uncounted AI calls today (pre-existing, self-limiting under the old 1:1 detect→process flow).
    - What's unclear: Whether the user considers the new uncounted-retry-abuse surface (Pitfall 5) in scope for this phase, or an acceptable known risk deferred like D-09 (orphaned storage files).
    - Recommendation: Surface this explicitly during planning/discuss — propose a small additional rate limiter bucket (e.g., `mealRetry: { kind: "fixed window", rate: 10, period: HOUR }` keyed by `mealId` or `userId`, same `@convex-dev/rate-limiter` package, zero new dependencies) as a cheap mitigation if the user wants it in scope.
+   - **RESOLVED (CONTEXT.md D-18):** In scope. A dedicated `mealRetry` fixed-window bucket (10/hour, keyed by `mealId`) was adopted and implemented in plan 07-01 (`convex/rateLimit.ts`), consumed by `retryProcessDetectedItems.ts` (plan 07-03).
 
 2. **Exact schema shape for `confirmedItems`** — the field name/shape below is a recommendation, not yet locked:
    ```typescript
@@ -482,6 +483,7 @@ Not applicable in the "industry evolved" sense — this is an internal architect
    description: v.optional(v.string()),
    ```
    This is deliberately the same shape as `DetectedItem` (`detectMealItems.ts:19`, `{name: string, grams: number}`) so `processDetectedItems`'s existing `detectedItems: DetectedItem[]` parameter type needs no change.
+   - **RESOLVED:** The `{name, grams}` shape above was adopted verbatim — implemented in plan 07-01 (`convex/tables/meals.ts` — `confirmedItems`/`description` fields) and consumed as-is by `confirmMeal.ts`/`retryProcessDetectedItems.ts` (plan 07-03).
 
 ## Security Domain
 
