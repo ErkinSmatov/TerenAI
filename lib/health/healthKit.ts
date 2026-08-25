@@ -5,6 +5,7 @@ import {
   requestAuthorization,
   queryQuantitySamples,
   queryStatisticsCollectionForQuantity,
+  getPreferredUnit,
 } from "@kingstinct/react-native-healthkit";
 
 const HEALTHKIT_CONNECTED_KEY = "healthkit_connected";
@@ -132,9 +133,11 @@ export async function fetchRecentMovement(
   }));
 }
 
+export type GlucoseUnit = "mmol/L" | "mg/dL";
+
 export type GlucoseSample = {
   value: number;
-  unit: "mg/dL";
+  unit: GlucoseUnit;
   recordedAt: number;
   healthKitUuid: string;
 };
@@ -144,16 +147,26 @@ export async function fetchRecentGlucoseSamples(
 ): Promise<GlucoseSample[]> {
   if (Platform.OS !== "ios") return [];
 
+  // Ask HealthKit for the unit the user actually configured in the Health
+  // app (mmol/L for most non-US locales, mg/dL for US) instead of hardcoding
+  // mg/dL — HealthKit converts the returned quantity for us, we just need to
+  // request the right unit and map its HK-specific string to our app union.
+  const hkUnit = await getPreferredUnit("HKQuantityTypeIdentifierBloodGlucose");
+  const unit: GlucoseUnit = hkUnit.startsWith("mmol") ? "mmol/L" : "mg/dL";
+
   const samples = await queryQuantitySamples("HKQuantityTypeIdentifierBloodGlucose", {
     filter: { date: { startDate: since } },
-    unit: "mg/dL",
+    unit: hkUnit,
     limit: 0,
     ascending: false,
   });
 
   return samples.map((sample) => ({
-    value: sample.quantity,
-    unit: "mg/dL",
+    value:
+      unit === "mmol/L"
+        ? Math.round(sample.quantity * 10) / 10
+        : Math.round(sample.quantity),
+    unit,
     recordedAt: sample.startDate.getTime(),
     healthKitUuid: sample.uuid,
   }));
