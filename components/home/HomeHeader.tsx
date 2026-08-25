@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 import TerenAILogo from "@/assets/svg/terenai-logo.svg";
 import getColor from "@/lib/ui/getColor";
 import Text from "../ui/Text";
-import { FlameIcon } from "lucide-react-native";
+import { CalendarDaysIcon, FlameIcon } from "lucide-react-native";
 import Card from "../ui/Card";
 import Button from "../ui/Button";
 import { useQuery } from "convex/react";
@@ -24,23 +24,37 @@ export default function HomeHeader() {
           TerenAI
         </Text>
       </View>
-      <Button
-        variant="base"
-        size="base"
-        accessibilityLabel="Кого я наблюдаю"
-        onPress={() => {
-          router.push("/app/(settings)/observedList");
-        }}
-      >
-        <Card style={styles.streakContainer}>
-          <FlameIcon
-            size={20}
-            color={getColor("orange")}
-            fill={getColor("orange")}
-          />
-          <Text weight="600">{streak ?? 0}</Text>
-        </Card>
-      </Button>
+      <View style={styles.iconGroup}>
+        <Button
+          variant="base"
+          size="base"
+          accessibilityLabel="Открыть календарь"
+          onPress={() => {
+            router.push("/app/(home)/calendar");
+          }}
+        >
+          <Card style={styles.calendarContainer}>
+            <CalendarDaysIcon size={20} color={getColor("foreground")} />
+          </Card>
+        </Button>
+        <Button
+          variant="base"
+          size="base"
+          accessibilityLabel="Кого я наблюдаю"
+          onPress={() => {
+            router.push("/app/(settings)/observedList");
+          }}
+        >
+          <Card style={styles.streakContainer}>
+            <FlameIcon
+              size={20}
+              color={getColor("orange")}
+              fill={getColor("orange")}
+            />
+            <Text weight="600">{streak ?? 0}</Text>
+          </Card>
+        </Button>
+      </View>
     </SafeArea>
   );
 }
@@ -59,6 +73,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
+  },
+  iconGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  calendarContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: getColor("background"),
+    borderRadius: 999,
+    height: 44,
+    width: 44,
+    padding: 0,
   },
   streakContainer: {
     flexDirection: "row",
