@@ -47,16 +47,18 @@ Declared values (must be multiples of 4) — confirmed against actual usage in `
 
 ## Typography
 
-Declared for this phase's new UI (calendar entry button, calendar screen, day screen, glucose-estimate row). Matches the dominant sizes/weights already used in `components/home/*` and `components/observer/*` — not a new scale, a confirmation of the existing one, narrowed to exactly 4 sizes / 2 weights per contract rules.
+Declared for this phase's new UI (calendar entry button, calendar screen, day screen, glucose-estimate row). Matches the dominant sizes/weights already used in `components/home/*` and `components/observer/*` — not a new scale, a confirmation of the existing one, held to exactly 4 sizes / 2 weights per contract rules.
+
+**Correction (checker round 2):** the original draft tried to fold 14px "secondary/muted body" text under the 12px Label/caption role and invented a 28px "Display" size for the day-screen date heading. Neither survives a check against actual usage: `HomeGlucoseSummary.tsx` (the exact component this phase's empty state is modeled on) uses `size="14"` for both its empty-state copy (line 58-59) and its row timestamp (line 33) — a real, distinct, established 14px role, not 12px. And 28px turns out to appear exactly once in the whole codebase — `HomeHeader.tsx`'s brand/logo text — never as a page or section title; every actual section/page title in `components/home/*` (`HomeGlucoseSummary`, `HomeMovementSummary`, `HomeRecentlyLogged`, `HomeSummaryCardBig`, `HomeBloodPressureSummary`) uses `size="20" weight="600"`. So the day-screen date heading uses the established 20/600 Heading role instead of an invented Display size — this removes the false 5th size and replaces it with the role that's actually in use everywhere else.
 
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
-| Label/caption | 12px | 400 (regular) | 1.5 — e.g. `WarningBadge` text, glucose-estimate secondary label ("Оценка по еде"), calendar day-of-week header |
+| Caption/label | 12px | 400 (regular) | 1.5 — e.g. `WarningBadge` text, `ReadingRow` context label (`HomeGlucoseSummary.tsx:28`), glucose-estimate secondary label ("Оценка по сахару в еде"), calendar day-of-week header |
+| Secondary/muted body | 14px | 400 (regular) | 1.5 — e.g. `ReadingRow` timestamp (`HomeGlucoseSummary.tsx:33`), existing empty-state copy (`HomeGlucoseSummary.tsx:58-59`) — reused verbatim for this phase's day-screen empty-state body and month/day error-state copy |
 | Body/value | 16px | 600 (semibold) | 1.5 — e.g. reading rows, stat values, calendar date numbers |
-| Heading | 20px | 600 (semibold) | 1.2 — e.g. section titles ("Уровень сахара", "Календарь", day-screen date title) |
-| Display | 28px | 600 (semibold) | 1.2 — day-screen big date heading only (mirrors `HomeHeader` logo text at 28/600) |
+| Heading | 20px | 600 (semibold) | 1.2 — e.g. section titles ("Уровень сахара"), calendar screen title ("Календарь"), day-screen date title ("15 августа") — the same role/size every other screen and card title already uses, no oversized one-off |
 
-Secondary/muted body text (14px/400, e.g. empty-state copy, error copy) reuses the existing `Text size="14" color={getColor("mutedForeground")}` pattern seen throughout `components/home/*` — folded under Label/caption role's 400 weight, not a separate declared size, to stay within the 3-4 size limit.
+Exactly 4 sizes, 2 weights (400 / 600) — no 5th size, no Display role.
 
 ---
 
@@ -75,6 +77,8 @@ All values from the single existing palette in `lib/ui/getColor.ts` (`colors` ma
 
 Accent reserved for: glucose droplet icon · glucose-estimate "≈" value · calendar selected-date fill · calendar today-dot. Never used for generic buttons, links, or the calendar-entry icon.
 
+**Visual anchor per screen:** Calendar screen — the selected/today date's accent (blue) fill under `Calendar`'s `theme.selectedDayBackgroundColor`/`todayTextColor` is the primary visual anchor; nothing else on that screen uses the accent color, per the reserved-for list above. Day screen — the Heading-size (20/600) date title at the top of the screen is the primary visual anchor; there is no larger/bolder element competing for attention, and the reused `Home*Summary` cards below it stay at their existing scale unchanged.
+
 ---
 
 ## Copywriting Contract
@@ -82,12 +86,12 @@ Accent reserved for: glucose droplet icon · glucose-estimate "≈" value · cal
 | Element | Copy |
 |---------|------|
 | Primary CTA (calendar entry) | Icon-only button, `accessibilityLabel="Открыть календарь"` — **[Claude's call, see Component Placement below]**: placed in `HomeHeader.tsx`'s existing right-side icon slot (next to the streak button), not as an 8th item bolted onto `HomeDaySelector`'s fixed 7-column flex row (which would break `justifyContent: space-between` math). Precedent: Phase 6 already added the "observed patients" entry point to this exact header slot for the same reason (`OBSV-04`) |
-| Calendar screen title | "Календарь" |
-| Day screen title | Formatted selected date, e.g. `format(date, "d MMMM", { locale: ru })` → "15 августа" (mirrors `HomeDaySelector`'s existing `date-fns`/`ru` locale usage) |
-| Empty state heading (day with no data) | "Нет данных за этот день" |
-| Empty state body | "Записи о питании и показателях за эту дату отсутствуют. Выберите другой день в календаре." |
-| Error state (month/day data failed to load) | "Не удалось загрузить историю. Проверьте соединение и попробуйте ещё раз." — mirrors the existing toast-driven error pattern (`Toast.show({ text, variant: "error" })`) rather than inventing a new error-screen copy style |
-| Glucose estimate label (GLU-01, inline in `HomeGlucoseSummary`) | Primary: `"≈ {value} {unit}"` (e.g. "≈ 6.8 ммоль/л"); secondary muted label directly under it: "Оценка по сахару в еде" |
+| Calendar screen title | "Календарь" (Heading, 20/600) |
+| Day screen title | Formatted selected date, e.g. `format(date, "d MMMM", { locale: ru })` → "15 августа" (Heading, 20/600 — mirrors `HomeDaySelector`'s existing `date-fns`/`ru` locale usage; see Typography correction above for why this is 20/600 and not a separate Display size) |
+| Empty state heading (day with no data) | "Нет данных за этот день" (Heading, 20/600) |
+| Empty state body | "Записи о питании и показателях за эту дату отсутствуют. Выберите другой день в календаре." (Secondary/muted body, 14/400 — matches `HomeGlucoseSummary.tsx`'s existing empty-state precedent exactly) |
+| Error state (month/day data failed to load) | "Не удалось загрузить историю. Проверьте соединение и попробуйте ещё раз." (Secondary/muted body, 14/400) — mirrors the existing toast-driven error pattern (`Toast.show({ text, variant: "error" })`) rather than inventing a new error-screen copy style |
+| Glucose estimate label (GLU-01, inline in `HomeGlucoseSummary`) | Primary: `"≈ {value} {unit}"` (e.g. "≈ 6.8 ммоль/л") at Body/value 16/600, accent color; secondary muted label directly under it: "Оценка по сахару в еде" at Caption/label 12/400 |
 | Destructive confirmation | **None in this phase's new UI.** No delete/remove/revoke action is introduced by HEALTH-01, GLU-01, or HIST-01/02 — the existing `AlertDialog` destructive pattern (seen in `ObservedPatientCard.tsx`: title "Убрать из списка наблюдаемых", confirm-button copy "Подтвердить") is not touched and needs no new entry here |
 
 ---
@@ -99,10 +103,10 @@ Accent reserved for: glucose droplet icon · glucose-estimate "≈" value · cal
 | Component | Type | Notes |
 |-----------|------|-------|
 | Calendar-entry icon button | Modify `components/home/HomeHeader.tsx` | Add a `CalendarDaysIcon` (lucide) icon button, 44×44 touch target, `variant="base"` `Button` styled like the existing streak `Card` pill (`getColor("background")` fill, `borderRadius: 999`) but icon-only. Wrap it with the existing streak button in a new `View` (`flexDirection: "row", gap: 8`) so `HomeHeader`'s top-level `justifyContent: "space-between"` (2 children: logo, icon group) is preserved unchanged |
-| Calendar screen | New route `app/app/(home)/calendar.tsx` | Full-screen route (not a `BottomSheet`) — a calendar is a navigational destination with its own back-affordance, matching how `nutrients.tsx` and `glucoseLog` are already full routes rather than sheets. Uses existing `Header` component for back nav + "Календарь" title. Renders `react-native-calendars`' `Calendar` component with a custom `theme` prop mapped to `getColor()` tokens (background→`background`, dayTextColor→`foreground`, selectedDayBackgroundColor→`primary`, todayTextColor→`primary`, dotColor→`mutedForeground` at 0.4 opacity via `markedDates`), `firstDay: 1` (Monday start, matching `HomeDaySelector`'s `startOfWeek(now, { weekStartsOn: 1 })`), Russian month/day names via the already-installed `date-fns`/`ru` locale (react-native-calendars' own `LocaleConfig`, set once at app init) |
-| Day screen | New route `app/app/(home)/day/[date].tsx` | Thin wrapper per RESEARCH.md Pattern 3: parses `date` route param, fetches month-scoped data sliced to that day, renders existing `Home*Summary` components (`HomeMacroSummary`, `HomeMicroSummary`, `HomeGlucoseSummary` with `readOnly`, `HomeMovementSummary`, `HomeBloodPressureSummary`, `HomeRecentlyLogged`) unchanged — no new card UI. Uses existing `Header` component, title = formatted date (see Copywriting) |
-| Day-screen empty state | New, inline in `day/[date].tsx` | Centered `Text` block (heading 20/600 + body 14/400 muted), reusing the existing empty-state visual pattern already used in `HomeGlucoseSummary`'s "Добавьте показание…" fallback (muted-foreground at 0.5 opacity, centered) rather than inventing a new empty-state visual language |
-| Glucose-estimate row | Modify `components/home/HomeGlucoseSummary.tsx` | New `EstimateRow` sibling to the existing `ReadingRow`, same row height/layout (`styles.row`), but: icon circle uses a dashed border (`borderStyle: "dashed", borderWidth: 1, borderColor: getColor("blue")`) instead of solid `muted` fill, to visually read as "not a real measurement" at a glance. Value text uses `getColor("blue")` (accent) with the "≈" prefix; secondary label "Оценка по сахару в еде" in `mutedForeground`/12px. Rendered **after** real `ReadingRow`s (additive, per D-06), and only when a non-zero estimate exists for the day (per GLU-01/D-05 formula in RESEARCH.md, computed by `lib/nutrition/estimateGlucoseFromMeals.ts`) |
+| Calendar screen | New route `app/app/(home)/calendar.tsx` | Full-screen route (not a `BottomSheet`) — a calendar is a navigational destination with its own back-affordance, matching how `nutrients.tsx` and `glucoseLog` are already full routes rather than sheets. Uses existing `Header` component for back nav + "Календарь" title (Heading, 20/600). Renders `react-native-calendars`' `Calendar` component with a custom `theme` prop mapped to `getColor()` tokens (background→`background`, dayTextColor→`foreground`, selectedDayBackgroundColor→`primary`, todayTextColor→`primary`, dotColor→`mutedForeground` at 0.4 opacity via `markedDates`), `firstDay: 1` (Monday start, matching `HomeDaySelector`'s `startOfWeek(now, { weekStartsOn: 1 })`), Russian month/day names via the already-installed `date-fns`/`ru` locale (react-native-calendars' own `LocaleConfig`, set once at app init) |
+| Day screen | New route `app/app/(home)/day/[date].tsx` | Thin wrapper per RESEARCH.md Pattern 3: parses `date` route param, fetches month-scoped data sliced to that day, renders existing `Home*Summary` components (`HomeMacroSummary`, `HomeMicroSummary`, `HomeGlucoseSummary` with `readOnly`, `HomeMovementSummary`, `HomeBloodPressureSummary`, `HomeRecentlyLogged`) unchanged — no new card UI. Uses existing `Header` component, title = formatted date at Heading size 20/600 (see Copywriting and Typography correction above — no separate Display size, same role every other screen/card title uses) |
+| Day-screen empty state | New, inline in `day/[date].tsx` | Centered `Text` block (heading 20/600 + body 14/400 muted), reusing the existing empty-state visual pattern already used in `HomeGlucoseSummary`'s "Добавьте показание…" fallback (`HomeGlucoseSummary.tsx:58-59`, muted-foreground at 0.5 opacity, centered) rather than inventing a new empty-state visual language |
+| Glucose-estimate row | Modify `components/home/HomeGlucoseSummary.tsx` | New `EstimateRow` sibling to the existing `ReadingRow`, same row height/layout (`styles.row`), but: icon circle uses a dashed border (`borderStyle: "dashed", borderWidth: 1, borderColor: getColor("blue")`) instead of solid `muted` fill, to visually read as "not a real measurement" at a glance. Value text uses `getColor("blue")` (accent) with the "≈" prefix at 16/600; secondary label "Оценка по сахару в еде" in `mutedForeground`/12px (Caption/label role). Rendered **after** real `ReadingRow`s (additive, per D-06), and only when a non-zero estimate exists for the day (per GLU-01/D-05 formula in RESEARCH.md, computed by `lib/nutrition/estimateGlucoseFromMeals.ts`) |
 | Warning badge (glucose-estimate fallback) | Reuse `WarningBadge` from `components/observer/ObservedPatientCard.tsx` pattern | No new component — per D-08, when zero real readings exist for the day, the estimate's out-of-range check (`isGlucoseOutOfRange`, reused from `convex/observers/utils/thresholds.ts`) drives the same red `WarningBadge` used elsewhere. If this warning needs to surface outside `ObservedPatientCard`'s current render tree, extract `WarningBadge` into `components/ui/` as a shared component rather than duplicating its JSX — implementation detail for planner/executor, not a new visual design |
 
 ---
@@ -129,3 +133,4 @@ Not applicable — no shadcn, no component registry of any kind in this project.
 - [ ] Dimension 6 Registry Safety: PASS
 
 **Approval:** pending
+</content>
