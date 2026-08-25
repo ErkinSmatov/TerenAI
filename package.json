@@ -20,7 +20,8 @@
     "script:importFdc": "ts-node -r tsconfig-paths/register scripts/importFdcData.ts",
     "script:syncFoods": "ts-node -r tsconfig-paths/register scripts/syncFoodsData.ts",
     "script:verifyWeekBucketing": "TZ=Europe/Berlin ts-node -r tsconfig-paths/register scripts/verifyWeekBucketing.ts",
-    "script:verifyMonthBucketing": "TZ=Europe/Berlin ts-node -r tsconfig-paths/register scripts/verifyMonthBucketing.ts"
+    "script:verifyMonthBucketing": "TZ=Europe/Berlin ts-node -r tsconfig-paths/register scripts/verifyMonthBucketing.ts",
+    "script:verifyGlucoseEstimate": "ts-node -r tsconfig-paths/register scripts/verifyGlucoseEstimate.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^2.0.23",
