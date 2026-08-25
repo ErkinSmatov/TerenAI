@@ -217,7 +217,7 @@ Plans:
 
 **Wave 8** *(blocked on Wave 7 completion)*
 
-- [ ] 07-08-PLAN.md — Russian ingredient display names (`nameRu`) on the confirm screen, English `name` preserved as the FDC search key (wave 8)
+- [x] 07-08-PLAN.md — Russian ingredient display names (`nameRu`) on the confirm screen, English `name` preserved as the FDC search key (wave 8) — merged 2026-08-25, tsc+lint clean; live model/UI observation deferred to Wave 6 re-run
 
 *После закрытия 07-07 и 07-08 план 07-06 (human-verify) перезапускается целиком, включая шаги 6–11, которые не были достигнуты: `/gsd-execute-phase 7 --wave 6`*
 
@@ -260,7 +260,7 @@ Phases execute in numeric order: 1 → 3 → 3.1 → 4 → 6 → 7 → 67
 | 3.1. Экспорт месячного отчёта (INSERTED) | - | Complete: PDF-экспорт из настроек реализован и встроен в роадмап задним числом | 2026-08-20 |
 | 4. Сквозной сценарий тестера | 3/3 | Complete    | 2026-08-21 |
 | 6. Наблюдатель за пользователем | 7/7 | Complete: код-ревью и верификация пройдены, ручной UAT подтверждён пользователем | 2026-08-18 |
-| 7. Двухэтапное распознавание блюда | 7/8 | In Progress|  |
+| 7. Двухэтапное распознавание блюда | 7/8 | In Progress — код готов, ждёт повторной человеческой проверки (wave 6) |  |
 | 67. Дистрибуция и OTA-обновления | 0/TBD | Not started — объединяет незакрытый скоуп бывших Phase 2 (BOOT-02, BOOT-03, BOOT-04, DIST-01, DIST-02) и Phase 5 (OTA) | - |
 
 ## Backlog
