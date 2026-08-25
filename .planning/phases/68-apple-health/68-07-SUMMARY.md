@@ -124,3 +124,7 @@ None - no external service configuration required for this plan.
 ---
 *Phase: 68-apple-health*
 *Completed: 2026-08-25*
+
+## Self-Check: PASSED
+
+Files `app/app/(home)/calendar.tsx`, `components/home/HomeHeader.tsx` verified present. Commits `01f0823`, `2a527f2`, `4724607`, `0c74550` verified present in `git log`.
