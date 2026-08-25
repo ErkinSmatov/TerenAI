@@ -10,7 +10,16 @@ const correctionSchema = z.object({
     .describe("Short, appetizing, generic meal name in Russian"),
   items: z.array(
     z.object({
-      name: z.string().min(1),
+      name: z
+        .string()
+        .min(1)
+        .describe(
+          "Concise, generic English ingredient name (no brands) — used for database lookup, never shown to the user"
+        ),
+      nameRu: z
+        .string()
+        .min(1)
+        .describe("The same ingredient name in Russian, shown to the user"),
       grams: z.number().int().min(1).max(1500),
     })
   ),

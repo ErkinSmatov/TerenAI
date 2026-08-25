@@ -10,7 +10,13 @@ const confirmMeal = mutation({
     photoStorageId: v.optional(v.id("_storage")),
     description: v.optional(v.string()),
     mealName: v.string(),
-    items: v.array(v.object({ name: v.string(), grams: v.number() })),
+    items: v.array(
+      v.object({
+        name: v.string(),
+        nameRu: v.optional(v.string()),
+        grams: v.number(),
+      })
+    ),
   },
   handler: async (
     ctx,
@@ -22,10 +28,14 @@ const confirmMeal = mutation({
 
       const cleanItems = items
         .filter((i) => i.name.trim().length > 0)
-        .map((i) => ({
-          name: i.name.trim(),
-          grams: Math.max(1, Math.min(1500, Math.round(i.grams))),
-        }))
+        .map((i) => {
+          const trimmedNameRu = i.nameRu?.trim();
+          return {
+            name: i.name.trim(),
+            nameRu: trimmedNameRu?.length ? trimmedNameRu : undefined,
+            grams: Math.max(1, Math.min(1500, Math.round(i.grams))),
+          };
+        })
         .slice(0, 30);
 
       if (cleanItems.length === 0) throw new Error("No items to confirm");

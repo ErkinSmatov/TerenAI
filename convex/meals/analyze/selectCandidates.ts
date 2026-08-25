@@ -109,7 +109,11 @@ export default async function selectCandidates({
       content: [
         {
           type: "text",
-          text: "Detected items (JSON):\n" + JSON.stringify(detectedItems),
+          text:
+            "Detected items (JSON):\n" +
+            JSON.stringify(
+              detectedItems.map(({ name, grams }) => ({ name, grams }))
+            ),
         },
       ],
     },

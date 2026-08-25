@@ -30,7 +30,12 @@ import uuidv4 from "@/lib/utils/uuidv4";
 import tryCatch from "@/lib/utils/tryCatch";
 import logError from "@/lib/utils/logError";
 
-type ConfirmItem = { id: string; name: string; grams: number };
+type ConfirmItem = {
+  id: string;
+  name: string;
+  searchName?: string;
+  grams: number;
+};
 
 export default function ConfirmMealScreen() {
   const dimensions = useWindowDimensions();
@@ -109,7 +114,10 @@ export default function ConfirmMealScreen() {
     }
 
     try {
-      let result: { mealName: string; items: { name: string; grams: number }[] };
+      let result: {
+        mealName: string;
+        items: { name: string; nameRu: string; grams: number }[];
+      };
 
       if (photoUri) {
         const storageId = await uploadAndGetStorageId(photoUri);
@@ -122,7 +130,14 @@ export default function ConfirmMealScreen() {
       }
 
       setMealName(result.mealName);
-      setItems(result.items.map((item) => ({ id: uuidv4(), ...item })));
+      setItems(
+        result.items.map((item) => ({
+          id: uuidv4(),
+          name: item.nameRu,
+          searchName: item.name,
+          grams: item.grams,
+        }))
+      );
       setIsDetecting(false);
     } catch (e) {
       logError("Detect meal error", e);
@@ -154,7 +169,11 @@ export default function ConfirmMealScreen() {
         photoStorageId,
         description,
         mealName: mealName || "Блюдо",
-        items: validItems.map(({ name, grams }) => ({ name, grams })),
+        items: validItems.map(({ name, searchName, grams }) => ({
+          name: searchName ?? name,
+          nameRu: name,
+          grams,
+        })),
       })
     );
     setIsConfirming(false);
@@ -207,7 +226,9 @@ export default function ConfirmMealScreen() {
           loading={isDetecting}
           onChangeName={(id, name) =>
             setItems((prev) =>
-              prev.map((i) => (i.id === id ? { ...i, name } : i))
+              prev.map((i) =>
+                i.id === id ? { ...i, name, searchName: undefined } : i
+              )
             )
           }
           onChangeGrams={(id, grams) =>

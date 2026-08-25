@@ -44,6 +44,7 @@ export const correctMeal = action({
 
       const previousItems = mealItems.map((item) => ({
         name: item.food ? item.food.name.en : "unknown food",
+        nameRu: item.food?.name.ru ?? item.food?.name.en ?? "unknown food",
         grams: item.grams,
       }));
 
