@@ -164,7 +164,7 @@ export default function ConfirmMealScreen() {
     if (validItems.length === 0) return;
 
     setIsConfirming(true);
-    const { data: mealId, error } = await tryCatch(
+    const { error } = await tryCatch(
       confirmMeal({
         photoStorageId,
         description,
@@ -184,10 +184,7 @@ export default function ConfirmMealScreen() {
     }
 
     setConfirmed(true);
-    router.replace({
-      pathname: "/app/(meal)/meal",
-      params: { mealId },
-    });
+    router.replace("/app");
   };
 
   usePreventRemove(!confirmed, ({ data }) => {
