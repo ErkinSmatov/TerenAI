@@ -284,13 +284,27 @@ Plans:
 
 Plans:
 
+**Wave 1**
+
 - [ ] 68-01-PLAN.md — Фикс синхронизации Apple Health: снятие постоянной ref-блокировки, ре-синхронизация по `AppState` с троттлингом, диагностический след (wave 1)
 - [ ] 68-02-PLAN.md — Фундамент месячной истории: `getLocalMonthBounds`, серверные валидаторы `localMonthBounds`, скрипт `verifyMonthBucketing` (wave 1)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 68-03-PLAN.md — Четыре месячных Convex-запроса: блюда, глюкоза, движение, давление (wave 2)
 - [ ] 68-04-PLAN.md — Чистая функция оценки глюкозы от еды + скрипт `verifyGlucoseEstimate` (wave 2)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 68-05-PLAN.md — UI оценки: вынос `WarningBadge`, строка `EstimateRow` в блоке «Уровень сахара», проводка на главном экране (wave 3)
 - [ ] 68-06-PLAN.md — Экран аналитики за произвольную дату `app/app/(home)/day/[date].tsx` (wave 3)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 68-07-PLAN.md — Установка `react-native-calendars`, экран календаря, кнопка входа в шапке (wave 4)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 68-08-PLAN.md — Проверка человеком: многодневная на устройстве (HEALTH-01), визуальная (GLU-01, HIST-01/02), письменный вывод диагностики (wave 5, требует человека)
 
 ## Progress
@@ -325,4 +339,3 @@ Phases execute in numeric order: 1 → 3 → 3.1 → 4 → 6 → 7 → 67 → 68
 - [x] 01-04 Task 3 → 04-03 Task 3: установка из TestFlight, семикратное нажатие в настройках, все 4 события (message/exception/logError/native crash) подтверждены в Sentry с окружением `testflight` и читаемым стек-трейсом
 
 **Рекомендация выполнена** — диагностика продакшена проверена на реальном подписанном TestFlight-бинарнике до релиза в App Store.
-
