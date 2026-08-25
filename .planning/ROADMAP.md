@@ -209,7 +209,7 @@ Plans:
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
-- [ ] 07-06-PLAN.md — End-to-end human verification of the full flow (wave 6, требует человека) — **FAILED 2026-08-24**, root-caused, must be re-run in full (incl. never-reached steps 6-11) after Wave 8 lands, see 07-06-SUMMARY.md
+- [x] 07-06-PLAN.md — End-to-end human verification of the full flow (wave 6, требует человека) — FAILED 2026-08-24, root-caused; re-run 2026-08-25 PASSED after Wave 7/8 fixes. Human requested 2 follow-up UX changes (post-confirm → home screen, ingredient row layout) mid-checkpoint, implemented directly (commits `3531027`, `a22861f`), pending visual confirmation. See 07-06-SUMMARY.md
 
 **Wave 7** *(gap closure — wave 6 human verification FAILED, see 07-06-SUMMARY.md)*
 
@@ -260,7 +260,7 @@ Phases execute in numeric order: 1 → 3 → 3.1 → 4 → 6 → 7 → 67
 | 3.1. Экспорт месячного отчёта (INSERTED) | - | Complete: PDF-экспорт из настроек реализован и встроен в роадмап задним числом | 2026-08-20 |
 | 4. Сквозной сценарий тестера | 3/3 | Complete    | 2026-08-21 |
 | 6. Наблюдатель за пользователем | 7/7 | Complete: код-ревью и верификация пройдены, ручной UAT подтверждён пользователем | 2026-08-18 |
-| 7. Двухэтапное распознавание блюда | 7/8 | In Progress — код готов, ждёт повторной человеческой проверки (wave 6) |  |
+| 7. Двухэтапное распознавание блюда | 8/8 | Human-verify PASSED 2026-08-25 — ждёт визуального подтверждения 2 UX-правок, сделанных по итогам прогона |  |
 | 67. Дистрибуция и OTA-обновления | 0/TBD | Not started — объединяет незакрытый скоуп бывших Phase 2 (BOOT-02, BOOT-03, BOOT-04, DIST-01, DIST-02) и Phase 5 (OTA) | - |
 
 ## Backlog

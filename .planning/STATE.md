@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: milestone
 status: executing
-stopped_at: Phase 7 wave 8 (07-08) gap-closure merged — both bugs fixed at code level; wave 6 human-verify must be re-run before phase closes
-last_updated: "2026-08-25T09:50:00.000Z"
-last_activity: 2026-08-25 -- Phase 07 gap-closure complete at code level (07-07 + 07-08 merged, tsc+lint clean); human re-verification (wave 6) still required
+stopped_at: Phase 7 wave 6 human-verify PASSED on re-run; 2 post-verify UX tweaks implemented, awaiting human visual confirmation
+last_updated: "2026-08-25T10:20:00.000Z"
+last_activity: 2026-08-25 -- Phase 07 human re-verification PASSED (MEAL-01...05 confirmed working); human requested 2 UX follow-ups mid-checkpoint, implemented and committed (3531027, a22861f)
 progress:
   total_phases: 8
   completed_phases: 3
   total_plans: 22
-  completed_plans: 16
+  completed_plans: 17
   percent: 38
 ---
 
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-08-05)
 
 ## Current Position
 
-Phase: 07 (two-stage-meal-analysis) — BLOCKED on human re-verification (wave 6 re-run)
-Plan: 8 of 8 code/gap plans complete (07-01…07-05, 07-07, 07-08 merged); 07-06 (human-verify) FAILED on the first attempt and MUST be re-run in full — it is the only remaining gate before this phase can close
-Status: `npx tsc --noEmit` clean project-wide, `npm run lint` clean on every file touched by 07-07/07-08 (8 pre-existing lint errors remain in untouched files, logged in `.planning/phases/07-two-stage-meal-analysis/deferred-items.md`, out of scope for this gap-closure). Bug 1 (Unauthorized in scheduler) has genuine runtime proof via `npx convex logs`. Bug 2 (English ingredient names) — 07-08 added a required `nameRu` field (Russian display name) alongside the existing English `name` (kept as the FDC vector-search key); verified via static type-tracing (2 plan-checker rounds) and a clean `npx convex dev --once` deploy, but the orchestrator's own attempt to trigger a live model call outside the Convex runtime hit an unrelated local-harness bug (Node's strict undici fetch rejecting a pre-existing em-dash character in an unrelated system-prompt string that already ships fine in production via Convex's own fetch) — not indicative of a real bug, but means the *live Cyrillic model output* has not been directly observed yet. That observation now falls to the wave-6 human re-run, same as the rest of the previously-unreached verification steps.
-Last activity: 2026-08-25 -- Phase 07 gap-closure (07-07, 07-08) executed and merged; both tsc/lint clean; live end-to-end confirmation deferred to human re-run
+Phase: 07 (two-stage-meal-analysis) — human-verify PASSED, awaiting final visual sign-off on 2 post-verify UX tweaks
+Plan: 8 of 8 plans complete, including 07-06 human-verify (re-run PASSED 2026-08-25). MEAL-01 through MEAL-05 confirmed working end-to-end by the human.
+Status: `npx tsc --noEmit` clean project-wide. During the wave-6 re-run, the human confirmed the flow works, then requested two UX follow-ups discovered live: (1) land on the home screen after confirming a meal instead of the meal-detail screen (the completion toast already reaches any screen via `MealCompletionWatcher`), (2) ingredient row layout on confirm-meal — full-width name row with a trash icon, grams stepper on its own row below (long names were getting squeezed before). Both implemented immediately (`app/app/(meal)/confirm-meal.tsx` commit `3531027`, `components/meal/ConfirmMealItems.tsx` commit `a22861f`), `tsc`/`lint` clean, no new lint violations vs the 7 pre-existing ones in `deferred-items.md`. **Not yet done:** on-device visual confirmation of these two specific changes — RN UI, not testable by the agent in this environment.
+Last activity: 2026-08-25 -- Phase 07 wave 6 re-run PASSED; 2 human-requested UX follow-ups implemented and committed same session
 
-Next step: `/gsd-execute-phase 7 --wave 6` to re-run the full human verification (all 11 steps, including the 6 never reached on the first attempt), watching specifically for: (a) no error state after confirming a meal, (b) ingredient names rendering in Russian on the confirm-meal screen.
+Next step: human does a quick visual check (confirm a meal, see it land on home; check the ingredient row layout on confirm-meal) to close out the two follow-up commits. Once confirmed, phase 7 (MEAL-01...05) can be considered fully closed.
 
 Progress: [████░░░░░░] 43% (Phases 1 (частично), 3, 3.1, 6 закрыты, 3 интеграционные фазы + backlog впереди)
 
@@ -98,10 +98,7 @@ Recent decisions affecting current work:
 
 ### Blockers/Concerns
 
-- **Phase 7 (2026-08-24/25, gap-closure complete at code level, human re-verification pending):** Human verification of the two-stage meal analysis flow (plan 07-06) FAILED at step 5/11 — every confirmed meal errored out ("Не удалось распознать блюдо") instead of finishing background processing, and ingredient names rendered in English. Both root causes found and fixed:
-  - ✓ **Bug 1, fixed 2026-08-25 (plan 07-07):** `convex/foods/getFoodByIdentity.ts` was a public `query` calling `getAuthUserId(ctx)`, throwing `Unauthorized` from the scheduled/auth-less `processDetectedItemsAction` context. Added `convex/foods/getFoodByIdentityInternal.ts` (internalQuery, no auth check); verified with genuine runtime proof (re-ran a real errored meal through `processDetectedItemsAction`, reached `status: "done"`, confirmed via `npx convex logs` the `Unauthorized` error class no longer occurs).
-  - ✓ **Bug 2, fixed 2026-08-25 (plan 07-08):** `convex/meals/analyze/detectMealItems.ts`'s zod schema constrained `mealName` to Russian but left `items[].name` unconstrained. Added a required `nameRu` field (kept English `name` as the FDC vector-search key — the embedding index in `backfillFoodEmbeddings.ts` is English-only, so translating `name` itself would have silently degraded candidate-match quality). Plan-checker verified after 2 revision rounds; `tsc`/`lint` clean on all touched files. The orchestrator's own attempt to observe a live Cyrillic model response (outside the app, via a local script) hit an unrelated Node/undici header-encoding quirk on a pre-existing em-dash in a system prompt that already ships fine through Convex's own fetch in production — inconclusive, not a real bug, but means live model output has not been directly observed yet.
-  - **Remaining:** plan 07-06 (human verification) must be re-run in full via `/gsd-execute-phase 7 --wave 6`, including the 6 steps never reached on the first attempt (toast timing/dedup, retry-on-error, barcode regression) plus explicit confirmation that ingredient names now render in Russian. Full details in `.planning/phases/07-two-stage-meal-analysis/07-06-SUMMARY.md`, `07-07-SUMMARY.md`, `07-08-SUMMARY.md`.
+- **Phase 7 (2026-08-24/25, RESOLVED — pending final visual sign-off only):** Human verification of the two-stage meal analysis flow (plan 07-06) FAILED at step 5/11 on the first attempt — every confirmed meal errored out and ingredient names rendered in English. Both root causes fixed (07-07: `getFoodByIdentityInternal`, an auth-less internalQuery for the scheduler context, verified with real `npx convex logs` proof; 07-08: required `nameRu` field, English `name` kept as the FDC vector-search key). Re-run 2026-08-25 **PASSED** — human confirmed the full 11-step flow works. Mid-checkpoint the human requested two UX follow-ups (post-confirm → home screen instead of meal detail; ingredient row layout restacked to show the full name with a trash icon, grams stepper below) — both implemented and committed (`3531027`, `a22861f`), `tsc`/`lint` clean. Only remaining item: human visual/on-device confirmation that these two specific UI changes look right (not testable by the agent — no RN simulator/device access in this environment). Full details in `.planning/phases/07-two-stage-meal-analysis/07-06-SUMMARY.md`, `07-07-SUMMARY.md`, `07-08-SUMMARY.md`.
 
 - **Phase 2**: EAS-окружения `production` и `development` в проекте сейчас пусты (`eas env:list --environment production` — 0 переменных). Это подтверждённая причина краша 1.2.1 (1): `EXPO_PUBLIC_CONVEX_URL` не долетает до продакшн-бандла, а `components/RootLayoutProvider.tsx:29-33` бросает исключение на уровне модуля. Фикс требует реальных значений секретов — агент НЕ должен придумывать или изобретать значения; пользователь должен сам предоставить/подтвердить их и выполнить/одобрить шаги `eas env:create`. Клиентские `EXPO_PUBLIC_*` переменные — в EAS; серверные секреты (`AUTH_*`, `OPENROUTER_API_KEY`, `GOOGLE_GENERATIVE_AI_API_KEY`, `REVENUECAT_SECRET_KEY`, `INGEST_TOKEN`, `JWKS`, `JWT_PRIVATE_KEY`, `SITE_URL`) — в Convex deployment, не в мобильную сборку.
 - **Phase 3**: In-place-связывание анонимного аккаунта с Apple/Google (перенос того же `userId` при входе) технически возможно через кастомный `createOrUpdateUser` в `convex/auth.ts`, но не покрыто тестами апстрима (`test.todo` в `@convex-dev/auth`, открытый issue #231) — реализация самого связывания вне этого майлстоуна (v2), но дизайн гостевого режима не должен исключать эту возможность в будущем.
