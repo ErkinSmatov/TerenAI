@@ -286,8 +286,8 @@ Plans:
 
 **Wave 1**
 
-- [ ] 68-01-PLAN.md — Фикс синхронизации Apple Health: снятие постоянной ref-блокировки, ре-синхронизация по `AppState` с троттлингом, диагностический след (wave 1)
-- [ ] 68-02-PLAN.md — Фундамент месячной истории: `getLocalMonthBounds`, серверные валидаторы `localMonthBounds`, скрипт `verifyMonthBucketing` (wave 1)
+- [x] 68-01-PLAN.md — Фикс синхронизации Apple Health: снятие постоянной ref-блокировки, ре-синхронизация по `AppState` с троттлингом, диагностический след (wave 1)
+- [x] 68-02-PLAN.md — Фундамент месячной истории: `getLocalMonthBounds`, серверные валидаторы `localMonthBounds`, скрипт `verifyMonthBucketing` (wave 1)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -323,7 +323,7 @@ Phases execute in numeric order: 1 → 3 → 3.1 → 4 → 6 → 7 → 67 → 68
 | 6. Наблюдатель за пользователем | 7/7 | Complete: код-ревью и верификация пройдены, ручной UAT подтверждён пользователем | 2026-08-18 |
 | 7. Двухэтапное распознавание блюда | 8/8 | Complete: human-verify пройден, 2 пост-верификационные UX-правки подтверждены визуально | 2026-08-25 |
 | 67. Дистрибуция и OTA-обновления | 0/TBD | Not started — объединяет незакрытый скоуп бывших Phase 2 (BOOT-02, BOOT-03, BOOT-04, DIST-01, DIST-02) и Phase 5 (OTA) | - |
-| 68. Apple Health, оценка глюкозы, месячная история | 0/8 | Planned | - |
+| 68. Apple Health, оценка глюкозы, месячная история | 2/8 | In Progress|  |
 
 ## Backlog
 
