@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: milestone
 status: executing
-stopped_at: Phase 7 wave 6 human-verify PASSED on re-run; 2 post-verify UX tweaks implemented, awaiting human visual confirmation
-last_updated: "2026-08-25T10:20:00.000Z"
-last_activity: 2026-08-25 -- Phase 07 human re-verification PASSED (MEAL-01...05 confirmed working); human requested 2 UX follow-ups mid-checkpoint, implemented and committed (3531027, a22861f)
+stopped_at: Phase 7 CLOSED — human-verify passed, both post-verify UX tweaks visually confirmed, VERIFICATION.md written
+last_updated: "2026-08-25T10:45:00.000Z"
+last_activity: 2026-08-25 -- Phase 07 closed: MEAL-01...05 marked complete in REQUIREMENTS.md, 07-VERIFICATION.md written (8/8 must-haves), ROADMAP.md phase checkbox checked
 progress:
   total_phases: 8
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 22
   completed_plans: 17
-  percent: 38
+  percent: 50
 ---
 
 # Project State
@@ -25,14 +25,14 @@ See: .planning/PROJECT.md (updated 2026-08-05)
 
 ## Current Position
 
-Phase: 07 (two-stage-meal-analysis) — human-verify PASSED, awaiting final visual sign-off on 2 post-verify UX tweaks
-Plan: 8 of 8 plans complete, including 07-06 human-verify (re-run PASSED 2026-08-25). MEAL-01 through MEAL-05 confirmed working end-to-end by the human.
-Status: `npx tsc --noEmit` clean project-wide. During the wave-6 re-run, the human confirmed the flow works, then requested two UX follow-ups discovered live: (1) land on the home screen after confirming a meal instead of the meal-detail screen (the completion toast already reaches any screen via `MealCompletionWatcher`), (2) ingredient row layout on confirm-meal — full-width name row with a trash icon, grams stepper on its own row below (long names were getting squeezed before). Both implemented immediately (`app/app/(meal)/confirm-meal.tsx` commit `3531027`, `components/meal/ConfirmMealItems.tsx` commit `a22861f`), `tsc`/`lint` clean, no new lint violations vs the 7 pre-existing ones in `deferred-items.md`. **Not yet done:** on-device visual confirmation of these two specific changes — RN UI, not testable by the agent in this environment.
-Last activity: 2026-08-25 -- Phase 07 wave 6 re-run PASSED; 2 human-requested UX follow-ups implemented and committed same session
+Phase: 07 (two-stage-meal-analysis) — CLOSED (Complete)
+Plan: 8 of 8 plans complete. MEAL-01 through MEAL-05 marked complete in REQUIREMENTS.md. 07-VERIFICATION.md written (8/8 must-haves verified, human_verification section documents both the wave-6 re-run and the 2 post-verify UX tweaks).
+Status: `npx tsc --noEmit` clean project-wide. Both gap-closure bugs from the first 07-06 attempt (scheduler Unauthorized, English ingredient names) fixed and runtime/statically verified. Two UX follow-ups requested by the human during the wave-6 re-run — post-confirm destination (home screen instead of meal detail) and ingredient row layout (full name + trash icon on top, grams stepper below) — implemented (`3531027`, `a22861f`) and visually confirmed by the human on-device.
+Last activity: 2026-08-25 -- Phase 07 formally closed: requirements marked complete, VERIFICATION.md written, ROADMAP.md phase checkbox checked
 
-Next step: human does a quick visual check (confirm a meal, see it land on home; check the ingredient row layout on confirm-meal) to close out the two follow-up commits. Once confirmed, phase 7 (MEAL-01...05) can be considered fully closed.
+Next step: pick the next phase from ROADMAP.md (Phase 67 — Дистрибуция и OTA-обновления — is the only phase left, Pending, 0 plans).
 
-Progress: [████░░░░░░] 43% (Phases 1 (частично), 3, 3.1, 6 закрыты, 3 интеграционные фазы + backlog впереди)
+Progress: [█████░░░░░] 50% (Phases 3, 3.1, 4, 6, 7 закрыты; Phase 67 впереди + backlog)
 
 ## Performance Metrics
 
@@ -97,8 +97,6 @@ Recent decisions affecting current work:
 - **Отложено 2026-08-21 (code review Phase 4, `04-REVIEW.md`):** WR-01 (порядок проверок статус/владение в `getMeal.ts` — утечка статуса чужого блюда), WR-02 (нет защиты от конкурентных вызовов `correctMeal`), WR-03 (AI-лимит списывается до валидации запроса в `correctMeal`), WR-04 (нет guard `"skip"` в `mealItemNutrients.tsx`), WR-05 (необработанный `Forbidden` роняет экран блюда/ингредиента вместо редиректа), WR-06 (заголовок дня в `nutrients.tsx` считается отдельно от `weekBounds`, может разойтись с данными), IN-01…04 (дублирование бакетинга недели, отсутствие валидации пустой правки, UX-мелочь в `fix-meal.tsx`, `getMealItem.ts` не проверяет статус родителя) — по решению пользователя не блокируют закрытие Phase 4, оставлены как задокументированный backlog в `04-REVIEW.md`.
 
 ### Blockers/Concerns
-
-- **Phase 7 (2026-08-24/25, RESOLVED — pending final visual sign-off only):** Human verification of the two-stage meal analysis flow (plan 07-06) FAILED at step 5/11 on the first attempt — every confirmed meal errored out and ingredient names rendered in English. Both root causes fixed (07-07: `getFoodByIdentityInternal`, an auth-less internalQuery for the scheduler context, verified with real `npx convex logs` proof; 07-08: required `nameRu` field, English `name` kept as the FDC vector-search key). Re-run 2026-08-25 **PASSED** — human confirmed the full 11-step flow works. Mid-checkpoint the human requested two UX follow-ups (post-confirm → home screen instead of meal detail; ingredient row layout restacked to show the full name with a trash icon, grams stepper below) — both implemented and committed (`3531027`, `a22861f`), `tsc`/`lint` clean. Only remaining item: human visual/on-device confirmation that these two specific UI changes look right (not testable by the agent — no RN simulator/device access in this environment). Full details in `.planning/phases/07-two-stage-meal-analysis/07-06-SUMMARY.md`, `07-07-SUMMARY.md`, `07-08-SUMMARY.md`.
 
 - **Phase 2**: EAS-окружения `production` и `development` в проекте сейчас пусты (`eas env:list --environment production` — 0 переменных). Это подтверждённая причина краша 1.2.1 (1): `EXPO_PUBLIC_CONVEX_URL` не долетает до продакшн-бандла, а `components/RootLayoutProvider.tsx:29-33` бросает исключение на уровне модуля. Фикс требует реальных значений секретов — агент НЕ должен придумывать или изобретать значения; пользователь должен сам предоставить/подтвердить их и выполнить/одобрить шаги `eas env:create`. Клиентские `EXPO_PUBLIC_*` переменные — в EAS; серверные секреты (`AUTH_*`, `OPENROUTER_API_KEY`, `GOOGLE_GENERATIVE_AI_API_KEY`, `REVENUECAT_SECRET_KEY`, `INGEST_TOKEN`, `JWKS`, `JWT_PRIVATE_KEY`, `SITE_URL`) — в Convex deployment, не в мобильную сборку.
 - **Phase 3**: In-place-связывание анонимного аккаунта с Apple/Google (перенос того же `userId` при входе) технически возможно через кастомный `createOrUpdateUser` в `convex/auth.ts`, но не покрыто тестами апстрима (`test.todo` в `@convex-dev/auth`, открытый issue #231) — реализация самого связывания вне этого майлстоуна (v2), но дизайн гостевого режима не должен исключать эту возможность в будущем.
