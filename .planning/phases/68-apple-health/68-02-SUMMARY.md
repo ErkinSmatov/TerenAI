@@ -111,3 +111,7 @@ None - no external service configuration required.
 ---
 *Phase: 68-apple-health*
 *Completed: 2026-08-25*
+
+## Self-Check: PASSED
+
+All created files verified present: `lib/utils/getLocalMonthBounds.ts`, `convex/utils/localMonthBounds.ts`, `scripts/verifyMonthBucketing.ts`, `.planning/phases/68-apple-health/deferred-items.md`. All task commits verified present in `git log`: `3d18110`, `7c57497`, `4b2f642`, `83a28b1`, `ff22926`.
