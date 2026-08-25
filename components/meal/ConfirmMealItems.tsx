@@ -6,7 +6,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
-import { PlusIcon, XIcon } from "lucide-react-native";
+import { PlusIcon, TrashIcon } from "lucide-react-native";
 import Text from "@/components/ui/Text";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
@@ -50,24 +50,25 @@ export default function ConfirmMealItems({
         <View style={styles.ingredientsContainer}>
           {Array.from({ length: placeholderRows }).map((_, i) => (
             <Card key={`skeleton-${i}`} style={styles.card}>
+              <View style={styles.topRow}>
+                <WithSkeleton
+                  loading
+                  containerStyle={styles.nameContent}
+                  skeletonStyle={{
+                    height: 14,
+                    width: nameSkeletonWidths[i % nameSkeletonWidths.length],
+                    borderRadius: 4,
+                  }}
+                >
+                  <Text size="16">placeholder</Text>
+                </WithSkeleton>
+              </View>
               <WithSkeleton
                 loading
-                containerStyle={styles.nameContent}
                 skeletonStyle={{
-                  height: 14,
-                  width: nameSkeletonWidths[i % nameSkeletonWidths.length],
-                  borderRadius: 4,
-                }}
-              >
-                <Text size="16">placeholder</Text>
-              </WithSkeleton>
-              <WithSkeleton
-                loading
-                skeletonStyle={{
-                  height: 14,
-                  width: 60,
-                  borderRadius: 4,
-                  alignSelf: "flex-end",
+                  height: 44,
+                  width: 116,
+                  borderRadius: 8,
                 }}
               >
                 <Text size="16">placeholder</Text>
@@ -162,20 +163,22 @@ function IngredientRow({
     <GestureDetector gesture={panGesture}>
       <Animated.View style={animatedStyle}>
         <Card style={styles.card}>
-          <RNTextInput
-            style={styles.nameInput}
-            value={item.name}
-            onChangeText={(text) => onChangeName(item.id, text)}
-          />
-          <Button
-            variant="base"
-            size="base"
-            style={styles.removeButton}
-            hitSlop={8}
-            onPress={handleRemove}
-          >
-            <XIcon size={18} color={getColor("red")} />
-          </Button>
+          <View style={styles.topRow}>
+            <RNTextInput
+              style={styles.nameInput}
+              value={item.name}
+              onChangeText={(text) => onChangeName(item.id, text)}
+            />
+            <Button
+              variant="base"
+              size="base"
+              style={styles.removeButton}
+              hitSlop={8}
+              onPress={handleRemove}
+            >
+              <TrashIcon size={18} color={getColor("red")} />
+            </Button>
+          </View>
           <GramsStepper
             value={item.grams}
             onChange={(grams) => onChangeGrams(item.id, grams)}
@@ -197,10 +200,13 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   card: {
+    padding: 16,
+    gap: 8,
+  },
+  topRow: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
-    gap: 20,
+    gap: 8,
   },
   nameContent: {
     flex: 1,
