@@ -8,7 +8,13 @@ const processDetectedItemsAction = internalAction({
   args: {
     mealId: v.id("meals"),
     userId: v.id("users"),
-    detectedItems: v.array(v.object({ name: v.string(), grams: v.number() })),
+    detectedItems: v.array(
+      v.object({
+        name: v.string(),
+        nameRu: v.optional(v.string()),
+        grams: v.number(),
+      })
+    ),
     mealName: v.string(),
     description: v.optional(v.string()),
     photoStorageId: v.optional(v.id("_storage")),
