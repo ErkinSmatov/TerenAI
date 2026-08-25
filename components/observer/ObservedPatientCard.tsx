@@ -4,7 +4,6 @@ import {
   DropletIcon,
   FlameIcon,
   FootprintsIcon,
-  TriangleAlertIcon,
   UtensilsIcon,
   XIcon,
 } from "lucide-react-native";
@@ -13,6 +12,7 @@ import Text from "../ui/Text";
 import Card from "../ui/Card";
 import Button from "../ui/Button";
 import AlertDialog from "../ui/AlertDialog";
+import WarningBadge from "../ui/WarningBadge";
 import { Id } from "@/convex/_generated/dataModel";
 import getColor from "@/lib/ui/getColor";
 import { glucoseContextLabels, GlucoseContext, GlucoseUnit } from "@/config/glucoseConfig";
@@ -56,27 +56,6 @@ function Stat({ Icon, value, label }: StatProps) {
           {label}
         </Text>
       </View>
-    </View>
-  );
-}
-
-type BadgeProps = {
-  text: string;
-  color: "amber" | "red";
-};
-
-function WarningBadge({ text, color }: BadgeProps) {
-  return (
-    <View
-      style={[
-        styles.badge,
-        { backgroundColor: getColor(color, 0.12) },
-      ]}
-    >
-      <TriangleAlertIcon size={14} color={getColor(color)} />
-      <Text size="12" weight="400" color={getColor(color)}>
-        {text}
-      </Text>
     </View>
   );
 }
@@ -215,13 +194,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 8,
-  },
-  badge: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-start",
-    gap: 4,
-    padding: 8,
-    borderRadius: 8,
   },
 });

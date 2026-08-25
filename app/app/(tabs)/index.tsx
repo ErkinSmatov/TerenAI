@@ -11,6 +11,7 @@ import SafeArea from "@/components/ui/SafeArea";
 import { api } from "@/convex/_generated/api";
 import useHealthKitSync from "@/lib/hooks/useHealthKitSync";
 import { calculateDayTotals } from "@/lib/nutrition/calculateDayTotals";
+import estimateGlucoseFromMeals from "@/lib/nutrition/estimateGlucoseFromMeals";
 import getColor from "@/lib/ui/getColor";
 import getLocalWeekBounds from "@/lib/utils/getLocalWeekBounds";
 import { useQuery } from "convex/react";
@@ -76,6 +77,9 @@ export default function HomeScreen() {
   );
 
   const dayTotals = calculateDayTotals(dayMeals);
+  const glucoseEstimate = isGlucometerTrack
+    ? estimateGlucoseFromMeals(dayMeals, dayReadings, Date.now())
+    : null;
 
   return (
     <SafeArea edges={["top"]}>
@@ -105,7 +109,9 @@ export default function HomeScreen() {
         {Platform.OS === "ios" && (
           <HomeMovementSummary movement={dayMovement} />
         )}
-        {isGlucometerTrack && <HomeGlucoseSummary readings={dayReadings} />}
+        {isGlucometerTrack && (
+          <HomeGlucoseSummary readings={dayReadings} estimate={glucoseEstimate} />
+        )}
         {isGlucometerTrack && (
           <HomeBloodPressureSummary readings={dayBloodPressure} />
         )}
