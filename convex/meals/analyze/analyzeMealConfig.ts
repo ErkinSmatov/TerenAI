@@ -54,8 +54,9 @@ Goal
 Output
 - Return a JSON object with:
   - mealName: Short, appetizing, generic meal name in Russian (3-7 words, Title Case).
-  - items: Array of { name, grams }
+  - items: Array of { name, nameRu, grams }
     - name: concise, generic English name (no brands), reflect visible cooked state when clear (e.g., "grilled chicken breast", "white rice (cooked)", "tomato sauce", "olive oil").
+    - nameRu: the same ingredient in natural Russian, lowercase unless a proper noun, no brands, no quantities — e.g. "grilled chicken breast" -> "куриная грудка на гриле", "white rice (cooked)" -> "варёный белый рис", "olive oil" -> "оливковое масло".
     - grams: integer grams; round reasonably (e.g., nearest 1 g is fine).
 - Merge duplicate items by summing grams.
 - If you cannot confidently detect any food items, return empty items array.
@@ -163,7 +164,9 @@ Rules
 - Keep items that the user did not mention, unless they conflict with the correction.
 - Return a JSON object with:
   - mealName: Short, appetizing, generic meal name in Russian (3-7 words, Title Case).
-  - items: Array of { name, grams }.
+  - items: Array of { name, nameRu, grams }
+    - name: concise, generic English name (no brands), reflect visible cooked state when clear (e.g., "grilled chicken breast", "white rice (cooked)", "tomato sauce", "olive oil").
+    - nameRu: the same ingredient in natural Russian, lowercase unless a proper noun, no brands, no quantities — e.g. "grilled chicken breast" -> "куриная грудка на гриле", "white rice (cooked)" -> "варёный белый рис", "olive oil" -> "оливковое масло".
 `.trim(),
 
   detectText: `
@@ -179,8 +182,9 @@ Goal
 Output
 - Return a JSON object with:
   - mealName: Short, appetizing, generic meal name in Russian (3-7 words, Title Case).
-  - items: Array of { name, grams }
+  - items: Array of { name, nameRu, grams }
     - name: concise, generic English name (no brands).
+    - nameRu: the same ingredient in natural Russian, lowercase unless a proper noun, no brands, no quantities — e.g. "grilled chicken breast" -> "куриная грудка на гриле", "white rice (cooked)" -> "варёный белый рис", "olive oil" -> "оливковое масло".
     - grams: integer grams; round reasonably.
 - Merge duplicate items by summing grams.
 - If you cannot confidently detect any food items, return empty items array.

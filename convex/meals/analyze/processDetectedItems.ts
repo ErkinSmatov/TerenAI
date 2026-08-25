@@ -9,10 +9,16 @@ import getFoodMacros from "../../../lib/food/getFoodMacros";
 import getFoodNutrients from "../../../lib/food/getFoodNutrients";
 import calculateHealthScore from "./calculateHealthScore";
 
+export type ConfirmedItem = {
+  name: string;
+  nameRu?: string;
+  grams: number;
+};
+
 type Params = {
   ctx: ActionCtx;
   mealId: Id<"meals">;
-  detectedItems: DetectedItem[];
+  detectedItems: ConfirmedItem[];
   imageUrl?: string;
   mealName: string;
   description?: string;
@@ -28,13 +34,19 @@ export async function processDetectedItems({
   description,
   userId,
 }: Params) {
+  const pipelineItems: DetectedItem[] = detectedItems.map((item) => ({
+    name: item.name,
+    nameRu: item.nameRu ?? item.name,
+    grams: item.grams,
+  }));
+
   const candidatesByItem = await searchFdcCandidates({
     ctx,
-    detectedItems,
+    detectedItems: pipelineItems,
   });
 
   const selectedItems = await selectCandidates({
-    detectedItems,
+    detectedItems: pipelineItems,
     candidatesByItem,
     imageUrl,
     description,
