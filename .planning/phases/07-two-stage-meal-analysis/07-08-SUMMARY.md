@@ -133,3 +133,9 @@ MEAL-01…05 stay Pending, as instructed by 07-08-PLAN.md's `<output>` section r
 ---
 *Phase: 07-two-stage-meal-analysis*
 *Completed: 2026-08-25 (Tasks 1-2 verified; Task 3 blocked by sandbox restrictions — see above)*
+
+## Self-Check: PASSED
+
+All 11 created/modified files verified present on disk (11 Convex/TS source files +
+`07-08-SUMMARY.md` + `deferred-items.md`); all four commit hashes (`ed614c6`,
+`fa590cc`, `699930d`, `ed2e918`) verified present in `git log`.
