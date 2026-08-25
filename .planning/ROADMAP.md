@@ -301,7 +301,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 68-07-PLAN.md — Установка `react-native-calendars`, экран календаря, кнопка входа в шапке (wave 4)
+- [x] 68-07-PLAN.md — Установка `react-native-calendars`, экран календаря, кнопка входа в шапке (wave 4)
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
@@ -323,7 +323,7 @@ Phases execute in numeric order: 1 → 3 → 3.1 → 4 → 6 → 7 → 67 → 68
 | 6. Наблюдатель за пользователем | 7/7 | Complete: код-ревью и верификация пройдены, ручной UAT подтверждён пользователем | 2026-08-18 |
 | 7. Двухэтапное распознавание блюда | 8/8 | Complete: human-verify пройден, 2 пост-верификационные UX-правки подтверждены визуально | 2026-08-25 |
 | 67. Дистрибуция и OTA-обновления | 0/TBD | Not started — объединяет незакрытый скоуп бывших Phase 2 (BOOT-02, BOOT-03, BOOT-04, DIST-01, DIST-02) и Phase 5 (OTA) | - |
-| 68. Apple Health, оценка глюкозы, месячная история | 6/8 | In Progress|  |
+| 68. Apple Health, оценка глюкозы, месячная история | 7/8 | In Progress|  |
 
 ## Backlog
 
