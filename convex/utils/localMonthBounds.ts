@@ -46,8 +46,8 @@ export function assertLocalMonthBounds(dayStartsUtc: number[]): void {
   }
 
   const dayCount = dayStartsUtc.length - 1;
-  const minSpan = (dayCount - 1) * 24 * HOUR_MS - 2 * HOUR_MS;
-  const maxSpan = (dayCount - 1) * 24 * HOUR_MS + 2 * HOUR_MS;
+  const minSpan = dayCount * 24 * HOUR_MS - 2 * HOUR_MS;
+  const maxSpan = dayCount * 24 * HOUR_MS + 2 * HOUR_MS;
   const span = dayStartsUtc[dayStartsUtc.length - 1] - dayStartsUtc[0];
   if (span < minSpan || span > maxSpan) {
     throw new Error("Invalid month bounds");
