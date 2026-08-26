@@ -17,6 +17,7 @@ import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { StyleSheet } from "react-native";
 import { Calendar, LocaleConfig as RawLocaleConfig } from "react-native-calendars";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react-native";
 
 // react-native-calendars реэкспортирует тип LocaleConfig из непроверенного
 // типами пакета `xdate` (upstream-баг деклараций), из-за чего TS видит
@@ -141,6 +142,13 @@ export default function CalendarScreen() {
             firstDay={1}
             maxDate={maxDate}
             enableSwipeMonths
+            renderArrow={(direction) =>
+              direction === "left" ? (
+                <ChevronLeftIcon size={20} color={getColor("foreground")} />
+              ) : (
+                <ChevronRightIcon size={20} color={getColor("foreground")} />
+              )
+            }
             markedDates={markedDates}
             onDayPress={({ dateString }) => {
               router.push({
@@ -160,7 +168,6 @@ export default function CalendarScreen() {
               selectedDayBackgroundColor: getColor("primary"),
               selectedDayTextColor: getColor("base"),
               todayTextColor: getColor("primary"),
-              arrowColor: getColor("foreground"),
             }}
           />
         </Card>
