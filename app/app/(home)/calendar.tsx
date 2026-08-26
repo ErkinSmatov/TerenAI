@@ -140,6 +140,7 @@ export default function CalendarScreen() {
             current={toLocalDateString(visibleMonth)}
             firstDay={1}
             maxDate={maxDate}
+            enableSwipeMonths
             markedDates={markedDates}
             onDayPress={({ dateString }) => {
               router.push({
