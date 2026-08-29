@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: milestone
-status: ready_to_plan
-stopped_at: Phase 68 complete (8/8) — ready to discuss Phase 999.1
-last_updated: 2026-08-29T19:21:39.297Z
-last_activity: 2026-08-25 -- Phase 68 planning complete
+status: planning
+stopped_at: Phase 69 context gathered
+last_updated: "2026-08-29T21:38:25.586Z"
+last_activity: 2026-08-29
 progress:
-  total_phases: 9
-  completed_phases: 4
+  total_phases: 10
+  completed_phases: 5
   total_plans: 30
   completed_plans: 30
-  percent: 44
+  percent: 50
 ---
 
 # Project State
@@ -83,6 +83,7 @@ Recent decisions affecting current work:
 - Phase 67 added: Дистрибуция и OTA-обновления — намеренно вне обычной последовательности номеров, объединяет незакрытый скоуп бывших Phase 2 и Phase 5 (2026-08-21)
 - Phase 7 added: Двухэтапное распознавание блюда: список ингредиентов показывается сразу (без поиска по базе), пользователь редактирует, тяжёлая часть (поиск кандидатов + КБЖУ) уходит в фон после подтверждения, уведомление по готовности. Требования MEAL-01...05 добавлены в REQUIREMENTS.md
 - Phase 68 added (2026-08-25): три задачи, объединённые пользователем в одну фазу — (1) баг: данные Apple Health не обновляются (существующая инфраструктура `useHealthKitSync`/`importHealthKitReadings` уже есть, но ненадёжна), (2) новая фича: приблизительная оценка глюкозы от сахара в еде, отдельно от измеренных показаний, (3) новая фича: история по месяцу через календарь (клик по незаполненному дню недели → календарь → клик по дате → существующий экран аналитики дня). Требования HEALTH-01, GLU-01, HIST-01, HIST-02 добавлены в REQUIREMENTS.md
+- Phase 69 added (2026-08-30): доработки онбординга, напоминание о повторном взвешивании через неделю через профиль пользователя, push-уведомления с напоминанием записать приём пищи, геймификация. Пользователь осознанно решил добавить эту фазу в текущий роадмап несмотря на то, что она выходит за рамки заявленного скоупа майлстоуна («стабильный TestFlight-билд») — см. PROJECT.md Out of Scope. Геймификация зафиксирована как открытый вопрос: направление (стрики/бейджи, очки/уровни или социальный формат через наблюдателей) выбирается на этапе `/gsd-discuss-phase 69`, варианты пока не сужены
 
 ### Pending Todos
 
@@ -122,6 +123,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-25T08:32:49.413Z
-Stopped at: Phase 68 UI-SPEC approved
-Resume file: .planning/phases/68-apple-health/68-UI-SPEC.md
+Last session: 2026-08-29T21:38:25.570Z
+Stopped at: Phase 69 context gathered
+Resume file: .planning/phases/69-onboarding-gamification/69-CONTEXT.md
