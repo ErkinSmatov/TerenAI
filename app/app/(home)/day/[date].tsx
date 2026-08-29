@@ -140,7 +140,13 @@ export default function DayScreen() {
     );
   }
 
-  if (rawMonthMeals === undefined) {
+  const stillLoading =
+    rawMonthMeals === undefined ||
+    (isGlucometerTrack &&
+      (rawMonthReadings === undefined || rawMonthBloodPressure === undefined)) ||
+    (Platform.OS === "ios" && rawMonthMovement === undefined);
+
+  if (stillLoading) {
     return (
       <ScreenMain edges={[]}>
         <ScreenHeader scrollY={scrollY}>

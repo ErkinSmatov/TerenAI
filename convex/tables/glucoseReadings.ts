@@ -21,4 +21,4 @@ export const glucoseReadingsFields = {
 export const glucoseReadings = defineTable(glucoseReadingsFields)
   .index("byUserId", ["userId"])
   .index("byUserIdAndRecordedAt", ["userId", "recordedAt"])
-  .index("byHealthKitUuid", ["healthKitUuid"]);
+  .index("byUserIdAndHealthKitUuid", ["userId", "healthKitUuid"]);

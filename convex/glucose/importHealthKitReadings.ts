@@ -23,8 +23,8 @@ const importHealthKitReadings = mutation({
       for (const reading of readings) {
         const existing = await ctx.db
           .query("glucoseReadings")
-          .withIndex("byHealthKitUuid", (idx) =>
-            idx.eq("healthKitUuid", reading.healthKitUuid)
+          .withIndex("byUserIdAndHealthKitUuid", (idx) =>
+            idx.eq("userId", userId).eq("healthKitUuid", reading.healthKitUuid)
           )
           .first();
         if (existing) continue;

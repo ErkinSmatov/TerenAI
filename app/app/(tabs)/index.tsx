@@ -77,8 +77,14 @@ export default function HomeScreen() {
   );
 
   const dayTotals = calculateDayTotals(dayMeals);
+  // estimateGlucoseFromMeals resolves its target unit/baseline from a 30/14-day
+  // reading lookback (GLUCOSE_ESTIMATE_CONSTANTS) — passing only dayReadings
+  // starves it of that window on any day without a reading of its own, silently
+  // falling back to mmol/L + baseline 5.5. weekReadings.flat() is a partial fix
+  // (7 days, not the full 14/30) but covers the common case without adding a
+  // dedicated longer-range query just for this estimate.
   const glucoseEstimate = isGlucometerTrack
-    ? estimateGlucoseFromMeals(dayMeals, dayReadings, Date.now())
+    ? estimateGlucoseFromMeals(dayMeals, weekReadings.flat(), Date.now())
     : null;
 
   return (
