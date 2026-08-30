@@ -412,22 +412,25 @@ export default crons;
 
 **Если таблица пуста:** не применимо — есть 5 позиций, требующих подтверждения на этапе планирования/обсуждения деталей реализации.
 
-## Open Questions
+## Open Questions (RESOLVED — see 69-01-PLAN.md `<interfaces>`)
 
-1. **Хранить ли историю веса или только последнее значение?**
+1. **Хранить ли историю веса или только последнее значение?** — RESOLVED
    - What we know: CONTEXT.md явно отмечает (Deferred), что история веса не обсуждалась; `profiles.data.weight` — единственное значение, перезаписывается.
    - What's unclear: нужен ли отдельный `weightUpdatedAt` как новое поле схемы (для расчёта "7 дней с последнего ввода") — это минимальное расширение, не полная история, но всё равно требует миграции схемы.
    - Recommendation: добавить `weightUpdatedAt: v.optional(v.number())` в `profilesFields.data` (или top-level) — только таймстемп последнего обновления, без хранения предыдущих значений. Для существующих профилей поле будет `undefined`; cron должен трактовать `undefined` как "напоминание должно сработать" (или взять `profile._creationTime` как fallback-точку отсчёта — на усмотрение планировщика).
+   - Resolution: реализовано в 69-01 как top-level `weightUpdatedAt`, ровно по рекомендации.
 
-2. **Где хранить булевы флаги "push включён" — в `profiles` или отдельной таблице?**
+2. **Где хранить булевы флаги "push включён" — в `profiles` или отдельной таблице?** — RESOLVED
    - What we know: два независимых тумблера (D-09, D-14), должны читаться и клиентом (UI Settings), и cron-ом (backend).
    - What's unclear: `profiles.data` — плотно типизированный union-объект онбординга; логично ли туда добавлять несвязанные с онбордингом флаги.
    - Recommendation: добавить как top-level опциональные поля в `profilesFields` (не внутрь `data`) — например, `weighInRemindersEnabled: v.optional(v.boolean())`, `mealRemindersEnabled: v.optional(v.boolean())`. Так патчить можно точечно через `updateProfile` без риска Pitfall 1 (эти поля не вложены в `data`).
+   - Resolution: реализовано в 69-01 как top-level булевы поля `profilesFields`, ровно по рекомендации.
 
-3. **Нужна ли отдельная проверка "не отправлять push дважды за одну и ту же точку", если cron тикает каждые 30 минут, а окно точки шире?**
+3. **Нужна ли отдельная проверка "не отправлять push дважды за одну и ту же точку", если cron тикает каждые 30 минут, а окно точки шире?** — RESOLVED
    - What we know: cron с интервалом < 60 минут может "поймать" одну и ту же локальную точку 9:00 дважды при неудачном совпадении границ.
    - What's unclear: точный механизм дедупликации не определён исследованием.
    - Recommendation: хранить `lastMealReminderSentAt`/`lastWeighInReminderSentAt` (timestamp) рядом с флагами в profiles или в `pushTokens`, и cron должен сверяться с ним перед отправкой (идемпотентность на уровне "не чаще раза в N часов"), а не полагаться на точное совпадение минуты.
+   - Resolution: реализовано в 69-01/69-07 как `lastWeighInReminderSentAt`/`lastMealReminderSentAt`, ровно по рекомендации.
 
 ## Environment Availability
 
