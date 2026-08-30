@@ -26,6 +26,7 @@ import {
   FileDownIcon,
   ScaleIcon,
   BellIcon,
+  TrophyIcon,
 } from "lucide-react-native";
 import { useState } from "react";
 import { Alert, Platform, ScrollView, StyleSheet } from "react-native";
@@ -130,6 +131,9 @@ export default function SettingsScreen() {
           </Link>
           <Link href="/app/(settings)/notificationSettings" asChild>
             <SettingsItem text="Уведомления" Icon={BellIcon} />
+          </Link>
+          <Link href="/app/(settings)/badges" asChild>
+            <SettingsItem text="Достижения" Icon={TrophyIcon} />
           </Link>
           <SettingsItem
             text="Импорт анализа"
