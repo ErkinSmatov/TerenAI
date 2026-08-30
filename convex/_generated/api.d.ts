@@ -69,6 +69,8 @@ import type * as migrations from "../migrations.js";
 import type * as movement_getMonthMovement from "../movement/getMonthMovement.js";
 import type * as movement_getWeekMovement from "../movement/getWeekMovement.js";
 import type * as movement_syncDays from "../movement/syncDays.js";
+import type * as notifications_recordPushToken from "../notifications/recordPushToken.js";
+import type * as notifications_sendPushNotification from "../notifications/sendPushNotification.js";
 import type * as nutrition_computeNutritionTargets from "../nutrition/computeNutritionTargets.js";
 import type * as observers_generateCode from "../observers/generateCode.js";
 import type * as observers_getMyObservers from "../observers/getMyObservers.js";
@@ -183,6 +185,8 @@ declare const fullApi: ApiFromModules<{
   "movement/getMonthMovement": typeof movement_getMonthMovement;
   "movement/getWeekMovement": typeof movement_getWeekMovement;
   "movement/syncDays": typeof movement_syncDays;
+  "notifications/recordPushToken": typeof notifications_recordPushToken;
+  "notifications/sendPushNotification": typeof notifications_sendPushNotification;
   "nutrition/computeNutritionTargets": typeof nutrition_computeNutritionTargets;
   "observers/generateCode": typeof observers_generateCode;
   "observers/getMyObservers": typeof observers_getMyObservers;
