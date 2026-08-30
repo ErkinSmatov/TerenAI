@@ -24,7 +24,8 @@
     "script:verifyGlucoseEstimate": "ts-node -r tsconfig-paths/register scripts/verifyGlucoseEstimate.ts",
     "script:verifyWeighInReminder": "ts-node -r tsconfig-paths/register scripts/verifyWeighInReminder.ts",
     "script:verifyMealReminderWindows": "TZ=Europe/Berlin ts-node -r tsconfig-paths/register scripts/verifyMealReminderWindows.ts",
-    "script:verifyBadgeThresholds": "ts-node -r tsconfig-paths/register scripts/verifyBadgeThresholds.ts"
+    "script:verifyBadgeThresholds": "ts-node -r tsconfig-paths/register scripts/verifyBadgeThresholds.ts",
+    "script:verifyStreakDays": "ts-node -r tsconfig-paths/register scripts/verifyStreakDays.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^2.0.23",
