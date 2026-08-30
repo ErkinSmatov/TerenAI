@@ -13,6 +13,7 @@ import type * as TelegramOTP from "../TelegramOTP.js";
 import type * as WhatsAppOTP from "../WhatsAppOTP.js";
 import type * as ai from "../ai.js";
 import type * as auth from "../auth.js";
+import type * as badges_checkAndAwardBadges from "../badges/checkAndAwardBadges.js";
 import type * as bloodPressure_createReading from "../bloodPressure/createReading.js";
 import type * as bloodPressure_deleteReading from "../bloodPressure/deleteReading.js";
 import type * as bloodPressure_getAllReadings from "../bloodPressure/getAllReadings.js";
@@ -101,6 +102,7 @@ import type * as utils_localMonthBounds from "../utils/localMonthBounds.js";
 import type * as utils_localWeekBounds from "../utils/localWeekBounds.js";
 import type * as utils_observerAuth from "../utils/observerAuth.js";
 import type * as utils_otp from "../utils/otp.js";
+import type * as utils_streakDays from "../utils/streakDays.js";
 
 import type {
   ApiFromModules,
@@ -122,6 +124,7 @@ declare const fullApi: ApiFromModules<{
   WhatsAppOTP: typeof WhatsAppOTP;
   ai: typeof ai;
   auth: typeof auth;
+  "badges/checkAndAwardBadges": typeof badges_checkAndAwardBadges;
   "bloodPressure/createReading": typeof bloodPressure_createReading;
   "bloodPressure/deleteReading": typeof bloodPressure_deleteReading;
   "bloodPressure/getAllReadings": typeof bloodPressure_getAllReadings;
@@ -210,6 +213,7 @@ declare const fullApi: ApiFromModules<{
   "utils/localWeekBounds": typeof utils_localWeekBounds;
   "utils/observerAuth": typeof utils_observerAuth;
   "utils/otp": typeof utils_otp;
+  "utils/streakDays": typeof utils_streakDays;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

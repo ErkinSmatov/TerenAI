@@ -96,6 +96,10 @@ const analyzeMealBarcode = action({
         meal: { status: "done", name },
       });
 
+      await ctx.runMutation(internal.badges.checkAndAwardBadges.default, {
+        userId,
+      });
+
       return mealId;
     } catch (error) {
       logError("analyzeMealBarcode error", error);

@@ -104,4 +104,8 @@ export async function processDetectedItems({
     userId,
     meal: { status: "done", name: mealName },
   });
+
+  await ctx.runMutation(internal.badges.checkAndAwardBadges.default, {
+    userId,
+  });
 }
