@@ -1,5 +1,6 @@
 import { authTables } from "@convex-dev/auth/server";
 import { defineSchema } from "convex/server";
+import { badges } from "./tables/badges";
 import { bloodPressureReadings } from "./tables/bloodPressureReadings";
 import { foods } from "./tables/foods";
 import { glucoseReadings } from "./tables/glucoseReadings";
@@ -8,9 +9,11 @@ import { mealItems } from "./tables/mealItems";
 import { movementData } from "./tables/movementData";
 import { observerLinks } from "./tables/observerLinks";
 import { profiles } from "./tables/profiles";
+import { pushTokens } from "./tables/pushTokens";
 
 export default defineSchema({
   ...authTables,
+  badges,
   bloodPressureReadings,
   foods,
   glucoseReadings,
@@ -19,4 +22,5 @@ export default defineSchema({
   movementData,
   observerLinks,
   profiles,
+  pushTokens,
 });

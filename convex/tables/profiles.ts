@@ -13,6 +13,15 @@ export const profilesFields = {
   isPro: v.optional(v.boolean()),
   hasCompletedOnboarding: v.boolean(),
   observerCode: v.optional(v.string()),
+  // Опциональные поля: существующие профили не мигрируются, undefined
+  // трактуется потребителями как «поле не заполнено» — для времени
+  // обновления веса план 69-07 подставляет profile._creationTime,
+  // для тумблеров напоминаний — значение по умолчанию true.
+  weightUpdatedAt: v.optional(v.number()),
+  weighInRemindersEnabled: v.optional(v.boolean()),
+  mealRemindersEnabled: v.optional(v.boolean()),
+  lastWeighInReminderSentAt: v.optional(v.number()),
+  lastMealReminderSentAt: v.optional(v.number()),
   data: v.optional(
     v.object({
       measurementSystem: v.union(v.literal("metric"), v.literal("imperial")),
