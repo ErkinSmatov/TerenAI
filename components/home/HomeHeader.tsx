@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 import TerenAILogo from "@/assets/svg/terenai-logo.svg";
 import getColor from "@/lib/ui/getColor";
 import Text from "../ui/Text";
-import { CalendarDaysIcon, FlameIcon } from "lucide-react-native";
+import { FlameIcon, UsersIcon } from "lucide-react-native";
 import Card from "../ui/Card";
 import Button from "../ui/Button";
 import { useQuery } from "convex/react";
@@ -28,13 +28,18 @@ export default function HomeHeader() {
         <Button
           variant="base"
           size="base"
-          accessibilityLabel="Открыть календарь"
+          accessibilityLabel="Открыть серию и календарь"
           onPress={() => {
-            router.push("/app/(home)/calendar");
+            router.push("/app/(home)/streak");
           }}
         >
-          <Card style={styles.calendarContainer}>
-            <CalendarDaysIcon size={20} color={getColor("foreground")} />
+          <Card style={styles.streakContainer}>
+            <FlameIcon
+              size={20}
+              color={getColor("orange")}
+              fill={getColor("orange")}
+            />
+            <Text weight="600">{streak ?? 0}</Text>
           </Card>
         </Button>
         <Button
@@ -45,13 +50,9 @@ export default function HomeHeader() {
             router.push("/app/(settings)/observedList");
           }}
         >
-          <Card style={styles.streakContainer}>
-            <FlameIcon
-              size={20}
-              color={getColor("orange")}
-              fill={getColor("orange")}
-            />
-            <Text weight="600">{streak ?? 0}</Text>
+          {/* Слот теперь занят кнопкой наблюдаемых, имя стиля сохранено как есть */}
+          <Card style={styles.calendarContainer}>
+            <UsersIcon size={20} color={getColor("foreground")} />
           </Card>
         </Button>
       </View>
