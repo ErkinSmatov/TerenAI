@@ -24,6 +24,8 @@ import {
   HeartPulseIcon,
   UsersIcon,
   FileDownIcon,
+  ScaleIcon,
+  BellIcon,
 } from "lucide-react-native";
 import { useState } from "react";
 import { Alert, Platform, ScrollView, StyleSheet } from "react-native";
@@ -115,6 +117,9 @@ export default function SettingsScreen() {
           <Link href="/app/(settings)/adjustMacroTargets" asChild>
             <SettingsItem text="Настроить БЖУ" Icon={PieChartIcon} />
           </Link>
+          <Link href="/app/(settings)/weeklyWeighIn" asChild>
+            <SettingsItem text="Обновить вес" Icon={ScaleIcon} />
+          </Link>
           {Platform.OS === "ios" && (
             <Link href="/app/(settings)/health" asChild>
               <SettingsItem text="Здоровье" Icon={HeartPulseIcon} />
@@ -122,6 +127,9 @@ export default function SettingsScreen() {
           )}
           <Link href="/app/(settings)/observerCode" asChild>
             <SettingsItem text="Доступ наблюдателя" Icon={UsersIcon} />
+          </Link>
+          <Link href="/app/(settings)/notificationSettings" asChild>
+            <SettingsItem text="Уведомления" Icon={BellIcon} />
           </Link>
           <SettingsItem
             text="Импорт анализа"
