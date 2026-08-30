@@ -76,6 +76,13 @@ const config: ExpoConfig = {
       },
     ],
     [
+      "expo-notifications",
+      {
+        icon: "./assets/images/adaptive-icon.png",
+        color: "#F9FAFB",
+      },
+    ],
+    [
       "@kingstinct/react-native-healthkit",
       {
         NSHealthShareUsageDescription:
