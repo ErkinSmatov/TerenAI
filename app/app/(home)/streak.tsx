@@ -8,6 +8,7 @@ import {
   ScreenMainScrollView,
 } from "@/components/ui/screen/ScreenMain";
 import Card from "@/components/ui/Card";
+import Text from "@/components/ui/Text";
 import { api } from "@/convex/_generated/api";
 import getLocalMonthBounds from "@/lib/utils/getLocalMonthBounds";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
@@ -15,9 +16,9 @@ import getColor from "@/lib/ui/getColor";
 import { useQuery } from "convex/react";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Calendar, LocaleConfig as RawLocaleConfig } from "react-native-calendars";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react-native";
+import { ChevronLeftIcon, ChevronRightIcon, FlameIcon } from "lucide-react-native";
 
 // react-native-calendars реэкспортирует тип LocaleConfig из непроверенного
 // типами пакета `xdate` (upstream-баг деклараций), из-за чего TS видит
@@ -94,10 +95,14 @@ function toLocalDateString(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-export default function CalendarScreen() {
+export default function StreakScreen() {
   const router = useRouter();
   const { scrollY, onScroll } = useScrollY();
   const [visibleMonth, setVisibleMonth] = useState(() => new Date());
+
+  const streak = useQuery(api.home.getStreak.default, {
+    timezoneOffsetMinutes: new Date().getTimezoneOffset(),
+  });
 
   const bounds = useMemo(
     () => getLocalMonthBounds(visibleMonth),
@@ -129,13 +134,40 @@ export default function CalendarScreen() {
     <ScreenMain edges={[]}>
       <ScreenHeader scrollY={scrollY}>
         <ScreenHeaderBackButton />
-        <ScreenHeaderTitle title="Календарь" />
+        <ScreenHeaderTitle title="Серия" />
       </ScreenHeader>
 
       <ScreenMainScrollView
         scrollViewProps={{ onScroll }}
         safeAreaProps={{ edges: ["left", "right", "bottom"] }}
       >
+        <View style={styles.streakBlock}>
+          {streak === undefined ? null : streak === 0 ? (
+            <>
+              <Text size="20" weight="600">
+                Серия ещё не началась
+              </Text>
+              <Text size="16" color={getColor("mutedForeground")}>
+                Запишите приём пищи сегодня, чтобы начать отсчёт
+              </Text>
+            </>
+          ) : (
+            <>
+              <FlameIcon
+                size={32}
+                color={getColor("orange")}
+                fill={getColor("orange")}
+              />
+              <Text size="40" weight="600" color={getColor("orange")}>
+                {streak}
+              </Text>
+              <Text size="14" color={getColor("mutedForeground")}>
+                дней подряд
+              </Text>
+            </>
+          )}
+        </View>
+
         <Card style={styles.card}>
           <Calendar
             current={toLocalDateString(visibleMonth)}
@@ -177,6 +209,12 @@ export default function CalendarScreen() {
 }
 
 const styles = StyleSheet.create({
+  streakBlock: {
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+    marginBottom: 24,
+  },
   card: {
     padding: 0,
     overflow: "hidden",
