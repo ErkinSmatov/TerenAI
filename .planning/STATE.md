@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: milestone
 status: executing
-stopped_at: Completed 69-01-PLAN.md
-last_updated: "2026-08-30T08:15:51.526Z"
+stopped_at: Completed 69-03-PLAN.md
+last_updated: "2026-08-30T08:32:36.962Z"
 last_activity: 2026-08-30
 progress:
   total_phases: 10
   completed_phases: 5
   total_plans: 38
-  completed_plans: 32
+  completed_plans: 33
   percent: 50
 ---
 
@@ -26,13 +26,13 @@ See: .planning/PROJECT.md (updated 2026-08-05)
 ## Current Position
 
 Phase: 69 (onboarding-gamification) — EXECUTING
-Plan: 2 of 8
+Plan: 4 of 8
 Status: Ready to execute
 Last activity: 2026-08-30
 
 Next step: pick the next phase from ROADMAP.md (Phase 67 — Дистрибуция и OTA-обновления — is the only phase left, Pending, 0 plans).
 
-Progress: [████████░░] 84%
+Progress: [█████████░] 87%
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Progress: [████████░░] 84%
 
 *Updated after each plan completion*
 | Phase 69 P01 | 20min | 3 tasks | 11 files |
+| Phase 69 P03 | 25min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -71,6 +72,8 @@ Recent decisions affecting current work:
 - Phase 6 плана 02: код доступа пациента (`generateCode`/`regenerateCode`) переиспользует общий хелпер `issueUniqueCode` (named export рядом с `export default`, по прецеденту `convex/rateLimit.ts`) — ротация никогда не трогает `observerLinks`, разрыв связей — отдельная функция `revokeLink` с обязательной проверкой участия по обоим полям (`observerId`/`patientId`), закрывающей IDOR
 - 2026-08-20: вход по телефону реализован через провайдер `Phone` из `@convex-dev/auth/providers/Phone` с двумя параллельными реализациями (`convex/TelegramOTP.ts`, `convex/WhatsAppOTP.ts`), а не через единый универсальный OTP-провайдер — экран `phone-sign-in.tsx` предлагает выбор канала (WhatsApp/Telegram) явными кнопками, `confirm-phone.tsx` переиспользует общий `OTPInput`
 - 2026-08-20: работа велась вне GSD-цикла (без `/gsd-discuss-phase`/`/gsd-plan-phase`) — задним числом сверена с REQUIREMENTS.md и встроена в Phase 3 (AUTH-06, AUTH-07) и новую Phase 3.1 (REPORT-01)
+- [Phase 69]: weeklyWeighIn.tsx использует WeightPicker напрямую (не OnboardingWeight), чтобы не затирать targetWeight при каждом взвешивании
+- [Phase 69]: notificationSettings.tsx патчит верхнеуровневые поля профиля точечно (без слияния data) — оба тумблера по умолчанию true при undefined
 
 ### Roadmap Evolution
 
@@ -124,6 +127,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-30T08:15:51.514Z
-Stopped at: Completed 69-01-PLAN.md
+Last session: 2026-08-30T08:32:36.948Z
+Stopped at: Completed 69-03-PLAN.md
 Resume file: None
