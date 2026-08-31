@@ -22,6 +22,7 @@ import type * as bloodPressure_deleteReading from "../bloodPressure/deleteReadin
 import type * as bloodPressure_getAllReadings from "../bloodPressure/getAllReadings.js";
 import type * as bloodPressure_getMonthReadings from "../bloodPressure/getMonthReadings.js";
 import type * as bloodPressure_getWeekReadings from "../bloodPressure/getWeekReadings.js";
+import type * as crons from "../crons.js";
 import type * as foods_createFood from "../foods/createFood.js";
 import type * as foods_getFoodByIdentity from "../foods/getFoodByIdentity.js";
 import type * as foods_getFoodByIdentityInternal from "../foods/getFoodByIdentityInternal.js";
@@ -69,6 +70,7 @@ import type * as migrations from "../migrations.js";
 import type * as movement_getMonthMovement from "../movement/getMonthMovement.js";
 import type * as movement_getWeekMovement from "../movement/getWeekMovement.js";
 import type * as movement_syncDays from "../movement/syncDays.js";
+import type * as notifications_checkMealReminders from "../notifications/checkMealReminders.js";
 import type * as notifications_checkWeighInReminders from "../notifications/checkWeighInReminders.js";
 import type * as notifications_recordPushToken from "../notifications/recordPushToken.js";
 import type * as notifications_sendPushNotification from "../notifications/sendPushNotification.js";
@@ -139,6 +141,7 @@ declare const fullApi: ApiFromModules<{
   "bloodPressure/getAllReadings": typeof bloodPressure_getAllReadings;
   "bloodPressure/getMonthReadings": typeof bloodPressure_getMonthReadings;
   "bloodPressure/getWeekReadings": typeof bloodPressure_getWeekReadings;
+  crons: typeof crons;
   "foods/createFood": typeof foods_createFood;
   "foods/getFoodByIdentity": typeof foods_getFoodByIdentity;
   "foods/getFoodByIdentityInternal": typeof foods_getFoodByIdentityInternal;
@@ -186,6 +189,7 @@ declare const fullApi: ApiFromModules<{
   "movement/getMonthMovement": typeof movement_getMonthMovement;
   "movement/getWeekMovement": typeof movement_getWeekMovement;
   "movement/syncDays": typeof movement_syncDays;
+  "notifications/checkMealReminders": typeof notifications_checkMealReminders;
   "notifications/checkWeighInReminders": typeof notifications_checkWeighInReminders;
   "notifications/recordPushToken": typeof notifications_recordPushToken;
   "notifications/sendPushNotification": typeof notifications_sendPushNotification;
