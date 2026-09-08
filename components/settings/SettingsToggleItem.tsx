@@ -50,11 +50,12 @@ const styles = StyleSheet.create({
     borderColor: getColor("muted"),
   },
   row: {
-    height: 52,
+    minHeight: 52,
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
     paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   textContainer: {
     flex: 1,
