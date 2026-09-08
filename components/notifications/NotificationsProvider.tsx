@@ -6,6 +6,7 @@ import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import { api } from "@/convex/_generated/api";
 import logError from "@/lib/utils/logError";
+import { useAuthContext } from "@/context/AuthContext";
 
 // Не чаще раза в 6 часов: держит `timezoneOffsetMinutes` актуальным при
 // переезде пользователя/переходе на летнее-зимнее время, но не дёргает
@@ -32,8 +33,17 @@ export default function NotificationsProvider() {
   const router = useRouter();
   const recordPushToken = useMutation(api.notifications.recordPushToken.default);
   const lastRegistrationRef = useRef<number>(0);
+  const { isAuthenticated } = useAuthContext();
 
   useEffect(() => {
+    // Регистрация до входа в аккаунт гарантированно падает в recordPushToken
+    // с "Unauthorized" (getAuthUserId возвращает null) — сама попытка ничего
+    // не делает и просто засоряет логи/Sentry. Эффект также перезапускается
+    // сразу при переходе isAuthenticated false -> true (не дожидаясь
+    // следующего AppState "active"), иначе токен не регистрируется в течение
+    // всей сессии, если пользователь вошёл и не сворачивал приложение.
+    if (!isAuthenticated) return;
+
     const registerForPushNotifications = async () => {
       try {
         if (Platform.OS === "android") {
@@ -95,7 +105,7 @@ export default function NotificationsProvider() {
     return () => {
       appStateSubscription.remove();
     };
-  }, [recordPushToken]);
+  }, [recordPushToken, isAuthenticated]);
 
   useEffect(() => {
     const navigateFromNotificationUrl = (url: unknown) => {
