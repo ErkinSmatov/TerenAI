@@ -22,15 +22,47 @@ type PhoneOtpProvider = "whatsapp-otp" | "telegram-otp";
 
 const sendCodeErrorText = "Не удалось отправить код. Попробуйте ещё раз";
 
+// +7 XXX XXX XX XX — маска для казахстанских/российских номеров (10 цифр
+// после кода страны), чтобы пользователю не приходилось печатать "+7" самому
+// (69-08 Task 1, п.4).
+const PHONE_PREFIX = "+7 ";
+const MAX_DIGITS = 10;
+
+function formatPhoneDigits(digits: string): string {
+  const groups = [
+    digits.slice(0, 3),
+    digits.slice(3, 6),
+    digits.slice(6, 8),
+    digits.slice(8, 10),
+  ].filter(Boolean);
+  return PHONE_PREFIX + groups.join(" ");
+}
+
+function extractDigits(rawInput: string): string {
+  let digitsOnly = rawInput.replace(/\D/g, "");
+  // Пользователь мог напечатать "7" или "8" в начале по привычке — код
+  // страны уже подставлен префиксом, повторно вводить его не нужно.
+  if (digitsOnly.startsWith("7") || digitsOnly.startsWith("8")) {
+    digitsOnly = digitsOnly.slice(1);
+  }
+  return digitsOnly.slice(0, MAX_DIGITS);
+}
+
 export default function PhoneSignInScreen() {
   const { signIn } = useAuthContext();
   const insets = useSafeArea();
   const router = useRouter();
 
-  const [phone, setPhone] = useState("");
+  const [digits, setDigits] = useState("");
   const [isSending, setIsSending] = useState(false);
 
   const inputRef = useRef<TextInputHandle>(null);
+
+  const phone = `+7${digits}`;
+
+  const handleChangeText = (rawInput: string) => {
+    setDigits(extractDigits(rawInput));
+  };
 
   const PhoneForm = z.object({
     phone: z.string().regex(/^\+[1-9]\d{7,14}$/),
@@ -82,8 +114,8 @@ export default function PhoneSignInScreen() {
             placeholder="+7 999 123 45 67"
             keyboardType="phone-pad"
             autoComplete="tel"
-            value={phone}
-            onChangeText={setPhone}
+            value={formatPhoneDigits(digits)}
+            onChangeText={handleChangeText}
             ref={inputRef}
             autoFocus
           />
