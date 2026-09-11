@@ -64,9 +64,9 @@
 - [ ] Resend custom domain
 - [ ] Set-up OTP sign-in with custom email address
 
-- [ ] Reanimated error on onboarding screen
+- [x] Reanimated error on onboarding screen
 - [ ] Email sign-in
-- [ ] Onboarding data after email sign-in
+- [x] Onboarding data after email sign-in
 - [ ] Dismiss keyboard and blur input when tapping outside
 - [ ] Delete meal smooth
 - [ ] Prefetch
@@ -76,13 +76,13 @@
 - [ ] Meal ingredients inside meal?
 - [ ] getFoodByIdentity argument validator
 - [ ] Parsing convex schemas
-- [ ] Onboarding creating plan
-- [ ] Onboarding create account
-- [ ] Onboarding pickers
-- [ ] Onboarding pickers unit change
-- [ ] Onboarding target weight kg cropped
-- [ ] Onboarding animation only in header on section change
-- [ ] Onboarding going back from a section header steps animation bug
+- [x] Onboarding creating plan
+- [x] Onboarding create account
+- [x] Onboarding pickers
+- [x] Onboarding pickers unit change
+- [x] Onboarding target weight kg cropped
+- [x] Onboarding animation only in header on section change
+- [x] Onboarding going back from a section header steps animation bug
 - [ ] Sign in with email
 - [ ] Fix text input filtering
 - [ ] Android 14 over scroll
@@ -103,15 +103,15 @@
 
 - [ ] Optimize FlatList
   - [ ] Wheel Picker
-  - [ ] Onboarding Height
+  - [x] Onboarding Height
 
 - [ ] Replace router animations with react-native-reanimated animations
-- [ ] Onboarding pre-render
+- [x] Onboarding pre-render
 
-- [ ] Onboarding section overview animation
-- [ ] Onboarding scroll
-- [ ] Onboarding height smooth measurement system change
-- [ ] Onboarding weight smooth measurement system change
+- [x] Onboarding section overview animation
+- [x] Onboarding scroll
+- [x] Onboarding height smooth measurement system change
+- [x] Onboarding weight smooth measurement system change
 
 - [ ] Eager loading all data?
 - [ ] Local first?
