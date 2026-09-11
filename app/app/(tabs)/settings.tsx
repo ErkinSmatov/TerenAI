@@ -136,7 +136,7 @@ export default function SettingsScreen() {
             <SettingsItem text="Достижения" Icon={TrophyIcon} />
           </Link>
           <SettingsItem
-            text="Импорт анализа"
+            text="Экспорт анализа"
             Icon={FileDownIcon}
             onPress={() => void handleExportReport()}
             isLast
