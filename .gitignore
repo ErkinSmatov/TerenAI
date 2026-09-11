@@ -20,6 +20,7 @@ expo-env.d.ts
 *.key
 *.mobileprovision
 credentials.json
+gen-apple-secret.js
 
 # Metro
 .metro-health-check*
