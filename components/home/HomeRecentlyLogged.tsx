@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import Text from "../ui/Text";
 import { format } from "date-fns";
 import CalorieIcon from "../icons/macros/CalorieIcon";
@@ -9,6 +9,9 @@ import Card from "../ui/Card";
 import Button from "../ui/Button";
 import { Doc } from "@/convex/_generated/dataModel";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 import { Link } from "expo-router";
 import WithSkeleton from "../ui/WithSkeleton";
 import SafeArea from "../ui/SafeArea";
@@ -19,6 +22,9 @@ type LogItemProps = {
 };
 
 function LogItem({ meal, readOnly = false }: LogItemProps) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
+
   const macros = [
     { value: meal.totalMacros?.carbs, Icon: CarbIcon },
     { value: meal.totalMacros?.protein, Icon: ProteinIcon },
@@ -44,7 +50,9 @@ function LogItem({ meal, readOnly = false }: LogItemProps) {
             {meal.name ?? "Блюдо без названия"}
           </Text>
         </WithSkeleton>
-        <Text size="14">{format(meal._creationTime, "HH:mm")}</Text>
+        <Text size="14" color={getColor("mutedForeground", undefined, theme)}>
+          {format(meal._creationTime, "HH:mm")}
+        </Text>
       </View>
       <View style={styles.itemDetailsContainer}>
         <View style={[styles.itemMacroContainer, { marginRight: "auto" }]}>
@@ -55,7 +63,7 @@ function LogItem({ meal, readOnly = false }: LogItemProps) {
             loading={isLoading}
             skeletonStyle={{ height: 14, width: "100%" }}
           >
-            <Text size="14" weight="500">
+            <Text size="14" weight="500" family="outfit">
               {Math.round(meal.totalMacros?.calories ?? 200)}
             </Text>
           </WithSkeleton>
@@ -69,7 +77,9 @@ function LogItem({ meal, readOnly = false }: LogItemProps) {
               loading={isLoading}
               skeletonStyle={{ height: 14, width: "100%" }}
             >
-              <Text size="14">{Math.round(macro.value ?? 20)}</Text>
+              <Text size="14" family="outfit">
+                {Math.round(macro.value ?? 20)}
+              </Text>
             </WithSkeleton>
           </View>
         ))}
@@ -99,6 +109,9 @@ type Props = {
 };
 
 export default function HomeRecentlyLogged({ meals, readOnly = false }: Props) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
+
   return (
     <SafeArea edges={["left", "right"]} style={styles.safeArea}>
       <Text size="20" weight="600" style={styles.title}>
@@ -115,7 +128,7 @@ export default function HomeRecentlyLogged({ meals, readOnly = false }: Props) {
         {meals.length === 0 && (
           <Text
             size="14"
-            color={getColor("mutedForeground", 0.5)}
+            color={getColor("mutedForeground", 0.5, theme)}
             style={styles.noMealsAdded}
           >
             Добавьте блюда, чтобы увидеть их здесь&hellip;
@@ -126,7 +139,7 @@ export default function HomeRecentlyLogged({ meals, readOnly = false }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (_theme: ThemeName) => ({
   safeArea: {
     flex: 0,
     backgroundColor: "transparent",
@@ -136,10 +149,10 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   itemsContainer: {
-    gap: 12,
+    gap: 8,
   },
   noMealsAdded: {
-    textAlign: "center",
+    textAlign: "center" as const,
     paddingTop: 16,
   },
 
@@ -147,25 +160,25 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   itemHeaderContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: "row" as const,
+    justifyContent: "space-between" as const,
     gap: 12,
   },
   itemName: {
     flexShrink: 1,
   },
   itemDetailsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
     gap: 16,
   },
   itemMacroContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
     gap: 4,
   },
   itemMacroIcon: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
   },
 });
