@@ -1,7 +1,10 @@
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { type ComponentType } from "react";
 import { type LucideProps } from "lucide-react-native";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 import HomeSummaryCard from "./HomeSummaryCard";
 import HomeSummaryCardBig from "./HomeSummaryCardBig";
 import FiberIcon from "../icons/micros/FiberIcon";
@@ -32,6 +35,9 @@ export default function HomeMicroSummary({
   dayIndex,
   readOnly = false,
 }: Props) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
+
   const targets = {
     score: 100,
     fiber: getTargets("carbs", "fiber")[1],
@@ -47,21 +53,21 @@ export default function HomeMicroSummary({
       value: totalMicros.fiber,
       target: targets.fiber,
       Icon: FiberIcon,
-      color: getColor("fiber"),
+      color: getColor("fiber", undefined, theme),
     },
     {
       name: "Сахар",
       value: totalMicros.sugar,
       target: targets.sugar,
       Icon: SugarIcon,
-      color: getColor("sugar"),
+      color: getColor("sugar", undefined, theme),
     },
     {
       name: "Натрий",
       value: totalMicros.sodium * 1000,
       target: targets.sodium,
       Icon: SodiumIcon,
-      color: getColor("sodium"),
+      color: getColor("sodium", undefined, theme),
     },
   ];
 
@@ -72,7 +78,7 @@ export default function HomeMicroSummary({
         value: totalMicros.score,
         target: targets.score,
         Icon: HealthIcon,
-        color: getColor("health"),
+        color: getColor("health", undefined, theme),
       }}
       progress={progress}
     />
@@ -103,14 +109,14 @@ export default function HomeMicroSummary({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (_theme: ThemeName) => ({
   container: {
-    gap: 12,
+    gap: 16,
     flex: 1,
     paddingHorizontal: 16,
   },
   cardsContainer: {
-    flexDirection: "row",
+    flexDirection: "row" as const,
     gap: 8,
   },
 });

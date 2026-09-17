@@ -1,6 +1,9 @@
 import { type LucideProps } from "lucide-react-native";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 import { type ComponentType } from "react";
 import FatIcon from "../icons/macros/FatIcon";
 import CarbIcon from "../icons/macros/CarbIcon";
@@ -38,6 +41,9 @@ export default function HomeMacroSummary({
   readOnly = false,
   targets: targetsProp,
 }: Props) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
+
   // В readOnly-режиме (наблюдатель смотрит чужой детальный вид) запрос
   // вообще не выполняется ("skip") — targetsProp может легитимно быть
   // undefined (у пациента ещё нет profiles.targets), и в этом случае
@@ -58,21 +64,21 @@ export default function HomeMacroSummary({
       value: totalMacros.carbs,
       target: targets.carbs,
       Icon: CarbIcon,
-      color: getColor("carb"),
+      color: getColor("carb", undefined, theme),
     },
     {
       name: "Белки",
       value: totalMacros.protein,
       target: targets.protein,
       Icon: ProteinIcon,
-      color: getColor("protein"),
+      color: getColor("protein", undefined, theme),
     },
     {
       name: "Жиры",
       value: totalMacros.fat,
       target: targets.fat,
       Icon: FatIcon,
-      color: getColor("fat"),
+      color: getColor("fat", undefined, theme),
     },
   ];
 
@@ -84,7 +90,7 @@ export default function HomeMacroSummary({
           value: totalMacros.calories,
           target: targets.calories,
           Icon: CalorieIcon,
-          color: getColor("calorie"),
+          color: getColor("calorie", undefined, theme),
         }}
         progress={progress}
       />
@@ -101,14 +107,14 @@ export default function HomeMacroSummary({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (_theme: ThemeName) => ({
   container: {
-    gap: 12,
+    gap: 16,
     flex: 1,
     paddingHorizontal: 16,
   },
   cardsContainer: {
-    flexDirection: "row",
+    flexDirection: "row" as const,
     gap: 8,
   },
 });

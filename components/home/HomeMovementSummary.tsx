@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { FlameIcon, FootprintsIcon, RouteIcon } from "lucide-react-native";
 import Text from "../ui/Text";
 import Card from "../ui/Card";
@@ -6,6 +6,9 @@ import Button from "../ui/Button";
 import SafeArea from "../ui/SafeArea";
 import { Doc } from "@/convex/_generated/dataModel";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 import { Link } from "expo-router";
 
 type StatProps = {
@@ -15,16 +18,19 @@ type StatProps = {
 };
 
 function Stat({ Icon, value, label }: StatProps) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
+
   return (
     <View style={styles.stat}>
       <View style={styles.statIcon}>
-        <Icon size={16} color={getColor("green")} />
+        <Icon size={16} color={getColor("green", undefined, theme)} />
       </View>
       <View>
-        <Text size="16" weight="600">
+        <Text size="16" weight="600" family="outfit">
           {value}
         </Text>
-        <Text size="12" color={getColor("mutedForeground")}>
+        <Text size="12" color={getColor("mutedForeground", undefined, theme)}>
           {label}
         </Text>
       </View>
@@ -41,6 +47,9 @@ export default function HomeMovementSummary({
   movement,
   readOnly = false,
 }: Props) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
+
   const cardContent = (
     <Card style={styles.card}>
       {movement ? (
@@ -64,7 +73,7 @@ export default function HomeMovementSummary({
       ) : (
         <Text
           size="14"
-          color={getColor("mutedForeground", 0.5)}
+          color={getColor("mutedForeground", 0.5, theme)}
           style={styles.empty}
         >
           Подключите Apple Health, чтобы видеть активность&hellip;
@@ -104,38 +113,38 @@ export default function HomeMovementSummary({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   safeArea: {
     flex: 0,
     backgroundColor: "transparent",
     paddingTop: 32,
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: "row" as const,
+    justifyContent: "space-between" as const,
+    alignItems: "center" as const,
     paddingBottom: 16,
   },
   card: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: "row" as const,
+    justifyContent: "space-between" as const,
   },
   empty: {
-    textAlign: "center",
+    textAlign: "center" as const,
     paddingVertical: 8,
     flex: 1,
   },
   stat: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
     gap: 8,
   },
   statIcon: {
     height: 32,
     width: 32,
     borderRadius: 999,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: getColor("muted"),
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    backgroundColor: getColor("muted", undefined, theme),
   },
 });
