@@ -1,11 +1,13 @@
 import DiagnosticsSection from "@/components/settings/DiagnosticsSection";
 import SettingsGroup from "@/components/settings/SettingsGroup";
 import SettingsItem from "@/components/settings/SettingsItem";
+import SettingsToggleItem from "@/components/settings/SettingsToggleItem";
 import AlertDialog from "@/components/ui/AlertDialog";
 import SafeArea from "@/components/ui/SafeArea";
 import Title from "@/components/ui/Title";
 import { Toast } from "@/components/ui/Toast";
 import { useAuthContext } from "@/context/AuthContext";
+import { useThemeContext } from "@/context/ThemeContext";
 import { useSubscriptionContext } from "@/context/SubscriptionContext";
 import { api } from "@/convex/_generated/api";
 import buildMonthlyReportHtml from "@/lib/reports/buildMonthlyReportHtml";
@@ -27,6 +29,7 @@ import {
   ScaleIcon,
   BellIcon,
   TrophyIcon,
+  MoonIcon,
 } from "lucide-react-native";
 import { useState } from "react";
 import { Alert, Platform, ScrollView, StyleSheet } from "react-native";
@@ -36,6 +39,7 @@ const exportReportErrorText =
 
 export default function SettingsScreen() {
   const { signOut } = useAuthContext();
+  const { isDark, setTheme } = useThemeContext();
   const {
     isPro,
     isMonetizationEnabled,
@@ -135,6 +139,14 @@ export default function SettingsScreen() {
           <Link href="/app/(settings)/badges" asChild>
             <SettingsItem text="Достижения" Icon={TrophyIcon} />
           </Link>
+          <SettingsToggleItem
+            text="Тёмная тема"
+            Icon={MoonIcon}
+            value={isDark}
+            onValueChange={(value) => {
+              setTheme(value ? "dark" : "light");
+            }}
+          />
           <SettingsItem
             text="Экспорт анализа"
             Icon={FileDownIcon}
