@@ -10,10 +10,13 @@ import HomeRecentlyLogged from "@/components/home/HomeRecentlyLogged";
 import Carousel from "@/components/ui/Carousel";
 import SafeArea from "@/components/ui/SafeArea";
 import { api } from "@/convex/_generated/api";
+import { useThemeContext } from "@/context/ThemeContext";
 import useHealthKitSync from "@/lib/hooks/useHealthKitSync";
 import { calculateDayTotals } from "@/lib/nutrition/calculateDayTotals";
 import estimateGlucoseFromMeals from "@/lib/nutrition/estimateGlucoseFromMeals";
 import getColor from "@/lib/ui/getColor";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 import getLocalWeekBounds from "@/lib/utils/getLocalWeekBounds";
 import { useQuery } from "convex/react";
 import { getDay } from "date-fns";
@@ -26,8 +29,24 @@ import {
   useWindowDimensions,
 } from "react-native";
 
+// theme не используется напрямую в стилях — фон зависит только от токена
+// `background`, который вычисляется в компоненте через `getColor` и подставляется
+// в градиент отдельно; фабрика принимает `theme`, чтобы кэш `useThemedStyles`
+// пересобирался при переключении темы, синхронно с градиентом.
+const createStyles = (_theme: ThemeName) => ({
+  gradient: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  scrollView: {
+    flexGrow: 1,
+    paddingBottom: 48,
+  },
+});
+
 export default function HomeScreen() {
   const dimensions = useWindowDimensions();
+  const { theme, isDark } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const [selectedDay, setSelectedDay] = useState((getDay(new Date()) + 6) % 7);
 
   const profile = useQuery(api.profiles.getProfile.default);
@@ -88,10 +107,23 @@ export default function HomeScreen() {
     ? estimateGlucoseFromMeals(dayMeals, weekReadings.flat(), Date.now())
     : null;
 
+  // Тёмная тема: голубое свечение Figma отмечено как необязательная полировка
+  // вне MVP фазы — вместо него плоский фон `background`. Светлая тема
+  // сохраняет исходные стопы градиента.
+  const gradientColors = isDark
+    ? [
+        getColor("background", undefined, theme),
+        getColor("background", undefined, theme),
+      ]
+    : [
+        getColor("primaryLight", 0.75, theme),
+        getColor("background", undefined, theme),
+      ];
+
   return (
     <SafeArea edges={["top"]}>
       <LinearGradient
-        colors={[getColor("primaryLight", 0.75), getColor("background")]}
+        colors={gradientColors as [string, string]}
         style={[styles.gradient, { height: dimensions.height * 0.75 }]}
         pointerEvents="none"
       />
@@ -127,13 +159,3 @@ export default function HomeScreen() {
     </SafeArea>
   );
 }
-
-const styles = StyleSheet.create({
-  gradient: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  scrollView: {
-    flexGrow: 1,
-    paddingBottom: 24,
-  },
-});
