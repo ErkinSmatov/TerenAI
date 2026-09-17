@@ -23,8 +23,26 @@ type Variant =
   | "outline"
   | "text"
   | "base"
-  | "destructive";
-type Size = "sm" | "md" | "lg" | "xl" | "base";
+  | "destructive"
+  | "accent";
+type Size = "sm" | "md" | "lg" | "xl" | "base" | "fab";
+
+// Мягкая цветная тень FAB — та же объектная форма `boxShadow`, что и
+// `getShadow`, но с фиксированным акцентным цветом вместо чёрного.
+// Реализована локально: `lib/ui/getShadow.ts` менять не требуется.
+function getAccentShadow(): Pick<ViewStyle, "boxShadow"> {
+  return {
+    boxShadow: [
+      {
+        offsetX: 0,
+        offsetY: 8,
+        blurRadius: 20,
+        spreadDistance: 0,
+        color: getColor("primary", 0.4),
+      },
+    ],
+  };
+}
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -128,6 +146,15 @@ export default function Button({
         color: getColor("background"),
       },
     },
+    accent: {
+      container: {
+        backgroundColor: getColor("primary"),
+        ...getAccentShadow(),
+      },
+      text: {
+        color: getColor("background"),
+      },
+    },
   };
 
   const sizeStyles: Record<
@@ -164,6 +191,16 @@ export default function Button({
     },
     xl: {},
     base: {},
+    fab: {
+      container: {
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+        paddingHorizontal: 0,
+        justifyContent: "center",
+        alignItems: "center",
+      },
+    },
   };
 
   const variantStyle = variantStyles[variant];
