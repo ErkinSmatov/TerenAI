@@ -1,9 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { addDays, format, getDay, startOfWeek } from "date-fns";
 import { ru } from "date-fns/locale";
 import Text from "../ui/Text";
+import { useThemeContext } from "@/context/ThemeContext";
 import getColor from "@/lib/ui/getColor";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 import CircularProgress from "../ui/CircularProgress";
 import { useDerivedValue } from "react-native-reanimated";
 import getShadow from "@/lib/ui/getShadow";
@@ -39,6 +42,8 @@ function DaySelectorItem({
   isToday,
   onPress,
 }: DaySelectorItemProps) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const progress = useProgress();
   const progressCarbs = useDerivedValue(() => day.carbsRatio * progress.value);
   const progressProtein = useDerivedValue(
@@ -54,30 +59,48 @@ function DaySelectorItem({
         styles.dayContainer,
         {
           backgroundColor: isSelected
-            ? getColor("background")
+            ? getColor("primary", undefined, theme)
             : isToday
-              ? getColor("background", 0.6)
+              ? getColor("primary", 0.15, theme)
               : "transparent",
         },
         isSelected && getShadow("md"),
-        isSelected && {
-          borderWidth: StyleSheet.hairlineWidth,
-          borderColor: getColor("secondary"),
-        },
       ]}
       onPress={onPress}
     >
-      <Text size="14" weight="600">
+      <Text
+        size="14"
+        weight="600"
+        style={
+          isSelected
+            ? { color: getColor("background", undefined, theme) }
+            : undefined
+        }
+      >
         {day.letter}
       </Text>
       <View style={styles.dayProgressContainer}>
-        <Text size="12" weight="600" style={styles.dayNumberText}>
+        <Text
+          family="outfit"
+          size="12"
+          weight="600"
+          style={[
+            styles.dayNumberText,
+            isSelected
+              ? { color: getColor("background", undefined, theme) }
+              : undefined,
+          ]}
+        >
           {day.number}
         </Text>
         <CircularProgress
           progress={[progressCarbs, progressProtein, progressFat]}
-          color={[getColor("carb"), getColor("protein"), getColor("fat")]}
-          trackColor={getColor("mutedForeground", 0.2)}
+          color={[
+            getColor("carb", undefined, theme),
+            getColor("protein", undefined, theme),
+            getColor("fat", undefined, theme),
+          ]}
+          trackColor={getColor("mutedForeground", 0.2, theme)}
           strokeWidth={3}
         />
       </View>
@@ -96,6 +119,7 @@ export default function HomeDaySelector({
   setSelectedDay,
   weekTotalMacros,
 }: Props) {
+  const styles = useThemedStyles(createStyles);
   const targets =
     useQuery(api.profiles.getProfile.default)?.targets ??
     profilesConfig.defaultValues.targets;
@@ -147,30 +171,30 @@ export default function HomeDaySelector({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (_theme: ThemeName) => ({
   safeArea: {
     flex: 0,
     backgroundColor: "transparent",
-    flexDirection: "row",
+    flexDirection: "row" as const,
     gap: 4,
     paddingBottom: 16,
-    justifyContent: "space-between",
+    justifyContent: "space-between" as const,
   },
   dayContainer: {
-    alignItems: "center",
+    alignItems: "center" as const,
     gap: 6,
     flex: 1,
     paddingVertical: 8,
-    borderRadius: 999,
+    borderRadius: 24,
     maxWidth: 48,
   },
   dayProgressContainer: {
     width: 34,
     height: 34,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
   },
   dayNumberText: {
-    position: "absolute",
+    position: "absolute" as const,
   },
 });

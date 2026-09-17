@@ -146,7 +146,7 @@ export default function TabsAddOptions() {
   return (
     <PopoverPrimitive.Root onOpenChange={setIsOpen}>
       <PopoverPrimitive.Trigger asChild ref={popoverTriggerRef}>
-        <TabsAddButton isOpen={isOpen} />
+        <TabsAddButton isOpen={isOpen} variant="accent" size="fab" />
       </PopoverPrimitive.Trigger>
       <PopoverPrimitive.Portal>
         <PopoverPrimitive.Overlay style={StyleSheet.absoluteFill}>
