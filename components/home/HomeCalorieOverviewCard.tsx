@@ -26,11 +26,36 @@ import calcRatio from "@/lib/utils/calcRatio";
 // профильную настройку), если в проекте появится персонализация цели.
 const DEFAULT_STEPS_GOAL = 10000;
 
+// Фиксированные декоративные градиенты/цвета этой карточки — буквально из
+// Figma (node 863:5405), НЕ через getColor()/тему и НЕ завязаны на статус
+// "план/перебор". Это осознанное отступление от обычной конвенции проекта
+// «всё через getColor», зафиксированное пользователем на чекпоинте D-03
+// (2-й раунд коррекции), — одинаковые в светлой и тёмной теме. Ранее кольцо
+// калорий и бар шагов брали цвет из акцентного токена темы (см. предыдущую
+// версию `07.1-UI-SPEC.md`); эта прямая инструкция пользователя более свежая
+// и более специфичная — она побеждает, и раздел UI-SPEC обновлён вместе с
+// этим коммитом, чтобы не вводить в заблуждение будущего читателя.
+const CALORIE_RING_GRADIENT: [string, string] = ["#EE6A22", "#FEE8D9"];
+// Радиус/border-width для "ручки"-скраббера в конце дуги — точный px не был
+// задан пользователем текстом (Figma-файл недоступен этому агенту напрямую);
+// Claude's Discretion: подобран пропорционально strokeWidth кольца (8px) для
+// комфортного визуального перекрытия конца обводки.
+const CALORIE_RING_END_CAP = {
+  color: "#F19062",
+  borderColor: "#FFFFFF",
+  borderWidth: 2,
+  radius: 8,
+};
+const STEPS_GRADIENT: [string, string] = ["#C9F14C", "#F7F1E3"];
+
 type MacroRow = {
   name: string;
   value: number;
   target: number;
-  color: string;
+  // Фиксированный декоративный градиент (Figma node 863:5405), НЕ через
+  // getColor()/тему — см. `HomeMacroSummary.tsx` для точных значений и
+  // обоснования этого осознанного отступления от обычной конвенции проекта.
+  gradientColors: [string, string];
 };
 
 type Props = {
@@ -50,16 +75,23 @@ type Props = {
 type BarProps = {
   ratio: number;
   progress: SharedValue<number>;
-  color: string;
+  gradientColors: [string, string];
   trackColor: string;
   trackHeight: number;
   fillHeight: number;
 };
 
+// Animated-обёртка над `expo-linear-gradient`'s LinearGradient — тот же
+// приём, что и для фона карточки (см. рендер ниже), только с
+// `Animated.createAnimatedComponent`, чтобы существующая width-анимация
+// (`fillStyle`, производная от `itemProgress`) продолжала плавно работать
+// поверх градиентной заливки вместо плоского цвета.
+const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
+
 function ProgressBar({
   ratio,
   progress,
-  color,
+  gradientColors,
   trackColor,
   trackHeight,
   fillHeight,
@@ -89,13 +121,15 @@ function ProgressBar({
         },
       ]}
     >
-      <Animated.View
+      <AnimatedLinearGradient
+        colors={gradientColors}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
         style={[
           barStyles.barFill,
           {
             height: fillHeight,
             borderRadius: fillHeight / 2,
-            backgroundColor: color,
           },
           fillStyle,
         ]}
@@ -124,14 +158,6 @@ export default function HomeCalorieOverviewCard({
     () => animatedCaloriesRatio.value * progress.value
   );
 
-  // Тот же контракт токенов, что и у существующих колец на Главной
-  // (`HomeSummaryCardBig`/`HomeSummaryCard`): «в норме» — акцентный цвет
-  // темы (реестр UI-SPEC явно резервирует акцент под «progress fill для
-  // шагов и „on-track“ сегмент кольца калорий»), «выше цели» — destructive.
-  const ringColor =
-    caloriesRatio > 1
-      ? getColor("destructive", undefined, theme)
-      : getColor("primary", undefined, theme);
   const trackColor = getColor("foreground", 0.12, theme);
 
   const remaining = Math.round(calories.target - calories.value);
@@ -139,7 +165,6 @@ export default function HomeCalorieOverviewCard({
   const steps = movement?.steps ?? 0;
   const distanceKm = movement ? movement.distanceMeters / 1000 : 0;
   const stepsRatio = calcRatio(steps, DEFAULT_STEPS_GOAL);
-  const stepsFillColor = getColor("primary", undefined, theme);
 
   return (
     <LinearGradient
@@ -157,10 +182,10 @@ export default function HomeCalorieOverviewCard({
         <View style={styles.ringColumn}>
           <CircularProgress
             progress={ringProgress}
-            color={ringColor}
+            gradientColors={CALORIE_RING_GRADIENT}
+            endCap={CALORIE_RING_END_CAP}
             trackColor={trackColor}
             strokeWidth={8}
-            size={132}
           />
           <View style={styles.ringCenter} pointerEvents="none">
             <Text size="40" family="outfit">
@@ -201,7 +226,7 @@ export default function HomeCalorieOverviewCard({
                 <ProgressBar
                   ratio={ratio}
                   progress={progress}
-                  color={macro.color}
+                  gradientColors={macro.gradientColors}
                   trackColor={trackColor}
                   trackHeight={9}
                   fillHeight={5}
@@ -224,32 +249,29 @@ export default function HomeCalorieOverviewCard({
 
         <View style={styles.stepsBlock}>
           <View style={styles.stepsHeaderRow}>
-            <FootprintsIcon
-              size={20}
-              color={getColor("foreground", 0.65, theme)}
-            />
             <Text size="12" weight="600" family="outfit">
               {steps.toLocaleString("ru-RU")}
             </Text>
-          </View>
-          <View style={styles.stepsBarRow}>
-            <ProgressBar
-              ratio={stepsRatio}
-              progress={progress}
-              color={stepsFillColor}
-              trackColor={trackColor}
-              trackHeight={3}
-              fillHeight={3}
+            <FootprintsIcon
+              size={20}
+              color={getColor("foreground", 0.65, theme)}
             />
             <Text
               size="12"
               family="outfit"
               color={getColor("foreground", 0.45, theme)}
-              style={styles.stepsDistanceText}
             >
               {distanceKm.toFixed(1)} км
             </Text>
           </View>
+          <ProgressBar
+            ratio={stepsRatio}
+            progress={progress}
+            gradientColors={STEPS_GRADIENT}
+            trackColor={trackColor}
+            trackHeight={3}
+            fillHeight={3}
+          />
         </View>
 
         <View style={[styles.bottomItem, styles.bottomItemRight]}>
@@ -293,9 +315,14 @@ const createStyles = (theme: ThemeName) => ({
     alignItems: "center" as const,
     gap: 16,
   },
+  // Колонка кольца и колонка макросов делят среднюю строку карточки строго
+  // 50/50 (оба flex: 1) — по прямой инструкции пользователя (D-03,
+  // 2-й раунд коррекции), вместо прежней фиксированной ширины 132px.
+  // aspectRatio: 1 держит колонку квадратной: высота выводится из ширины,
+  // которую эта колонка получает от flex-раскладки строки.
   ringColumn: {
-    width: 132,
-    height: 132,
+    flex: 1,
+    aspectRatio: 1,
     alignItems: "center" as const,
     justifyContent: "center" as const,
   },
@@ -336,18 +363,12 @@ const createStyles = (theme: ThemeName) => ({
     paddingHorizontal: 16,
     gap: 6,
   },
+  // Три слота: счётчик шагов слева, иконка по центру, дистанция+единица
+  // справа — над баром (D-03, 2-й раунд коррекции).
   stepsHeaderRow: {
     flexDirection: "row" as const,
     alignItems: "center" as const,
-    gap: 6,
-  },
-  stepsBarRow: {
-    flexDirection: "row" as const,
-    alignItems: "center" as const,
-    gap: 8,
-  },
-  stepsDistanceText: {
-    flexShrink: 0,
+    justifyContent: "space-between" as const,
   },
 });
 
