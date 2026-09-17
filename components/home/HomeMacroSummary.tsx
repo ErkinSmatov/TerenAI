@@ -1,6 +1,4 @@
 import { View } from "react-native";
-import getColor from "@/lib/ui/getColor";
-import { useThemeContext } from "@/context/ThemeContext";
 import type { ThemeName } from "@/lib/ui/palettes";
 import useThemedStyles from "@/lib/ui/useThemedStyles";
 import { profilesConfig } from "@/config/profilesConfig";
@@ -28,13 +26,22 @@ type Props = {
   movement?: Doc<"movementData"> | null;
 };
 
+// Фиксированные декоративные градиенты каждого макроса — буквально из Figma
+// (node 863:5405), НЕ через getColor()/тему. Осознанное отступление от
+// обычного соглашения проекта «всё через getColor»: на чекпоинте D-03
+// (2-й раунд коррекции) пользователь явно попросил зафиксировать именно эти
+// hex-цвета для карточки калорий — одинаковые в светлой и тёмной теме.
+// НЕ "чинить" обратно на семантические токены `protein`/`fat`/`carb`.
+const PROTEIN_GRADIENT: [string, string] = ["#F1853C", "#F7F1E3"];
+const FAT_GRADIENT: [string, string] = ["#8489DA", "#F7F1E3"];
+const CARB_GRADIENT: [string, string] = ["#F47F6E", "#F7F1E3"];
+
 export default function HomeMacroSummary({
   totalMacros,
   readOnly = false,
   targets: targetsProp,
   movement = null,
 }: Props) {
-  const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
 
   // В readOnly-режиме (наблюдатель смотрит чужой детальный вид) запрос
@@ -53,27 +60,27 @@ export default function HomeMacroSummary({
 
   // Порядок фиксирован по Figma-макету (node 863:5405): Белки, Жиры, Углеводы.
   const macros: [
-    { name: string; value: number; target: number; color: string },
-    { name: string; value: number; target: number; color: string },
-    { name: string; value: number; target: number; color: string },
+    { name: string; value: number; target: number; gradientColors: [string, string] },
+    { name: string; value: number; target: number; gradientColors: [string, string] },
+    { name: string; value: number; target: number; gradientColors: [string, string] },
   ] = [
     {
       name: "Белки",
       value: totalMacros.protein,
       target: targets.protein,
-      color: getColor("protein", undefined, theme),
+      gradientColors: PROTEIN_GRADIENT,
     },
     {
       name: "Жиры",
       value: totalMacros.fat,
       target: targets.fat,
-      color: getColor("fat", undefined, theme),
+      gradientColors: FAT_GRADIENT,
     },
     {
       name: "Углеводы",
       value: totalMacros.carbs,
       target: targets.carbs,
-      color: getColor("carb", undefined, theme),
+      gradientColors: CARB_GRADIENT,
     },
   ];
 
