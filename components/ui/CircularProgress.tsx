@@ -1,3 +1,4 @@
+import { useThemeContext } from "@/context/ThemeContext";
 import getColor from "@/lib/ui/getColor";
 import {
   Canvas,
@@ -62,11 +63,17 @@ export default function CircularProgress({
   progress,
   size,
   strokeWidth = 8,
-  color = getColor("foreground"),
-  trackColor = getColor("secondary"),
+  color,
+  trackColor,
 }: Props) {
+  const { theme } = useThemeContext();
   const [measured, setMeasured] = useState(0);
   const resolvedSize = size ?? measured;
+
+  const resolvedColor = color ?? getColor("foreground", undefined, theme);
+  const resolvedTrackColor =
+    trackColor ??
+    getColor("secondary", theme === "dark" ? 0.08 : undefined, theme);
 
   const onLayout = ({ nativeEvent }: LayoutChangeEvent) => {
     if (size) return;
@@ -85,7 +92,7 @@ export default function CircularProgress({
   }, [resolvedSize, strokeWidth]);
 
   const progresses = Array.isArray(progress) ? progress : [progress];
-  const colors = Array.isArray(color) ? color : [color];
+  const colors = Array.isArray(resolvedColor) ? resolvedColor : [resolvedColor];
 
   if (!resolvedSize || !circlePath) {
     return <View style={styles.container} onLayout={onLayout} />;
@@ -105,7 +112,7 @@ export default function CircularProgress({
           <Path
             path={circlePath}
             style="stroke"
-            color={trackColor}
+            color={resolvedTrackColor}
             strokeWidth={strokeWidth}
           />
           {progresses.map((p, i) => (
@@ -115,7 +122,11 @@ export default function CircularProgress({
               progress={p}
               previousProgresses={progresses.slice(0, i)}
               strokeWidth={strokeWidth}
-              color={colors.at(i) ?? colors.at(0) ?? getColor("foreground")}
+              color={
+                colors.at(i) ??
+                colors.at(0) ??
+                getColor("foreground", undefined, theme)
+              }
             />
           ))}
         </Group>
