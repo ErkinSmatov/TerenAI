@@ -1,29 +1,15 @@
-import { type LucideProps } from "lucide-react-native";
 import { View } from "react-native";
 import getColor from "@/lib/ui/getColor";
 import { useThemeContext } from "@/context/ThemeContext";
 import type { ThemeName } from "@/lib/ui/palettes";
 import useThemedStyles from "@/lib/ui/useThemedStyles";
-import { type ComponentType } from "react";
-import FatIcon from "../icons/macros/FatIcon";
-import CarbIcon from "../icons/macros/CarbIcon";
-import ProteinIcon from "../icons/macros/ProteinIcon";
-import CalorieIcon from "../icons/macros/CalorieIcon";
 import { profilesConfig } from "@/config/profilesConfig";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import HomeSummaryCard from "./HomeSummaryCard";
-import HomeSummaryCardBig from "./HomeSummaryCardBig";
+import HomeCalorieOverviewCard from "./HomeCalorieOverviewCard";
 import { MacrosType } from "@/convex/tables/mealItems";
+import { Doc } from "@/convex/_generated/dataModel";
 import useProgress from "@/lib/hooks/reanimated/useProgress";
-
-type Macro = {
-  name: string;
-  value: number;
-  target: number;
-  Icon: ComponentType<LucideProps>;
-  color: string;
-};
 
 type Props = {
   totalMacros: MacrosType;
@@ -34,12 +20,19 @@ type Props = {
     protein: number;
     fat: number;
   };
+  // Опционален по историческим причинам: экраны вне скоупа этой волны
+  // (Дневник, наблюдатель — `app/app/(home)/day/[date].tsx`,
+  // `app/app/(settings)/observedPatient/[patientId].tsx`) продолжают
+  // вызывать этот компонент без movement и рендерят отдельную
+  // `HomeMovementSummary` рядом, как раньше.
+  movement?: Doc<"movementData"> | null;
 };
 
 export default function HomeMacroSummary({
   totalMacros,
   readOnly = false,
   targets: targetsProp,
+  movement = null,
 }: Props) {
   const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
@@ -58,63 +51,47 @@ export default function HomeMacroSummary({
 
   const progress = useProgress();
 
-  const macros: Macro[] = [
-    {
-      name: "Углеводы",
-      value: totalMacros.carbs,
-      target: targets.carbs,
-      Icon: CarbIcon,
-      color: getColor("carb", undefined, theme),
-    },
+  // Порядок фиксирован по Figma-макету (node 863:5405): Белки, Жиры, Углеводы.
+  const macros: [
+    { name: string; value: number; target: number; color: string },
+    { name: string; value: number; target: number; color: string },
+    { name: string; value: number; target: number; color: string },
+  ] = [
     {
       name: "Белки",
       value: totalMacros.protein,
       target: targets.protein,
-      Icon: ProteinIcon,
       color: getColor("protein", undefined, theme),
     },
     {
       name: "Жиры",
       value: totalMacros.fat,
       target: targets.fat,
-      Icon: FatIcon,
       color: getColor("fat", undefined, theme),
+    },
+    {
+      name: "Углеводы",
+      value: totalMacros.carbs,
+      target: targets.carbs,
+      color: getColor("carb", undefined, theme),
     },
   ];
 
   return (
     <View style={styles.container}>
-      <HomeSummaryCardBig
-        item={{
-          name: "Калории",
-          value: totalMacros.calories,
-          target: targets.calories,
-          Icon: CalorieIcon,
-          color: getColor("calorie", undefined, theme),
-        }}
+      <HomeCalorieOverviewCard
+        calories={{ value: totalMacros.calories, target: targets.calories }}
+        macros={macros}
+        movement={movement}
         progress={progress}
       />
-      <View style={styles.cardsContainer}>
-        {macros.map((macro) => (
-          <HomeSummaryCard
-            key={`macro-summary-${macro.name}`}
-            item={macro}
-            progress={progress}
-          />
-        ))}
-      </View>
     </View>
   );
 }
 
 const createStyles = (_theme: ThemeName) => ({
   container: {
-    gap: 16,
     flex: 1,
     paddingHorizontal: 16,
-  },
-  cardsContainer: {
-    flexDirection: "row" as const,
-    gap: 8,
   },
 });
