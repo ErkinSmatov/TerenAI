@@ -1,5 +1,7 @@
 import getColor from "@/lib/ui/getColor";
-import resolveFontFamily from "@/lib/ui/resolveFontFamily";
+import resolveFontFamily, {
+  FontFamilyName,
+} from "@/lib/ui/resolveFontFamily";
 import React from "react";
 import {
   Text as RNText,
@@ -8,11 +10,15 @@ import {
   TextStyle,
 } from "react-native";
 
-function TextWrapper(props: RNTextProps) {
+function TextWrapper({
+  family,
+  ...props
+}: RNTextProps & { family?: FontFamilyName }) {
   const flat = StyleSheet.flatten<TextStyle>(props.style);
   const fontFamily = resolveFontFamily({
     weight: flat.fontWeight,
     style: flat.fontStyle,
+    family,
   });
 
   const { fontWeight, ...rest } = flat;
@@ -54,18 +60,21 @@ export type TextProps = {
   size?: FontSize;
   weight?: FontWeight;
   color?: string;
+  family?: FontFamilyName;
 } & RNTextProps;
 
 export default function Text({
   size = "18",
   weight = "400",
   color = getColor("foreground"),
+  family = "manrope",
   ...rest
 }: TextProps) {
   const fontSize = Number(size);
   return (
     <TextWrapper
       {...rest}
+      family={family}
       style={[{ fontSize, fontWeight: weight, color }, rest.style]}
     />
   );
