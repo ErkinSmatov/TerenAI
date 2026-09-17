@@ -5,7 +5,6 @@ import HomeGlucoseSummary from "@/components/home/HomeGlucoseSummary";
 import HomeHeader from "@/components/home/HomeHeader";
 import HomeMacroSummary from "@/components/home/HomeMacroSummary";
 import HomeMicroSummary from "@/components/home/HomeMicroSummary";
-import HomeMovementSummary from "@/components/home/HomeMovementSummary";
 import HomeRecentlyLogged from "@/components/home/HomeRecentlyLogged";
 import Carousel from "@/components/ui/Carousel";
 import SafeArea from "@/components/ui/SafeArea";
@@ -138,16 +137,16 @@ export default function HomeScreen() {
           weekTotalMacros={weekTotalMacros}
         />
         <Carousel showIndicators>
-          <HomeMacroSummary totalMacros={dayTotals.macros} />
+          <HomeMacroSummary
+            totalMacros={dayTotals.macros}
+            movement={dayMovement}
+          />
           <HomeMicroSummary
             totalMicros={dayTotals.micros}
             dayIndex={selectedDay}
           />
         </Carousel>
         <HomeRecentlyLogged meals={dayMeals} />
-        {Platform.OS === "ios" && (
-          <HomeMovementSummary movement={dayMovement} />
-        )}
         {isGlucometerTrack && (
           <HomeGlucoseSummary readings={dayReadings} estimate={glucoseEstimate} />
         )}
