@@ -6,7 +6,6 @@ import HomeHeader from "@/components/home/HomeHeader";
 import HomeMacroSummary from "@/components/home/HomeMacroSummary";
 import HomeMicroSummary from "@/components/home/HomeMicroSummary";
 import HomeRecentlyLogged from "@/components/home/HomeRecentlyLogged";
-import Carousel from "@/components/ui/Carousel";
 import SafeArea from "@/components/ui/SafeArea";
 import { api } from "@/convex/_generated/api";
 import { useThemeContext } from "@/context/ThemeContext";
@@ -25,6 +24,7 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
+  View,
   useWindowDimensions,
 } from "react-native";
 
@@ -39,6 +39,9 @@ const createStyles = (_theme: ThemeName) => ({
   scrollView: {
     flexGrow: 1,
     paddingBottom: 48,
+  },
+  summaryStack: {
+    gap: 18,
   },
 });
 
@@ -136,7 +139,7 @@ export default function HomeScreen() {
           setSelectedDay={setSelectedDay}
           weekTotalMacros={weekTotalMacros}
         />
-        <Carousel showIndicators>
+        <View style={styles.summaryStack}>
           <HomeMacroSummary
             totalMacros={dayTotals.macros}
             movement={dayMovement}
@@ -145,7 +148,7 @@ export default function HomeScreen() {
             totalMicros={dayTotals.micros}
             dayIndex={selectedDay}
           />
-        </Carousel>
+        </View>
         <HomeRecentlyLogged meals={dayMeals} />
         {isGlucometerTrack && (
           <HomeGlucoseSummary readings={dayReadings} estimate={glucoseEstimate} />
