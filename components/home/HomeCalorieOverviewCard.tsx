@@ -269,8 +269,8 @@ export default function HomeCalorieOverviewCard({
             progress={progress}
             gradientColors={STEPS_GRADIENT}
             trackColor={trackColor}
-            trackHeight={3}
-            fillHeight={3}
+            trackHeight={6}
+            fillHeight={6}
           />
         </View>
 
@@ -360,7 +360,7 @@ const createStyles = (theme: ThemeName) => ({
   },
   stepsBlock: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 28,
     gap: 6,
   },
   // Три слота: счётчик шагов слева, иконка по центру, дистанция+единица
