@@ -158,13 +158,22 @@ export default function CircularProgress({
     if (next && next !== measured) setMeasured(next);
   };
 
+  // Насколько "ручка"-скраббер (endCap) выступает за внешний край самой
+  // обводки — если она вообще передана. При endCap.radius <= strokeWidth/2
+  // ручка не выходит за пределы обводки и overflow равен 0. Без endCap
+  // (все остальные потребители этого примитива) overflow всегда строго 0 —
+  // рендеринг для них байт-в-байт идентичен коду до этого исправления.
+  const overflow = endCap
+    ? Math.max(0, endCap.radius - strokeWidth / 2)
+    : 0;
+
   const circlePath = useMemo(() => {
     if (!resolvedSize) return null;
     const r = (resolvedSize - strokeWidth) / 2;
     const p = Skia.Path.Make();
-    p.addCircle(resolvedSize / 2, resolvedSize / 2, r);
+    p.addCircle(resolvedSize / 2 + overflow, resolvedSize / 2 + overflow, r);
     return p;
-  }, [resolvedSize, strokeWidth]);
+  }, [resolvedSize, strokeWidth, overflow]);
 
   const progresses = Array.isArray(progress) ? progress : [progress];
   const colors = Array.isArray(resolvedColor) ? resolvedColor : [resolvedColor];
@@ -172,12 +181,17 @@ export default function CircularProgress({
   // Диагональ ограничивающего квадрата пути (до поворота Group) — стабильные
   // координаты для градиента обводки, не зависят от анимации прогресса.
   const gradientBounds: GradientBounds | undefined = gradientColors
-    ? { start: { x: 0, y: 0 }, end: { x: resolvedSize, y: resolvedSize } }
+    ? {
+        start: { x: overflow, y: overflow },
+        end: { x: resolvedSize + overflow, y: resolvedSize + overflow },
+      }
     : undefined;
 
   if (!resolvedSize || !circlePath) {
     return <View style={styles.container} onLayout={onLayout} />;
   }
+
+  const canvasSize = resolvedSize + overflow * 2;
 
   return (
     <View
@@ -185,9 +199,20 @@ export default function CircularProgress({
       onLayout={onLayout}
       pointerEvents="none"
     >
-      <Canvas style={{ height: resolvedSize + 1, width: resolvedSize + 1 }}>
+      <Canvas
+        style={{
+          position: "absolute",
+          top: -overflow,
+          left: -overflow,
+          height: canvasSize + 1,
+          width: canvasSize + 1,
+        }}
+      >
         <Group
-          origin={{ x: resolvedSize / 2, y: resolvedSize / 2 }}
+          origin={{
+            x: resolvedSize / 2 + overflow,
+            y: resolvedSize / 2 + overflow,
+          }}
           transform={[{ rotate: -Math.PI / 2 }]}
         >
           <Path

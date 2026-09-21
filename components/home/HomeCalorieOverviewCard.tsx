@@ -8,8 +8,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
-import { FootprintsIcon } from "lucide-react-native";
 import Text from "../ui/Text";
+import SportShoeIcon from "../icons/SportShoeIcon";
 import CircularProgress from "../ui/CircularProgress";
 import { Doc } from "@/convex/_generated/dataModel";
 import getColor from "@/lib/ui/getColor";
@@ -252,7 +252,7 @@ export default function HomeCalorieOverviewCard({
             <Text size="12" weight="600" family="outfit">
               {steps.toLocaleString("ru-RU")}
             </Text>
-            <FootprintsIcon
+            <SportShoeIcon
               size={20}
               color={getColor("foreground", 0.65, theme)}
             />
@@ -269,8 +269,8 @@ export default function HomeCalorieOverviewCard({
             progress={progress}
             gradientColors={STEPS_GRADIENT}
             trackColor={trackColor}
-            trackHeight={3}
-            fillHeight={3}
+            trackHeight={6}
+            fillHeight={6}
           />
         </View>
 
@@ -360,7 +360,7 @@ const createStyles = (theme: ThemeName) => ({
   },
   stepsBlock: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 28,
     gap: 6,
   },
   // Три слота: счётчик шагов слева, иконка по центру, дистанция+единица

@@ -44,7 +44,24 @@ const getWeekMeals = query({
         dayMeals.sort((a, b) => b._creationTime - a._creationTime);
       }
 
-      return week;
+      // Разрешаем storage id фото блюда в реальный URL здесь, а не на
+      // клиенте — `ctx.storage.getUrl` доступен только в Convex-функциях.
+      // `Promise.all` вместо последовательных `await` в цикле — резолвинг
+      // независимый для каждого блюда, нет причин ждать по очереди.
+      const weekWithPhotoUrls = await Promise.all(
+        week.map((dayMeals) =>
+          Promise.all(
+            dayMeals.map(async (meal) => ({
+              ...meal,
+              photoUrl: meal.photoStorageId
+                ? await ctx.storage.getUrl(meal.photoStorageId)
+                : null,
+            }))
+          )
+        )
+      );
+
+      return weekWithPhotoUrls;
     } catch (error) {
       logError("getWeekMeals error", error);
       throw error;
