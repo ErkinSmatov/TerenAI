@@ -1,4 +1,3 @@
-import TerenAILogo from "@/assets/svg/terenai-logo.svg";
 import { useThemeContext } from "@/context/ThemeContext";
 import getColor from "@/lib/ui/getColor";
 import type { ThemeName } from "@/lib/ui/palettes";
@@ -11,11 +10,12 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import SafeArea from "../ui/SafeArea";
 import { useRouter } from "expo-router";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { BlurView } from "expo-blur";
 
 export default function HomeHeader() {
   const router = useRouter();
-  const { theme } = useThemeContext();
+  const { theme, isDark } = useThemeContext();
   const styles = useThemedStyles(createStyles);
   const streak = useQuery(api.home.getStreak.default, {
     timezoneOffsetMinutes: new Date().getTimezoneOffset(),
@@ -23,12 +23,20 @@ export default function HomeHeader() {
 
   return (
     <SafeArea edges={["left", "right"]} style={styles.safeArea}>
+      {/* Полупрозрачный размытый фон-подложка — та же техника, что и у нижнего
+          таб-бара (BlurView из expo-blur), но заметно темнее/плотнее по
+          прямому запросу пользователя (D-03): intensity выше (45 против 30)
+          плюс дополнительный тёмный scrim поверх самого blur. */}
+      <BlurView
+        intensity={45}
+        tint={isDark ? "dark" : "light"}
+        style={styles.headerBackground}
+      />
+      <View
+        style={[styles.headerBackground, styles.headerScrim]}
+        pointerEvents="none"
+      />
       <View style={styles.logoContainer}>
-        <TerenAILogo
-          width={28}
-          height={28}
-          color={getColor("foreground", undefined, theme)}
-        />
         <Text size="28" weight="600">
           TerenAI
         </Text>
@@ -71,7 +79,7 @@ export default function HomeHeader() {
   );
 }
 
-const createStyles = (_theme: ThemeName) => ({
+const createStyles = (theme: ThemeName) => ({
   safeArea: {
     flex: 0,
     flexDirection: "row" as const,
@@ -79,6 +87,18 @@ const createStyles = (_theme: ThemeName) => ({
     alignItems: "center" as const,
     marginBottom: 16,
     backgroundColor: "transparent",
+    borderRadius: 24,
+    overflow: "hidden" as const,
+    paddingVertical: 8,
+  },
+  // Фон-подложка хедера: BlurView + тёмный scrim поверх него (см. JSX) —
+  // та же техника, что и у нижнего таб-бара (`app/(tabs)/_layout.tsx`), но
+  // заметно темнее/плотнее по прямому запросу пользователя (D-03).
+  headerBackground: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  headerScrim: {
+    backgroundColor: getColor("background", 0.15, theme),
   },
   logoContainer: {
     flexDirection: "row" as const,
