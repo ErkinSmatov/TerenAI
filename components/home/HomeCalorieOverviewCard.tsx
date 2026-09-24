@@ -70,6 +70,12 @@ type Props = {
   // отдельная `HomeMovementSummary` рядом, как раньше.
   movement?: Doc<"movementData"> | null;
   progress: SharedValue<number>;
+  // Скрывает блок шагов/активности в нижней строке — используется на экране
+  // блюда (`MealCalorieOverview`), где активность не имеет смысла для
+  // одного приёма пищи, только для целого дня (D-03, 6-й раунд коррекции).
+  // По умолчанию true, чтобы существующее использование на Главной не
+  // требовало изменений.
+  showActivity?: boolean;
 };
 
 type BarProps = {
@@ -143,6 +149,7 @@ export default function HomeCalorieOverviewCard({
   macros,
   movement = null,
   progress,
+  showActivity = true,
 }: Props) {
   const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
@@ -247,32 +254,34 @@ export default function HomeCalorieOverviewCard({
           </Text>
         </View>
 
-        <View style={styles.stepsBlock}>
-          <View style={styles.stepsHeaderRow}>
-            <Text size="12" weight="600" family="outfit">
-              {steps.toLocaleString("ru-RU")}
-            </Text>
-            <SportShoeIcon
-              size={20}
-              color={getColor("foreground", 0.65, theme)}
+        {showActivity && (
+          <View style={styles.stepsBlock}>
+            <View style={styles.stepsHeaderRow}>
+              <Text size="12" weight="600" family="outfit">
+                {steps.toLocaleString("ru-RU")}
+              </Text>
+              <SportShoeIcon
+                size={20}
+                color={getColor("foreground", 0.65, theme)}
+              />
+              <Text
+                size="12"
+                family="outfit"
+                color={getColor("foreground", 0.45, theme)}
+              >
+                {distanceKm.toFixed(1)} км
+              </Text>
+            </View>
+            <ProgressBar
+              ratio={stepsRatio}
+              progress={progress}
+              gradientColors={STEPS_GRADIENT}
+              trackColor={trackColor}
+              trackHeight={6}
+              fillHeight={6}
             />
-            <Text
-              size="12"
-              family="outfit"
-              color={getColor("foreground", 0.45, theme)}
-            >
-              {distanceKm.toFixed(1)} км
-            </Text>
           </View>
-          <ProgressBar
-            ratio={stepsRatio}
-            progress={progress}
-            gradientColors={STEPS_GRADIENT}
-            trackColor={trackColor}
-            trackHeight={6}
-            fillHeight={6}
-          />
-        </View>
+        )}
 
         <View style={[styles.bottomItem, styles.bottomItemRight]}>
           <Text size="12" color={getColor("foreground", 0.65, theme)}>

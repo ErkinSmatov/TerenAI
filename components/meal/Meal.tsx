@@ -1,4 +1,3 @@
-import MealMacros from "./MealMacros";
 import {
   ScreenHeader,
   ScreenHeaderActions,
@@ -35,9 +34,9 @@ import { isRateLimitError } from "@convex-dev/rate-limiter";
 import { Toast } from "../ui/Toast";
 import Text from "../ui/Text";
 import MealItems from "./MealItems";
-import Carousel from "../ui/Carousel";
 import SafeArea from "../ui/SafeArea";
-import MealMicros from "./MealMicros";
+import MealCalorieOverview from "./MealCalorieOverview";
+import MealNutrientTiles from "./MealNutrientTiles";
 import { MacrosType, MicrosType } from "@/convex/tables/mealItems";
 import ProLabel from "../ProLabel";
 import { useSubscriptionContext } from "@/context/SubscriptionContext";
@@ -165,15 +164,15 @@ export default function Meal({
           </SafeArea>
         ) : (
           <>
-            <Carousel showIndicators style={{ paddingBottom: 32 }}>
-              <MealMacros macros={totalMacros} loading={loading} />
-              <MealMicros
+            <View style={styles.summaryStack}>
+              <MealCalorieOverview macros={totalMacros} loading={loading} />
+              <MealNutrientTiles
                 source="meal"
                 id={mealId}
                 micros={totalMicros}
                 loading={loading}
               />
-            </Carousel>
+            </View>
             <SafeArea edges={["left", "right"]} style={{ flex: 0 }}>
               <MealItems loading={loading} items={mealItems} />
             </SafeArea>
@@ -238,5 +237,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 24,
     gap: 8,
+  },
+  summaryStack: {
+    gap: 18,
+    paddingBottom: 32,
   },
 });
