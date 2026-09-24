@@ -1,4 +1,4 @@
-import { LayoutChangeEvent, StyleSheet, View } from "react-native";
+import { LayoutChangeEvent, View } from "react-native";
 import Button from "./Button";
 import getColor from "@/lib/ui/getColor";
 import Text from "./Text";
@@ -12,6 +12,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import type { SharedValue } from "react-native-reanimated";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 
 type Props = {
   options: string[];
@@ -24,6 +27,7 @@ export default function SegmentedControl({
   selectedOption,
   onChange,
 }: Props) {
+  const styles = useThemedStyles(createStyles);
   const [optionsWidths, setOptionsWidths] = useState<number[]>(
     options.map(() => 0)
   );
@@ -122,15 +126,21 @@ type OptionLabelProps = {
 };
 
 function OptionLabel({ label, index, selectedIndexSV }: OptionLabelProps) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const progress = useDerivedValue(() =>
     withTiming(selectedIndexSV.value === index ? 1 : 0, { duration: 180 })
   );
 
+  // interpolateColor выполняется в worklet-контексте useAnimatedStyle —
+  // тема должна передаваться явно третьим аргументом getColor, иначе
+  // worklet замкнёт значение activePalette на момент сериализации и не
+  // увидит последующую смену темы (см. комментарий в lib/ui/getColor.ts).
   const animatedTextStyle = useAnimatedStyle(() => {
     const color = interpolateColor(
       progress.value,
       [0, 1],
-      [getColor("foreground"), getColor("background")]
+      [getColor("foreground", undefined, theme), getColor("background", undefined, theme)]
     );
     return { color };
   });
@@ -142,26 +152,26 @@ function OptionLabel({ label, index, selectedIndexSV }: OptionLabelProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   container: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
   },
   buttonsContainer: {
-    flexDirection: "row",
+    flexDirection: "row" as const,
     height: 40,
-    backgroundColor: getColor("secondary"),
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: getColor("secondary", undefined, theme),
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
     borderRadius: 999,
   },
   indicator: {
     height: 40,
-    position: "absolute",
-    backgroundColor: getColor("foreground"),
+    position: "absolute" as const,
+    backgroundColor: getColor("foreground", undefined, theme),
     borderRadius: 999,
   },
   optionText: {
-    fontWeight: 600,
+    fontWeight: 600 as const,
   },
 });

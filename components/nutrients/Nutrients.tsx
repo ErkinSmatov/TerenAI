@@ -14,11 +14,13 @@ import { NutrientsType } from "@/convex/tables/mealItems";
 import useProgress from "@/lib/hooks/reanimated/useProgress";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
 import getColor from "@/lib/ui/getColor";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import Animated, {
   SharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 
 const unitScaleMap: Record<string, number> = {
   g: 1,
@@ -36,6 +38,7 @@ type MetricProps = {
 };
 
 function Metric({ metric, value, themeColor, progress }: MetricProps) {
+  const styles = useThemedStyles(createStyles);
   const scaledValue = value * unitScaleMap[metric.unit];
   const valuePercent = (scaledValue / metric.max) * 100;
   const targetPercent = [
@@ -102,6 +105,7 @@ type Props = {
 };
 
 export default function Nutrients({ nutrients, title }: Props) {
+  const styles = useThemedStyles(createStyles);
   const { scrollY, onScroll } = useScrollY();
   const progress = useProgress();
 
@@ -154,7 +158,7 @@ export default function Nutrients({ nutrients, title }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   container: {
     gap: 24,
   },
@@ -169,22 +173,22 @@ const styles = StyleSheet.create({
   },
   progressContainer: {
     height: 16,
-    justifyContent: "center",
+    justifyContent: "center" as const,
     borderRadius: 999,
-    overflow: "hidden",
-    backgroundColor: getColor("secondary"),
+    overflow: "hidden" as const,
+    backgroundColor: getColor("secondary", undefined, theme),
   },
   overlayBar: {
-    height: "100%",
+    height: "100%" as const,
     opacity: 0.3,
-    width: "35%",
+    width: "35%" as const,
     right: 0,
-    position: "absolute",
+    position: "absolute" as const,
   },
   progressBar: {
     height: 6,
-    width: "75%",
-    position: "absolute",
+    width: "75%" as const,
+    position: "absolute" as const,
     borderRadius: 999,
   },
 });

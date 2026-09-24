@@ -1,8 +1,11 @@
 import Button from "@/components/ui/Button";
 import Text from "@/components/ui/Text";
 import getColor from "@/lib/ui/getColor";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import React, { ComponentType, useEffect } from "react";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 import Animated, {
   Easing,
   interpolateColor,
@@ -42,6 +45,8 @@ function OptionItem({
   animationDelay = 0,
   index,
 }: OptionItemProps) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const progress = useSharedValue(isSelected ? 1 : 0);
   const appearance = useSharedValue(animated ? 0 : 1);
 
@@ -67,11 +72,15 @@ function OptionItem({
     );
   }, [animated, animationDelay, appearance, index]);
 
+  // interpolateColor выполняется в worklet-контексте useAnimatedStyle — тема
+  // передаётся явно третьим аргументом getColor (см. lib/ui/getColor.ts):
+  // worklet замыкает activePalette на момент сериализации и не увидит
+  // последующую смену темы без явной передачи.
   const animatedContainerStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(
       progress.value,
       [0, 1],
-      [getColor("secondary"), getColor("foreground")]
+      [getColor("secondary", undefined, theme), getColor("foreground", undefined, theme)]
     );
     return { backgroundColor };
   });
@@ -80,7 +89,7 @@ function OptionItem({
     const color = interpolateColor(
       progress.value,
       [0, 1],
-      [getColor("foreground"), getColor("background")]
+      [getColor("foreground", undefined, theme), getColor("background", undefined, theme)]
     );
     return { color };
   });
@@ -88,7 +97,7 @@ function OptionItem({
     const color = interpolateColor(
       progress.value,
       [0, 1],
-      [getColor("foreground", 0.6), getColor("background", 0.75)]
+      [getColor("foreground", 0.6, theme), getColor("background", 0.75, theme)]
     );
     return { color };
   });
@@ -110,7 +119,7 @@ function OptionItem({
           {React.isValidElement(Icon)
             ? Icon
             : React.createElement(Icon, {
-                color: getColor("foreground"),
+                color: getColor("foreground", undefined, theme),
               })}
         </View>
 
@@ -157,6 +166,7 @@ export default function Select({
   animated = false,
   animationDelay = 0,
 }: Props) {
+  const styles = useThemedStyles(createStyles);
   return (
     <View style={styles.container}>
       {options.map(({ name, label, description, Icon }, index) => (
@@ -176,31 +186,31 @@ export default function Select({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   container: {
     gap: 16,
   },
   optionWrapper: {
-    width: "100%",
+    width: "100%" as const,
   },
   optionButton: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
     minHeight: 80,
-    height: "auto",
-    width: "100%",
+    height: "auto" as const,
+    width: "100%" as const,
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 16,
     gap: 12,
   },
   iconContainer: {
-    backgroundColor: getColor("background"),
+    backgroundColor: getColor("background", undefined, theme),
     height: 48,
     width: 48,
     borderRadius: 999,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
   },
   labelContainer: {
     flex: 1,
