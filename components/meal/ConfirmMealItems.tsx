@@ -1,11 +1,4 @@
 import { DimensionValue, StyleSheet, TextInput as RNTextInput, View } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
-import { scheduleOnRN } from "react-native-worklets";
 import { PlusIcon, TrashIcon } from "lucide-react-native";
 import Text from "@/components/ui/Text";
 import Card from "@/components/ui/Card";
@@ -137,55 +130,37 @@ function IngredientRow({
   onChangeGrams: (id: string, grams: number) => void;
   onRemove: (id: string) => void;
 }) {
-  const translateX = useSharedValue(0);
-
   const handleRemove = () => {
     onRemove(item.id);
   };
 
-  const panGesture = Gesture.Pan()
-    .onUpdate((event) => {
-      translateX.value = event.translationX;
-    })
-    .onEnd((event) => {
-      if (event.translationX < -80) {
-        scheduleOnRN(handleRemove);
-      } else {
-        translateX.value = withSpring(0, { damping: 15, stiffness: 150 });
-      }
-    });
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }));
-
   return (
-    <GestureDetector gesture={panGesture}>
-      <Animated.View style={animatedStyle}>
-        <Card style={styles.card}>
-          <View style={styles.topRow}>
-            <RNTextInput
-              style={styles.nameInput}
-              value={item.name}
-              onChangeText={(text) => onChangeName(item.id, text)}
-            />
-            <Button
-              variant="base"
-              size="base"
-              style={styles.removeButton}
-              hitSlop={8}
-              onPress={handleRemove}
-            >
-              <TrashIcon size={18} color={getColor("red")} />
-            </Button>
-          </View>
-          <GramsStepper
-            value={item.grams}
-            onChange={(grams) => onChangeGrams(item.id, grams)}
-          />
-        </Card>
-      </Animated.View>
-    </GestureDetector>
+    <Card style={styles.card}>
+      <View style={styles.topRow}>
+        <RNTextInput
+          style={styles.nameInput}
+          value={item.name}
+          onChangeText={(text) => {
+            onChangeName(item.id, text);
+          }}
+        />
+        <Button
+          variant="base"
+          size="base"
+          style={styles.removeButton}
+          hitSlop={8}
+          onPress={handleRemove}
+        >
+          <TrashIcon size={18} color={getColor("red")} />
+        </Button>
+      </View>
+      <GramsStepper
+        value={item.grams}
+        onChange={(grams) => {
+          onChangeGrams(item.id, grams);
+        }}
+      />
+    </Card>
   );
 }
 
