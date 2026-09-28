@@ -36,6 +36,7 @@ import type * as glucose_getAllReadings from "../glucose/getAllReadings.js";
 import type * as glucose_getMonthReadings from "../glucose/getMonthReadings.js";
 import type * as glucose_getWeekReadings from "../glucose/getWeekReadings.js";
 import type * as glucose_importHealthKitReadings from "../glucose/importHealthKitReadings.js";
+import type * as home_getCurrentUserName from "../home/getCurrentUserName.js";
 import type * as home_getStreak from "../home/getStreak.js";
 import type * as http from "../http.js";
 import type * as mealItems_getMealItem from "../mealItems/getMealItem.js";
@@ -155,6 +156,7 @@ declare const fullApi: ApiFromModules<{
   "glucose/getMonthReadings": typeof glucose_getMonthReadings;
   "glucose/getWeekReadings": typeof glucose_getWeekReadings;
   "glucose/importHealthKitReadings": typeof glucose_importHealthKitReadings;
+  "home/getCurrentUserName": typeof home_getCurrentUserName;
   "home/getStreak": typeof home_getStreak;
   http: typeof http;
   "mealItems/getMealItem": typeof mealItems_getMealItem;

@@ -15,7 +15,7 @@ import Select, { SelectOption } from "@/components/ui/Select";
 import Text from "@/components/ui/Text";
 import { useState } from "react";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
-import { StyleSheet, View } from "react-native";
+import { Keyboard, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import { useMutation } from "convex/react";
 import { useRouter } from "expo-router";
 import { ClockIcon, MoonIcon, ShuffleIcon, UtensilsIcon } from "lucide-react-native";
@@ -62,43 +62,54 @@ export default function GlucoseScreen() {
           <ScreenHeaderTitle title="Уровень сахара" />
         </ScreenHeader>
 
-        <SafeArea edges={["left", "right"]} style={styles.container}>
-          <ScreenMainTitle
-            title="Добавить показание"
-            description="Введите значение, полученное с глюкометра"
-          />
-          <TextInput
-            placeholder="0.0"
-            value={value}
-            onChangeText={setValue}
-            keyboardType="decimal-pad"
-            autoFocus
-            suffix={unit}
-          />
-
-          <View style={styles.unitContainer}>
-            <SegmentedControl
-              options={glucoseUnits}
-              selectedOption={unit}
-              onChange={(option) => {
-                setUnit(option as GlucoseUnit);
-              }}
+        {/* decimal-pad не имеет кнопки "Готово" на iOS — единственный
+            штатный способ закрыть клавиатуру - тап по пустой области.
+            Без этого обработчика клавиатура перекрывала пункты "Когда
+            измеряли?" без возможности их закрыть и выбрать (замечено
+            пользователем). Вложенные Button/Pressable (сам Select,
+            SegmentedControl) всё равно первыми перехватывают тач и
+            получают onPress как обычно — TouchableWithoutFeedback
+            реагирует только на тапы по "фону". */}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <SafeArea edges={["left", "right"]} style={styles.container}>
+            <ScreenMainTitle
+              title="Добавить показание"
+              description="Введите значение, полученное с глюкометра"
             />
-          </View>
-
-          <View style={styles.contextContainer}>
-            <Text weight="600" style={styles.contextLabel}>
-              Когда измеряли?
-            </Text>
-            <Select
-              options={contextOptions}
-              selectedOptions={context ? [context] : []}
-              onSelectOption={(name) => {
-                setContext(name as GlucoseContext);
-              }}
+            <TextInput
+              placeholder="0.0"
+              value={value}
+              onChangeText={setValue}
+              keyboardType="decimal-pad"
+              autoFocus
+              suffix={unit}
             />
-          </View>
-        </SafeArea>
+
+            <View style={styles.unitContainer}>
+              <SegmentedControl
+                options={glucoseUnits}
+                selectedOption={unit}
+                onChange={(option) => {
+                  setUnit(option as GlucoseUnit);
+                }}
+              />
+            </View>
+
+            <View style={styles.contextContainer}>
+              <Text weight="600" style={styles.contextLabel}>
+                Когда измеряли?
+              </Text>
+              <Select
+                options={contextOptions}
+                selectedOptions={context ? [context] : []}
+                onSelectOption={(name) => {
+                  Keyboard.dismiss();
+                  setContext(name as GlucoseContext);
+                }}
+              />
+            </View>
+          </SafeArea>
+        </TouchableWithoutFeedback>
 
         <ScreenFooter style={{ boxShadow: [] }}>
           <ScreenFooterButton onPress={handleSave} disabled={!isValid}>

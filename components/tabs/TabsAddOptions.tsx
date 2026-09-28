@@ -32,6 +32,10 @@ const AnimatedPopoverContent = Animated.createAnimatedComponent(
   PopoverPrimitive.Content
 );
 
+// Фиксированная ширина карточки опции — 2 в ряд с gap 16 (см. styles.container)
+// вместо flex:1 в один ряд, чтобы получить сетку 2×2 вместо горизонтального ряда.
+const OPTION_WIDTH = 110;
+
 const EnterAnimation = new Keyframe({
   0: {
     opacity: 0,
@@ -168,7 +172,7 @@ export default function TabsAddOptions() {
                   key={`option-${option.label}-${index}`}
                   variant="base"
                   size="base"
-                  style={{ flex: 1, position: "relative" }}
+                  style={{ width: OPTION_WIDTH, position: "relative" }}
                   onPress={() => {
                     handleOptionPress(option);
                   }}
@@ -197,8 +201,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
     gap: 16,
     padding: 16,
+    width: OPTION_WIDTH * 2 + 16 + 32,
   },
   card: {
     height: 100,
