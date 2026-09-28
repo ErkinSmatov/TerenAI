@@ -151,7 +151,13 @@ export default function HomeScreen() {
         </View>
         <HomeRecentlyLogged meals={dayMeals} />
         {isGlucometerTrack && (
-          <HomeGlucoseSummary readings={dayReadings} estimate={glucoseEstimate} />
+          <HomeGlucoseSummary
+            readings={dayReadings}
+            estimate={glucoseEstimate}
+            weekReadings={weekReadings.flat()}
+            meals={dayMeals}
+            dayStart={weekBounds.dayStartsUtc[selectedDay]}
+          />
         )}
         {isGlucometerTrack && (
           <HomeBloodPressureSummary readings={dayBloodPressure} />

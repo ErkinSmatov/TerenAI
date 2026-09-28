@@ -1,101 +1,55 @@
 import { View } from "react-native";
-import { format } from "date-fns";
-import { DropletIcon } from "lucide-react-native";
 import Text from "../ui/Text";
 import Card from "../ui/Card";
 import Button from "../ui/Button";
 import SafeArea from "../ui/SafeArea";
 import WarningBadge from "../ui/WarningBadge";
 import SugarByHourChart from "../charts/SugarByHourChart";
+import HomeGlucoseHeroCard from "./HomeGlucoseHeroCard";
+import HomeGlucoseRangeTile from "./HomeGlucoseRangeTile";
 import { Doc } from "@/convex/_generated/dataModel";
 import getColor from "@/lib/ui/getColor";
 import { Link } from "expo-router";
-import { glucoseContextLabels } from "@/config/glucoseConfig";
 import { isGlucoseOutOfRange } from "@/convex/observers/utils/thresholds";
 import { GlucoseEstimate } from "@/lib/nutrition/estimateGlucoseFromMeals";
 import { useThemeContext } from "@/context/ThemeContext";
 import useThemedStyles from "@/lib/ui/useThemedStyles";
 import type { ThemeName } from "@/lib/ui/palettes";
 
-type ReadingRowProps = {
-  reading: Doc<"glucoseReadings">;
-};
-
-function ReadingRow({ reading }: ReadingRowProps) {
-  const { theme } = useThemeContext();
-  const styles = useThemedStyles(createStyles);
-  return (
-    <View style={styles.row}>
-      <View style={styles.rowIcon}>
-        <DropletIcon size={16} color={getColor("blue", undefined, theme)} />
-      </View>
-      <View style={styles.rowTextContainer}>
-        <Text size="16" weight="600">
-          <Text size="16" weight="600" family="outfit">
-            {reading.value}
-          </Text>{" "}
-          {reading.unit}
-        </Text>
-        {reading.context && (
-          <Text size="12" color={getColor("mutedForeground", undefined, theme)}>
-            {glucoseContextLabels[reading.context]}
-          </Text>
-        )}
-      </View>
-      <Text size="14" color={getColor("mutedForeground", undefined, theme)}>
-        {format(reading.recordedAt, "HH:mm")}
-      </Text>
-    </View>
-  );
-}
-
-type EstimateRowProps = {
-  estimate: GlucoseEstimate;
-};
-
-function EstimateRow({ estimate }: EstimateRowProps) {
-  const { theme } = useThemeContext();
-  const styles = useThemedStyles(createStyles);
-  return (
-    <View style={styles.row}>
-      <View style={styles.rowIconEstimate}>
-        <DropletIcon size={16} color={getColor("blue", undefined, theme)} />
-      </View>
-      <View style={styles.rowTextContainer}>
-        <Text size="16" weight="600" color={getColor("blue", undefined, theme)}>
-          ≈{" "}
-          <Text
-            size="16"
-            weight="600"
-            family="outfit"
-            color={getColor("blue", undefined, theme)}
-          >
-            {estimate.value}
-          </Text>{" "}
-          {estimate.unit}
-        </Text>
-        <Text size="12" color={getColor("mutedForeground", undefined, theme)}>
-          Оценка по сахару в еде
-        </Text>
-      </View>
-    </View>
-  );
-}
+type MealForChart = Pick<
+  Doc<"meals">,
+  "_id" | "_creationTime" | "totalNutrients"
+>;
 
 type Props = {
   readings: Doc<"glucoseReadings">[];
   readOnly?: boolean;
   estimate?: GlucoseEstimate | null;
+  /** Плоский список реальных показаний за последние 7 дней — для
+   * недельного среднего и тик-виджета тренда в `HomeGlucoseHeroCard`, а
+   * также как контекст baseline/unit для оценки по еде в часах без
+   * собственного реального замера. Опционально: без пропа виджет тренда
+   * скрывает недельное среднее, а часовой график не может строить
+   * carried-forward/оценочные бары дальше своего дня (экраны вне скоупа
+   * этой волны — Дневник-детали, наблюдатель). */
+  weekReadings?: Doc<"glucoseReadings">[];
+  /** Приёмы пищи выбранного дня — маркеры на часовом графике и источник
+   * оценки по еде для часов без реального показания. */
+  meals?: MealForChart[];
+  /** Локальная полночь (мс) выбранного дня — см. `SugarByHourChart`. */
+  dayStart?: number;
 };
 
 export default function HomeGlucoseSummary({
   readings,
   readOnly = false,
   estimate,
+  weekReadings = [],
+  meals = [],
+  dayStart,
 }: Props) {
   const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
-  const latestReadings = readings.slice(0, 3);
 
   const isOutOfRange =
     readings.length > 0
@@ -106,37 +60,76 @@ export default function HomeGlucoseSummary({
         ? isGlucoseOutOfRange(estimate.value, estimate.unit, "afterMeal")
         : false;
 
+  // Последнее реальное показание сегодня — `readings` приходит
+  // отсортированным по убыванию `recordedAt` (см. `getWeekReadings`),
+  // так же, как раньше использовалось для списка последних показаний.
+  const currentReading = readings.length > 0 ? readings[0] : null;
+
+  // Низкий/Высокий — строго по реальным показаниям СЕГОДНЯШНЕГО дня, без
+  // оценок и без carried-forward значений графика (те не измерения, см.
+  // estimateGlucoseFromMeals.ts). Пустое состояние при отсутствии
+  // показаний за день — тайлы скрываются целиком (у Figma нет спека для
+  // пустого состояния этих тайлов).
+  const todayValues = readings.map((reading) => reading.value);
+  const hasTodayReadings = todayValues.length > 0;
+  const todayUnit = hasTodayReadings ? readings[0].unit : "mmol/L";
+  const todayMin = hasTodayReadings ? Math.min(...todayValues) : null;
+  const todayMax = hasTodayReadings ? Math.max(...todayValues) : null;
+
+  const hasContent = readings.length > 0 || Boolean(estimate);
+
   const cardContent = (
-    <Card
-      style={styles.card}
-      glow={readings.length > 0 ? (isOutOfRange ? "destructive" : "success") : undefined}
-    >
-      {latestReadings.length > 0 || estimate ? (
-        <>
-          {readings.length > 0 && <SugarByHourChart readings={readings} />}
-          {latestReadings.map((reading) => (
-            <ReadingRow key={reading._id} reading={reading} />
-          ))}
-          {estimate && <EstimateRow estimate={estimate} />}
-        </>
-      ) : (
-        <Text
-          size="14"
-          color={getColor("mutedForeground", 0.5, theme)}
-          style={styles.empty}
-        >
-          Добавьте показание, чтобы увидеть его здесь&hellip;
-        </Text>
+    <View style={styles.stack}>
+      <Card style={styles.chartCard}>
+        {hasContent ? (
+          <SugarByHourChart
+            readings={readings}
+            meals={meals}
+            dayStart={dayStart}
+            baselineReadings={weekReadings}
+          />
+        ) : (
+          <Text
+            size="14"
+            color={getColor("mutedForeground", 0.5, theme)}
+            style={styles.empty}
+          >
+            Добавьте показание, чтобы увидеть его здесь&hellip;
+          </Text>
+        )}
+        {isOutOfRange && <WarningBadge text="Глюкоза вне нормы" color="red" />}
+      </Card>
+
+      <HomeGlucoseHeroCard
+        currentReading={currentReading}
+        currentEstimate={estimate}
+        weekReadings={weekReadings}
+      />
+
+      {hasTodayReadings && (
+        <View style={styles.tilesRow}>
+          <HomeGlucoseRangeTile
+            label="Низкий"
+            value={todayMin}
+            unit={todayUnit}
+            direction="low"
+          />
+          <HomeGlucoseRangeTile
+            label="Высокий"
+            value={todayMax}
+            unit={todayUnit}
+            direction="high"
+          />
+        </View>
       )}
-      {isOutOfRange && <WarningBadge text="Глюкоза вне нормы" color="red" />}
-    </Card>
+    </View>
   );
 
   return (
     <SafeArea edges={["left", "right"]} style={styles.safeArea}>
       <View style={styles.header}>
         <Text size="20" weight="600">
-          Уровень сахара
+          Сахар
         </Text>
         {!readOnly && (
           <Link href="/app/(home)/glucoseLog" asChild>
@@ -160,7 +153,7 @@ export default function HomeGlucoseSummary({
   );
 }
 
-const createStyles = (theme: ThemeName) => ({
+const createStyles = (_theme: ThemeName) => ({
   safeArea: {
     flex: 0,
     backgroundColor: "transparent",
@@ -172,38 +165,18 @@ const createStyles = (theme: ThemeName) => ({
     alignItems: "center" as const,
     paddingBottom: 16,
   },
-  card: {
+  stack: {
+    gap: 16,
+  },
+  chartCard: {
     gap: 16,
   },
   empty: {
     textAlign: "center" as const,
     paddingVertical: 8,
   },
-  row: {
+  tilesRow: {
     flexDirection: "row" as const,
-    alignItems: "center" as const,
     gap: 12,
-  },
-  rowIcon: {
-    height: 32,
-    width: 32,
-    borderRadius: 999,
-    alignItems: "center" as const,
-    justifyContent: "center" as const,
-    backgroundColor: getColor("muted", undefined, theme),
-  },
-  rowIconEstimate: {
-    height: 32,
-    width: 32,
-    borderRadius: 999,
-    alignItems: "center" as const,
-    justifyContent: "center" as const,
-    borderStyle: "dashed" as const,
-    borderWidth: 1,
-    borderColor: getColor("blue", undefined, theme),
-  },
-  rowTextContainer: {
-    flex: 1,
-    gap: 2,
   },
 });
