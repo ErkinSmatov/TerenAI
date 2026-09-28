@@ -34,7 +34,7 @@ type Props = {
   /** Последнее РЕАЛЬНОЕ показание сегодня, если есть — приоритет над
    * оценкой (см. estimateGlucoseFromMeals.ts). */
   currentReading?: Doc<"glucoseReadings"> | null;
-  /** Оценка "≈" по еде — используется только если реального показания
+  /** Оценка "~" по еде — используется только если реального показания
    * сегодня ещё нет. */
   currentEstimate?: GlucoseEstimate | null;
   /** Плоский список РЕАЛЬНЫХ показаний за последние 7 дней (без оценок —
@@ -115,7 +115,7 @@ export default function HomeGlucoseHeroCard({
             color={textColor}
             style={styles.currentValue}
           >
-            {current ? `${current.isEstimate ? "≈ " : ""}${formatValue(current.value, current.unit)}` : "—"}
+            {current ? `${current.isEstimate ? "~" : ""}${formatValue(current.value, current.unit)}` : "—"}
           </Text>
           <Text size="12" color={mutedTextColor}>
             {current ? current.unit : ""}

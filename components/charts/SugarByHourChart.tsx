@@ -82,7 +82,7 @@ export default function SugarByHourChart({
   meals = [],
   dayStart,
   baselineReadings,
-  height = 120,
+  height = 60,
 }: Props) {
   const { theme } = useThemeContext();
   const [measured, setMeasured] = useState(0);
