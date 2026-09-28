@@ -1,6 +1,5 @@
 import { View } from "react-native";
 import Text from "../ui/Text";
-import Card from "../ui/Card";
 import Button from "../ui/Button";
 import SafeArea from "../ui/SafeArea";
 import WarningBadge from "../ui/WarningBadge";
@@ -80,7 +79,7 @@ export default function HomeGlucoseSummary({
 
   const cardContent = (
     <View style={styles.stack}>
-      <Card style={styles.chartCard}>
+      <View style={styles.chartContainer}>
         {hasContent ? (
           <SugarByHourChart
             readings={readings}
@@ -98,7 +97,7 @@ export default function HomeGlucoseSummary({
           </Text>
         )}
         {isOutOfRange && <WarningBadge text="Глюкоза вне нормы" color="red" />}
-      </Card>
+      </View>
 
       <HomeGlucoseHeroCard
         currentReading={currentReading}
@@ -168,7 +167,7 @@ const createStyles = (_theme: ThemeName) => ({
   stack: {
     gap: 16,
   },
-  chartCard: {
+  chartContainer: {
     gap: 16,
   },
   empty: {

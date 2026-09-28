@@ -78,18 +78,16 @@ export default function HomeGlucoseHeroCard({
         )
       : null;
 
-  // Позиция акцентного маркера на шкале тик-рисок — доля текущего значения
-  // внутри диапазона [min, max] недели (клэмп к границам, если текущее
-  // значение выходит за пределы недельного диапазона). Это трактовка
-  // decorative-виджета из Figma этой сессией — см. SUMMARY, однозначного
-  // спека нет.
+  // Позиция акцентного маркера на шкале тик-рисок — доля СРЕДНЕГО за
+  // неделю значения внутри диапазона [min, max] той же недели (клэмп к
+  // границам на случай погрешности округления). Уточнено пользователем
+  // после ревью первой версии (была доля ТЕКУЩЕГО значения — неверно).
   let markerRatio: number | null = null;
-  if (current && weekMinMmol !== null && weekMaxMmol !== null) {
-    const currentMmol = toMmol(current.value, current.unit);
+  if (weekAverageMmol !== null && weekMinMmol !== null && weekMaxMmol !== null) {
     const range = weekMaxMmol - weekMinMmol;
     markerRatio =
       range > 0
-        ? Math.min(1, Math.max(0, (currentMmol - weekMinMmol) / range))
+        ? Math.min(1, Math.max(0, (weekAverageMmol - weekMinMmol) / range))
         : 0.5;
   }
 

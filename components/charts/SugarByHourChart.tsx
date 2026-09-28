@@ -141,11 +141,23 @@ export default function SugarByHourChart({
     const estimateBaseline: EstimateReadingInput[] =
       baselineReadings ?? readings;
 
+    // Верхняя граница часов, для которых вообще имеет смысл считать
+    // fallback-значение: реальное "сейчас", но не позже конца дня графика.
+    // Без этой границы часы, которые ещё не наступили (например, 23:00 при
+    // текущем времени 12:46), заполнялись бы перенесённым вперёд значением
+    // наравне с уже прошедшими — баг, замеченный пользователем на скрине
+    // ("показывает заполненное значение наперёд"). Для дней в прошлом
+    // (dayStart + 24ч уже в прошлом) граница естественно равна концу того
+    // дня — там заполняются все 24 часа, как и раньше.
+    const fallbackHorizon = Math.min(Date.now(), dayStart + HOURS * HOUR_MS);
+
     return realBuckets.map((bucket, hour) => {
       if (bucket) return bucket;
 
       const hourStart = dayStart + hour * HOUR_MS;
       const hourEnd = hourStart + HOUR_MS;
+
+      if (hourStart >= fallbackHorizon) return null;
 
       // (a) Перенос вперёд последнего реального показания ЭТОГО дня, если
       // оно было раньше начала часа.
@@ -297,9 +309,11 @@ export default function SugarByHourChart({
             // Непрозрачность 0.5 для НЕ-реальных (перенесённых/оценочных)
             // баров — тот же "≈"-приём непрозрачности, что и у оценки в
             // остальном приложении, чтобы отличить измеренное от
-            // предполагаемого.
+            // предполагаемого. Цвет заливки — "foreground" (белый/светлый
+            // в обеих темах), как в Figma (`#fffefd`), а не акцентный
+            // лайм-primary — по замечанию пользователя после ревью.
             const opacity = bar.real ? undefined : 0.5;
-            const fillColor = getColor("primary", opacity, theme);
+            const fillColor = getColor("foreground", opacity, theme);
 
             if (!bar.outOfRange) {
               return (
