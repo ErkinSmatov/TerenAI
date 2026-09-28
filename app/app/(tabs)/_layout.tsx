@@ -48,7 +48,6 @@ export default function TabLayout() {
           headerShown: false,
           tabBarActiveTintColor: getColor("foreground", undefined, theme),
           tabBarInactiveTintColor: getColor("mutedForeground", 0.5, theme),
-          animation: "shift",
           tabBarStyle: styles.tabBarStyle,
           tabBarLabelStyle: styles.tabBarLabelStyle,
           tabBarButton: (props) => <TabBarButton {...props} />,
