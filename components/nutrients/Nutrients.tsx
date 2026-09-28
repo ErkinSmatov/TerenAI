@@ -19,7 +19,8 @@ import Animated, {
   SharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import type { ThemeName } from "@/lib/ui/palettes";
+import type { ColorName, ThemeName } from "@/lib/ui/palettes";
+import { useThemeContext } from "@/context/ThemeContext";
 import useThemedStyles from "@/lib/ui/useThemedStyles";
 
 const unitScaleMap: Record<string, number> = {
@@ -33,12 +34,16 @@ const unitScaleMap: Record<string, number> = {
 type MetricProps = {
   metric: NutrientMetric;
   value: number;
-  themeColor: string;
+  themeColor: ColorName;
   progress: SharedValue<number>;
 };
 
-function Metric({ metric, value, themeColor, progress }: MetricProps) {
+function Metric({ metric, value, themeColor: themeColorName, progress }: MetricProps) {
+  const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
+  // Резолвится здесь, а не в конфиге (см. comment в nutrientsConfig.ts) —
+  // тема доступна только на стороне компонента.
+  const themeColor = getColor(themeColorName, undefined, theme);
   const scaledValue = value * unitScaleMap[metric.unit];
   const valuePercent = (scaledValue / metric.max) * 100;
   const targetPercent = [

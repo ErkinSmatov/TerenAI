@@ -1,5 +1,5 @@
 import { NutrientsType } from "@/convex/tables/mealItems";
-import getColor from "@/lib/ui/getColor";
+import type { ColorName } from "@/lib/ui/palettes";
 
 export type NutrientMetric = {
   id: string;
@@ -14,7 +14,16 @@ export type NutrientMetric = {
 type NutrientCategory = {
   id: keyof NutrientsType;
   categoryLabel: string;
-  themeColor: string;
+  // Имя цветового токена (см. lib/ui/palettes.ts), НЕ резолвленный цвет:
+  // этот файл импортируется и Convex-бэкендом (updateMealTotals.ts — за
+  // чистыми getEmptyNutrients/addNutrients/multiplyNutrients), где нет ни
+  // темы, ни MMKV. Раньше здесь стоял getColor("carb") и т.п. на уровне
+  // модуля — тянул lib/ui/getColor.ts → lib/storage/mmkv.ts →
+  // react-native-mmkv → react-native, что ломало бандлинг Convex (Flow-
+  // синтаксис react-native/index.js не парсится esbuild). Резолвинг в
+  // реальный цвет теперь на стороне потребителя (Nutrients.tsx), где уже
+  // есть тема из React-контекста.
+  themeColor: ColorName;
   metrics: NutrientMetric[];
 };
 
@@ -22,7 +31,7 @@ export const nutrientsData: NutrientCategory[] = [
   {
     id: "carbs",
     categoryLabel: "Углеводы и сахара",
-    themeColor: getColor("carb"),
+    themeColor: "carb",
     metrics: [
       {
         id: "total",
@@ -65,7 +74,7 @@ export const nutrientsData: NutrientCategory[] = [
   {
     id: "fats",
     categoryLabel: "Жиры и липиды",
-    themeColor: getColor("fat"),
+    themeColor: "fat",
     metrics: [
       {
         id: "total",
@@ -126,7 +135,7 @@ export const nutrientsData: NutrientCategory[] = [
   {
     id: "protein",
     categoryLabel: "Белки",
-    themeColor: getColor("protein"),
+    themeColor: "protein",
     metrics: [
       {
         id: "total",
@@ -178,7 +187,7 @@ export const nutrientsData: NutrientCategory[] = [
   {
     id: "vitamins",
     categoryLabel: "Витамины",
-    themeColor: getColor("purple"),
+    themeColor: "purple",
     metrics: [
       {
         id: "a",
@@ -248,7 +257,7 @@ export const nutrientsData: NutrientCategory[] = [
   {
     id: "minerals",
     categoryLabel: "Минералы",
-    themeColor: getColor("blue"),
+    themeColor: "blue",
     metrics: [
       {
         id: "sodium",
@@ -309,7 +318,7 @@ export const nutrientsData: NutrientCategory[] = [
   {
     id: "other",
     categoryLabel: "Прочее",
-    themeColor: getColor("foreground"),
+    themeColor: "foreground",
     metrics: [
       {
         id: "water",
