@@ -1,20 +1,22 @@
 import React from "react";
-import { StyleSheet } from "react-native";
 import Text, { TextProps, FontSize } from "./Text";
 import getColor from "@/lib/ui/getColor";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 
 type Props = {
   size?: FontSize;
 } & TextProps
 
 export default function Description({ size = "16", ...rest }: Props) {
+  const styles = useThemedStyles(createStyles);
   return (
     <Text {...rest} size={size} style={[styles.description, rest.style]} />
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   description: {
-    color: getColor("mutedForeground"),
+    color: getColor("mutedForeground", undefined, theme),
   },
 });

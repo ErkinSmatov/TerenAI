@@ -1,5 +1,6 @@
 import getColor from "@/lib/ui/getColor";
-import { StyleSheet } from "react-native";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 import {
   Edge,
   Edges,
@@ -12,6 +13,7 @@ const paddingVertical = 12;
 const paddingHorizontal = 16;
 
 export default function SafeArea({ style, ...props }: SafeAreaViewProps) {
+  const styles = useThemedStyles(createStyles);
   const edges = props.edges;
 
   return (
@@ -40,10 +42,10 @@ export function useSafeArea() {
   };
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   safeArea: {
     flex: 1,
-    backgroundColor: getColor("background"),
+    backgroundColor: getColor("background", undefined, theme),
   },
 });
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import {
   BottomSheetModal,
   BottomSheetView,
@@ -9,6 +9,8 @@ import {
 import SafeArea from "@/components/ui/SafeArea";
 import getColor from "@/lib/ui/getColor";
 import getShadow from "@/lib/ui/getShadow";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 
 type Props = {
   Trigger: React.ReactElement<{ onPress?: () => void }>;
@@ -17,6 +19,7 @@ type Props = {
 };
 
 export default function BottomSheet({ Trigger, children, ref }: Props) {
+  const styles = useThemedStyles(createStyles);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const mergedRef = (node: BottomSheetModal | null) => {
@@ -61,14 +64,14 @@ export default function BottomSheet({ Trigger, children, ref }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   handleContainer: {
     height: 30,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
   },
   handle: {
-    backgroundColor: getColor("secondary"),
+    backgroundColor: getColor("secondary", undefined, theme),
     width: 40,
     height: 3,
     borderRadius: 999,
@@ -78,6 +81,6 @@ const styles = StyleSheet.create({
     ...getShadow("lg", { inverted: true, opacity: 0.025 }),
   },
   safeArea: {
-    backgroundColor: getColor("base"),
+    backgroundColor: getColor("base", undefined, theme),
   },
 });

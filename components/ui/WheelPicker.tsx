@@ -9,6 +9,9 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import Text from "./Text";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 
 type Props = {
   data: string[];
@@ -25,6 +28,8 @@ export default function WheelPicker({
   itemStyle,
   ref,
 }: Props) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const numVisibleItems = 5;
   const itemHeight = 40;
   const containerHeight = itemHeight * numVisibleItems;
@@ -61,13 +66,13 @@ export default function WheelPicker({
       <View style={[styles.innerContainer, { height: containerHeight }]}>
         <View style={styles.indicatorContainer}>
           <LinearGradient
-            colors={[getColor("background"), getColor("background", 0.6)]}
+            colors={[getColor("background", undefined, theme), getColor("background", 0.6, theme)]}
             style={styles.gradient}
             pointerEvents="none"
           />
           <View style={[styles.indicator, { height: itemHeight - 4 }]}></View>
           <LinearGradient
-            colors={[getColor("background", 0.6), getColor("background")]}
+            colors={[getColor("background", 0.6, theme), getColor("background", undefined, theme)]}
             style={styles.gradient}
             pointerEvents="none"
           />
@@ -97,33 +102,33 @@ export default function WheelPicker({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
   },
   innerContainer: {
-    width: "100%",
+    width: "100%" as const,
   },
   indicatorContainer: {
     ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "center" as const,
+    alignItems: "center" as const,
   },
   gradient: {
     flex: 1,
-    width: "100%",
+    width: "100%" as const,
     zIndex: 1,
   },
   indicator: {
-    width: "100%",
+    width: "100%" as const,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: getColor("mutedForeground"),
+    borderColor: getColor("mutedForeground", undefined, theme),
   },
   item: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "center" as const,
+    alignItems: "center" as const,
   },
 });

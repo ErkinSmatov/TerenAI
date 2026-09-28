@@ -1,10 +1,12 @@
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 import React, { useEffect, useImperativeHandle, useRef } from "react";
 import {
   FocusEvent,
   BlurEvent,
   TextInput as RNTextInput,
-  StyleSheet,
   Platform,
   TextInputProps,
   Keyboard,
@@ -49,6 +51,8 @@ export default function TextInput({
   pointerEvents,
   ...props
 }: Props) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const textInputRef = useRef<RNTextInput>(null);
   const focused = useSharedValue(0);
   const shake = useSharedValue(0);
@@ -86,17 +90,19 @@ export default function TextInput({
     [error, shake]
   );
 
+  // interpolateColor выполняется в worklet-контексте useAnimatedStyle — тема
+  // передаётся явно третьим аргументом getColor (см. lib/ui/getColor.ts).
   const animatedStyles = {
     label: useAnimatedStyle(() => {
       const initialColor = interpolateColor(
         focused.value,
         [0, 1],
-        [getColor("mutedForeground", 0.6), getColor("mutedForeground")]
+        [getColor("mutedForeground", 0.6, theme), getColor("mutedForeground", undefined, theme)]
       );
       const color = interpolateColor(
         error.value,
         [0, 1],
-        [initialColor, getColor("red")]
+        [initialColor, getColor("red", undefined, theme)]
       );
 
       return { color };
@@ -105,12 +111,12 @@ export default function TextInput({
       const initialBorderColor = interpolateColor(
         focused.value,
         [0, 1],
-        [getColor("secondary"), getColor("foreground")]
+        [getColor("secondary", undefined, theme), getColor("foreground", undefined, theme)]
       );
       const borderColor = interpolateColor(
         error.value,
         [0, 1],
-        [initialBorderColor, getColor("red")]
+        [initialBorderColor, getColor("red", undefined, theme)]
       );
 
       return { borderColor, transform: [{ translateX: shake.value }] };
@@ -148,13 +154,13 @@ export default function TextInput({
             ref={textInputRef}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            placeholderTextColor={getColor("mutedForeground", 0.6)}
-            cursorColor={getColor("foreground")}
+            placeholderTextColor={getColor("mutedForeground", 0.6, theme)}
+            cursorColor={getColor("foreground", undefined, theme)}
             selectionColor={Platform.select({
-              ios: getColor("foreground"),
-              android: getColor("foreground", 0.2),
+              ios: getColor("foreground", undefined, theme),
+              android: getColor("foreground", 0.2, theme),
             })}
-            selectionHandleColor={getColor("foreground")}
+            selectionHandleColor={getColor("foreground", undefined, theme)}
             style={[styles.textInput, style, { flex: 1 }]}
             {...props}
           />
@@ -165,14 +171,14 @@ export default function TextInput({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   card: {
     paddingVertical: 12,
     paddingHorizontal: 16,
     gap: 4,
   },
   textInput: {
-    color: getColor("foreground"),
+    color: getColor("foreground", undefined, theme),
     padding: 0,
     includeFontPadding: false,
     fontSize: 16,

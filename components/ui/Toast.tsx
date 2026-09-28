@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, StyleSheet } from "react-native";
+import { Dimensions } from "react-native";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 import {
   Gesture,
   GestureDetector,
@@ -58,6 +60,7 @@ export const Toast = {
 };
 
 export default function ToastProvider() {
+  const styles = useThemedStyles(createStyles);
   const [toasts, setToasts] = useState<ToastItemType[]>([]);
   const { top } = useSafeAreaInsets();
 
@@ -96,6 +99,7 @@ function ToastItem({
   variant = "default",
   onDismiss,
 }: ToastItemType & { onDismiss: () => void }) {
+  const styles = useThemedStyles(createStyles);
   const colorMap = {
     default: "secondary",
     success: "green",
@@ -139,24 +143,24 @@ function ToastItem({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   container: {
-    position: "absolute",
+    position: "absolute" as const,
     top: 0,
     left: 0,
     right: 0,
     gap: 8,
-    alignItems: "center",
+    alignItems: "center" as const,
   },
   toast: {
     width: Dimensions.get("window").width - 32,
     padding: 12,
-    backgroundColor: getColor("base"),
+    backgroundColor: getColor("base", undefined, theme),
     borderRadius: 12,
     borderWidth: 1,
     ...getShadow("md"),
   },
   text: {
-    textAlign: "center",
+    textAlign: "center" as const,
   },
 });

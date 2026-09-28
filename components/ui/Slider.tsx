@@ -1,6 +1,9 @@
 import React from "react";
 import getColor from "@/lib/ui/getColor";
-import { StyleSheet, useWindowDimensions, View } from "react-native";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
+import { useWindowDimensions, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { scheduleOnRN } from "react-native-worklets";
 import Animated, {
@@ -27,6 +30,8 @@ export default function Slider({
   highlightedRange,
   onSlidingComplete,
 }: Props) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const dimensions = useWindowDimensions();
 
   const dotSize = 24;
@@ -85,13 +90,15 @@ export default function Slider({
         ],
       };
     }),
+    // getColor вызывается в worklet-контексте useAnimatedStyle — тема
+    // передаётся явно (см. lib/ui/getColor.ts).
     innerDot: useAnimatedStyle(() => ({
       backgroundColor:
         highlightedRange &&
         value.value >= highlightedRange[0] &&
         value.value <= highlightedRange[1]
-          ? getColor("foreground")
-          : getColor("mutedForeground"),
+          ? getColor("foreground", undefined, theme)
+          : getColor("mutedForeground", undefined, theme),
     })),
   };
 
@@ -138,27 +145,27 @@ export default function Slider({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   container: {
-    width: "100%",
-    justifyContent: "center",
+    width: "100%" as const,
+    justifyContent: "center" as const,
   },
   line: {
     height: 4,
-    backgroundColor: getColor("secondary"),
+    backgroundColor: getColor("secondary", undefined, theme),
   },
   highlightLine: {
-    backgroundColor: getColor("primary"),
-    height: "100%",
+    backgroundColor: getColor("primary", undefined, theme),
+    height: "100%" as const,
   },
   dotContainer: {
     borderRadius: 999,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
+    justifyContent: "center" as const,
+    alignItems: "center" as const,
+    position: "absolute" as const,
   },
   dot: {
     borderRadius: 999,
-    backgroundColor: getColor("foreground"),
+    backgroundColor: getColor("foreground", undefined, theme),
   },
 });

@@ -18,6 +18,9 @@ import Animated, {
   SharedValue,
 } from "react-native-reanimated";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 import Button from "./Button";
 import Card from "./Card";
 
@@ -42,15 +45,19 @@ function OTPInputBox({
   caretOpacity,
   onPress,
 }: OTPInputBoxProps) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
+  // getColor вызывается в worklet-контексте useAnimatedStyle — тема
+  // передаётся явно (см. lib/ui/getColor.ts).
   const animatedStyles = {
     card: useAnimatedStyle(() => {
       const initialBorderColor = isFocused
-        ? getColor("foreground")
-        : getColor("secondary");
+        ? getColor("foreground", undefined, theme)
+        : getColor("secondary", undefined, theme);
       const borderColor = interpolateColor(
         error.value,
         [0, 1],
-        [initialBorderColor, getColor("red")]
+        [initialBorderColor, getColor("red", undefined, theme)]
       );
 
       return { borderColor, transform: [{ translateX: shake.value }] };
@@ -92,6 +99,7 @@ export default function OTPInput({
   ref,
   ...props
 }: Props) {
+  const styles = useThemedStyles(createStyles);
   const [text, setText] = useState("");
   const [isFocused, setIsFocused] = useState(props.autoFocus ?? false);
 
@@ -215,9 +223,9 @@ export default function OTPInput({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   container: {
-    flexDirection: "row",
+    flexDirection: "row" as const,
     gap: 16,
   },
   card: {
@@ -225,18 +233,18 @@ const styles = StyleSheet.create({
     padding: 12,
     paddingHorizontal: 16,
     gap: 4,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
   },
   caretContainer: {
     ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
   },
   caret: {
     width: 2,
     height: 32,
-    backgroundColor: getColor("foreground"),
+    backgroundColor: getColor("foreground", undefined, theme),
   },
   input: {
     ...StyleSheet.absoluteFillObject,

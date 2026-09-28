@@ -6,9 +6,10 @@ export const THEME_STORAGE_KEY = "ui.theme";
 // Синхронное чтение сохранённой темы на уровне модуля: `getColor.ts`
 // инициализируется раньше, чем `StyleSheet.create` любого компонента,
 // поэтому даже неотредактированные экраны получают корректную палитру
-// при холодном старте.
+// при холодном старте. Дефолт для первого запуска (нет сохранённого
+// значения в MMKV) — тёмная тема, по прямому запросу пользователя.
 let activeTheme: ThemeName =
-  storage.getString(THEME_STORAGE_KEY) === "dark" ? "dark" : "light";
+  storage.getString(THEME_STORAGE_KEY) === "light" ? "light" : "dark";
 let activePalette = palettes[activeTheme];
 
 export function setActiveTheme(theme: ThemeName) {
