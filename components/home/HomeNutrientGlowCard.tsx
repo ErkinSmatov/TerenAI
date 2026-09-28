@@ -1,5 +1,6 @@
 import { View } from "react-native";
 import getColor from "@/lib/ui/getColor";
+import getNutrientGlow from "@/lib/ui/getNutrientGlow";
 import { useThemeContext } from "@/context/ThemeContext";
 import type { ThemeName } from "@/lib/ui/palettes";
 import useThemedStyles from "@/lib/ui/useThemedStyles";
@@ -30,46 +31,6 @@ type Props = {
   lightGlowColor: string;
   onPress?: () => void;
 };
-
-// Тёмная тема: INSET-свечение поверх плоского фона `#15181F` (Figma-узел
-// 813:918). Светлая тема: своя, менее контрастная трактовка того же
-// приёма — мягкое АМБИЕНТНОЕ (не inset) цветное свечение по краю карточки
-// поверх стандартного светлого фона `Card`-компонента (`getColor("base")`),
-// той же объектной формы `boxShadow`, что и `getGlowShadow` в
-// `components/ui/Card.tsx`, но со своими тонами под нутриент/качество —
-// см. `HomeMicroSummary.tsx` для конкретных hex/rgba значений.
-function getNutrientGlow(
-  theme: ThemeName,
-  darkGlowColor: string,
-  lightGlowColor: string
-) {
-  if (theme === "dark") {
-    return {
-      boxShadow: [
-        {
-          offsetX: 0,
-          offsetY: 0,
-          blurRadius: 40,
-          spreadDistance: 0,
-          color: darkGlowColor,
-          inset: true,
-        },
-      ],
-    };
-  }
-
-  return {
-    boxShadow: [
-      {
-        offsetX: 0,
-        offsetY: 0,
-        blurRadius: 20,
-        spreadDistance: 0,
-        color: lightGlowColor,
-      },
-    ],
-  };
-}
 
 export default function HomeNutrientGlowCard({
   name,
