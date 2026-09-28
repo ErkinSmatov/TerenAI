@@ -24,7 +24,7 @@ import Button from "../ui/Button";
 import Card from "../ui/Card";
 import { revenueCatConfig } from "@/config/revenueCatConfig";
 import Text from "../ui/Text";
-import getColor from "../../lib/ui/getColor";
+import getColor, { getActiveTheme } from "../../lib/ui/getColor";
 import {
   CameraIcon,
   PenLineIcon,
@@ -341,6 +341,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: getColor("primary"),
   },
+  // "muted", не "secondary": в тёмной палитре secondary — сплошной белый,
+  // задуман только для низкой прозрачности (см. lib/ui/palettes.ts).
   badge: {
     position: "absolute",
     top: 0,
@@ -348,7 +350,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     paddingHorizontal: 6,
     borderRadius: 999,
-    backgroundColor: getColor("secondary"),
+    backgroundColor: getColor("muted"),
   },
   featuresCard: {
     padding: 20,
@@ -363,8 +365,17 @@ const styles = StyleSheet.create({
     gap: 4,
     flex: 1,
   },
+  // Та же конвенция границы, что и в Card.tsx: "secondary" при 0.08
+  // непрозрачности в тёмной теме. Этот экран пока не переведён на
+  // useThemedStyles (вне скоупа фазы), поэтому берём тему один раз при
+  // загрузке модуля через getActiveTheme() — переживёт холодный старт, но
+  // не переключится live без перезапуска (как и остальные нередизайненные
+  // экраны).
   featuresDivider: {
     height: 1,
-    backgroundColor: getColor("secondary"),
+    backgroundColor: getColor(
+      "secondary",
+      getActiveTheme() === "dark" ? 0.08 : undefined
+    ),
   },
 });

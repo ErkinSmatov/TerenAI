@@ -361,12 +361,14 @@ const styles = StyleSheet.create({
     gap: 10,
     overflow: "hidden",
   },
+  // "muted", не "secondary": в тёмной палитре secondary — сплошной белый,
+  // задуман только для низкой прозрачности (см. lib/ui/palettes.ts).
   progressContainer: {
     position: "absolute",
     left: 0,
     right: 0,
     height: 6,
-    backgroundColor: getColor("secondary"),
+    backgroundColor: getColor("muted"),
   },
   progressIndicator: {
     height: "100%",

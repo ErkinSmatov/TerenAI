@@ -51,9 +51,11 @@ function OTPInputBox({
   // передаётся явно (см. lib/ui/getColor.ts).
   const animatedStyles = {
     card: useAnimatedStyle(() => {
+      // Та же конвенция границы, что и в Card.tsx: "secondary" при 0.08
+      // непрозрачности в тёмной теме.
       const initialBorderColor = isFocused
         ? getColor("foreground", undefined, theme)
-        : getColor("secondary", undefined, theme);
+        : getColor("secondary", theme === "dark" ? 0.08 : undefined, theme);
       const borderColor = interpolateColor(
         error.value,
         [0, 1],

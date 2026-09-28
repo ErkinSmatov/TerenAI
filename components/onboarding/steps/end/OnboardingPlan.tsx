@@ -1,7 +1,7 @@
 import CircularProgress from "@/components/ui/CircularProgress";
 import Description from "@/components/ui/Description";
 import Title from "@/components/ui/Title";
-import getColor from "@/lib/ui/getColor";
+import getColor, { getActiveTheme } from "@/lib/ui/getColor";
 import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import AnimateableText from "react-native-animateable-text";
@@ -167,7 +167,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     gap: 6,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: getColor("secondary"),
+    // Та же конвенция, что и в Card.tsx: "secondary" при пониженной
+    // непрозрачности — сплошной secondary в тёмной теме дал бы кричаще-белую
+    // рамку (secondary задуман только для низкой прозрачности).
+    borderColor: getColor("secondary", getActiveTheme() === "dark" ? 0.08 : undefined),
   },
   macroName: {
     textAlign: "center",

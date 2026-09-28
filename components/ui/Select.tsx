@@ -76,11 +76,15 @@ function OptionItem({
   // передаётся явно третьим аргументом getColor (см. lib/ui/getColor.ts):
   // worklet замыкает activePalette на момент сериализации и не увидит
   // последующую смену темы без явной передачи.
+  // Невыбранный фон — "muted" (тёмная поверхность в обеих темах), а не
+  // "secondary": в тёмной палитре secondary = сплошной белый, задуман только
+  // для использования с низкой прозрачностью (см. lib/ui/palettes.ts) —
+  // применённый как сплошной фон, он давал белую карточку с белым текстом.
   const animatedContainerStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(
       progress.value,
       [0, 1],
-      [getColor("secondary", undefined, theme), getColor("foreground", undefined, theme)]
+      [getColor("muted", undefined, theme), getColor("foreground", undefined, theme)]
     );
     return { backgroundColor };
   });

@@ -7,6 +7,7 @@ import {
 import kgToLbs from "@/lib/units/kgToLbs";
 import lbsToKg from "@/lib/units/lbsToKg";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import { StyleSheet, View } from "react-native";
 import AnimateableText from "react-native-animateable-text";
 import {
@@ -29,6 +30,7 @@ const recommendedKg = [0.25, 0.85] as [number, number];
 const recommendedLbs = [0.65, 1.75] as [number, number];
 
 export default function OnboardingWeightChangeRate() {
+  const { theme } = useThemeContext();
   const { data, setData } = useOnboardingContext();
 
   const isMetric = data.measurementSystem !== "imperial";
@@ -73,13 +75,16 @@ export default function OnboardingWeightChangeRate() {
     })),
   };
 
+  // "muted", не "secondary": в тёмной палитре secondary — сплошной белый,
+  // задуман только для низкой прозрачности (см. lib/ui/palettes.ts). Тема
+  // передаётся явно — worklet-контекст useAnimatedStyle.
   const animatedStyles = {
     tooltip: useAnimatedStyle(() => ({
       backgroundColor:
         changeRate.value >= displayBounds.rec[0] &&
         changeRate.value <= displayBounds.rec[1]
-          ? getColor("primaryLight")
-          : getColor("secondary"),
+          ? getColor("primaryLight", undefined, theme)
+          : getColor("muted", undefined, theme),
     })),
   };
 

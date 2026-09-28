@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import Animated, {
   interpolateColor,
   useAnimatedStyle,
@@ -7,6 +7,9 @@ import Animated, {
 } from "react-native-reanimated";
 import Title from "../ui/Title";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 import { Edge } from "react-native-safe-area-context";
 import { ScreenHeader } from "../ui/screen/ScreenHeader";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
@@ -19,18 +22,23 @@ type ProgressStepProps = {
 };
 
 function ProgressStep({ isActive }: ProgressStepProps) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const progress = useSharedValue(isActive ? 1 : 0);
 
   useEffect(() => {
     progress.value = withTiming(isActive ? 1 : 0);
   }, [isActive, progress]);
 
+  // "muted", не "secondary" — в тёмной палитре secondary сплошной белый
+  // (задуман только для низкой прозрачности); тема передаётся явно в
+  // worklet-контексте useAnimatedStyle.
   const animatedStyle = useAnimatedStyle(() => {
     return {
       backgroundColor: interpolateColor(
         progress.value,
         [0, 1],
-        [getColor("secondary"), getColor("foreground")]
+        [getColor("muted", undefined, theme), getColor("foreground", undefined, theme)]
       ),
     };
   });
@@ -55,6 +63,7 @@ export default function OnboardingStepLayout({
   showHeader,
   scrollView,
 }: Props) {
+  const styles = useThemedStyles(createStyles);
   const contentEdges: Edge[] = showHeader
     ? ["left", "right"]
     : ["top", "left", "right"];
@@ -92,7 +101,7 @@ export default function OnboardingStepLayout({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   container: {
     flex: 1,
   },
@@ -101,18 +110,18 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flex: 1,
-    alignItems: "center",
+    alignItems: "center" as const,
     gap: 12,
   },
   progressContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
     gap: 3,
   },
   progressStep: {
     flex: 1,
     height: 5,
     borderRadius: 999,
-    backgroundColor: getColor("secondary"),
+    backgroundColor: getColor("muted", undefined, theme),
   },
 });

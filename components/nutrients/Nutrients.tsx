@@ -171,12 +171,15 @@ const createStyles = (theme: ThemeName) => ({
   metric: {
     gap: 4,
   },
+  // "muted", не "secondary": в тёмной палитре secondary — сплошной белый,
+  // задуман только для использования с низкой прозрачностью (см.
+  // lib/ui/palettes.ts) — как сплошной фон давал бледный трек в тёмной теме.
   progressContainer: {
     height: 16,
     justifyContent: "center" as const,
     borderRadius: 999,
     overflow: "hidden" as const,
-    backgroundColor: getColor("secondary", undefined, theme),
+    backgroundColor: getColor("muted", undefined, theme),
   },
   overlayBar: {
     height: "100%" as const,

@@ -5,7 +5,7 @@ import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import WithSkeleton from "@/components/ui/WithSkeleton";
 import GramsStepper from "@/components/meal/GramsStepper";
-import getColor from "@/lib/ui/getColor";
+import getColor, { getActiveTheme } from "@/lib/ui/getColor";
 import resolveFontFamily from "@/lib/ui/resolveFontFamily";
 
 type Item = {
@@ -204,7 +204,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 4,
     borderWidth: 1,
-    borderColor: getColor("secondary"),
+    // Та же конвенция, что и в Card.tsx: "secondary" при пониженной
+    // непрозрачности в тёмной теме — сплошной secondary дал бы кричаще-белую
+    // пунктирную рамку.
+    borderColor: getColor("secondary", getActiveTheme() === "dark" ? 0.08 : undefined),
     borderStyle: "dashed",
     borderRadius: 16,
     padding: 16,

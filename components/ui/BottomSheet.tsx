@@ -70,8 +70,11 @@ const createStyles = (theme: ThemeName) => ({
     alignItems: "center" as const,
     justifyContent: "center" as const,
   },
+  // "mutedForeground" при пониженной непрозрачности, не "secondary": в
+  // тёмной палитре secondary — сплошной белый, задуман только для низкой
+  // прозрачности.
   handle: {
-    backgroundColor: getColor("secondary", undefined, theme),
+    backgroundColor: getColor("mutedForeground", 0.4, theme),
     width: 40,
     height: 3,
     borderRadius: 999,

@@ -4,6 +4,7 @@ import Title from "@/components/ui/Title";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import Text from "@/components/ui/Text";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import { CheckIcon } from "lucide-react-native";
 import { useState } from "react";
 import SafeArea from "../ui/SafeArea";
@@ -31,6 +32,7 @@ type Props = {
 };
 
 export default function OnboardingSection({ section: sectionNumber }: Props) {
+  const { theme } = useThemeContext();
   const [positions, setPositions] = useState<{ x: number; y: number }[]>([]);
 
   const handleRowLayout = (index: number, event: LayoutChangeEvent) => {
@@ -64,8 +66,8 @@ export default function OnboardingSection({ section: sectionNumber }: Props) {
                     height: next.y - pos.y,
                     backgroundColor:
                       index < sectionNumber
-                        ? getColor("foreground")
-                        : getColor("secondary"),
+                        ? getColor("foreground", undefined, theme)
+                        : getColor("muted", undefined, theme),
                   },
                 ]}
               />
@@ -85,8 +87,8 @@ export default function OnboardingSection({ section: sectionNumber }: Props) {
                 {
                   backgroundColor:
                     index <= sectionNumber
-                      ? getColor("foreground")
-                      : getColor("secondary"),
+                      ? getColor("foreground", undefined, theme)
+                      : getColor("muted", undefined, theme),
                 },
               ]}
             >
@@ -95,8 +97,8 @@ export default function OnboardingSection({ section: sectionNumber }: Props) {
                   weight="500"
                   color={
                     index <= sectionNumber
-                      ? getColor("background")
-                      : getColor("foreground")
+                      ? getColor("background", undefined, theme)
+                      : getColor("foreground", undefined, theme)
                   }
                 >
                   {index + 1}
@@ -105,7 +107,7 @@ export default function OnboardingSection({ section: sectionNumber }: Props) {
                 <CheckIcon
                   size={18}
                   strokeWidth={2.5}
-                  color={getColor("background")}
+                  color={getColor("background", undefined, theme)}
                 />
               )}
             </View>
@@ -115,8 +117,8 @@ export default function OnboardingSection({ section: sectionNumber }: Props) {
                 style={{
                   color:
                     index === sectionNumber
-                      ? getColor("foreground")
-                      : getColor("mutedForeground"),
+                      ? getColor("foreground", undefined, theme)
+                      : getColor("mutedForeground", undefined, theme),
                 }}
               >
                 {section.title}

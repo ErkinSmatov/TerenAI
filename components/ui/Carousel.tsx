@@ -16,6 +16,7 @@ import Animated, {
   type SharedValue,
 } from "react-native-reanimated";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import React, {
   useCallback,
   useEffect,
@@ -336,8 +337,12 @@ function CarouselDot({
   useActiveIndex,
   onPress,
 }: DotProps) {
-  const activeColor = getColor("mutedForeground");
-  const inactiveColor = getColor("secondary");
+  const { theme } = useThemeContext();
+  const activeColor = getColor("mutedForeground", undefined, theme);
+  // "mutedForeground" при пониженной непрозрачности, не "secondary": в тёмной
+  // палитре secondary — сплошной белый, задуман только для низкой
+  // прозрачности — как неактивный цвет давал яркую белую точку.
+  const inactiveColor = getColor("mutedForeground", 0.3, theme);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {

@@ -150,9 +150,12 @@ const createStyles = (theme: ThemeName) => ({
     width: "100%" as const,
     justifyContent: "center" as const,
   },
+  // "muted", не "secondary" (см. Select.tsx/SegmentedControl.tsx для того же
+  // фикса) — secondary в тёмной теме сплошной белый, задуман только для
+  // низкой прозрачности.
   line: {
     height: 4,
-    backgroundColor: getColor("secondary", undefined, theme),
+    backgroundColor: getColor("muted", undefined, theme),
   },
   highlightLine: {
     backgroundColor: getColor("primary", undefined, theme),

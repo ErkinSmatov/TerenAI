@@ -15,6 +15,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 
 type Props = {
   style?: StyleProp<ViewStyle>;
@@ -24,6 +25,7 @@ const duration = 2000;
 const bandFraction = 1;
 
 export default function Skeleton({ style }: Props) {
+  const { theme } = useThemeContext();
   const [width, setWidth] = useState(0);
   const translateX = useSharedValue(0);
 
@@ -45,8 +47,11 @@ export default function Skeleton({ style }: Props) {
     transform: [{ translateX: translateX.value }],
   }));
 
-  const baseColor = getColor("secondary");
-  const highlightColor = getColor("muted");
+  // "muted", не "secondary": в тёмной палитре secondary — сплошной белый,
+  // задуман только для низкой прозрачности — как база skeleton давал яркую
+  // белую плашку вместо тёмной "заглушки" в тёмной теме.
+  const baseColor = getColor("muted", undefined, theme);
+  const highlightColor = getColor("mutedForeground", 0.2, theme);
 
   return (
     <View

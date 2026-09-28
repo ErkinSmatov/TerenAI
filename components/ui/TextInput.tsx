@@ -108,10 +108,16 @@ export default function TextInput({
       return { color };
     }),
     card: useAnimatedStyle(() => {
+      // Та же конвенция границы, что и в Card.tsx: "secondary" при 0.08
+      // непрозрачности в тёмной теме — сплошной secondary в тёмной теме дал
+      // бы кричаще-белую рамку.
       const initialBorderColor = interpolateColor(
         focused.value,
         [0, 1],
-        [getColor("secondary", undefined, theme), getColor("foreground", undefined, theme)]
+        [
+          getColor("secondary", theme === "dark" ? 0.08 : undefined, theme),
+          getColor("foreground", undefined, theme),
+        ]
       );
       const borderColor = interpolateColor(
         error.value,

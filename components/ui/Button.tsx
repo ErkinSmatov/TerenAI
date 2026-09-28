@@ -97,8 +97,12 @@ export default function Button({
       },
     },
     secondary: {
+      // "muted", не "secondary": в тёмной палитре secondary — сплошной
+      // белый, задуман только для использования с низкой прозрачностью
+      // (см. lib/ui/palettes.ts) — как сплошной фон давал белую кнопку
+      // с белым текстом в тёмной теме.
       container: {
-        backgroundColor: getColor("secondary"),
+        backgroundColor: getColor("muted"),
       },
       text: {
         color: getColor("foreground"),

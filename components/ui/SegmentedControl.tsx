@@ -157,10 +157,14 @@ const createStyles = (theme: ThemeName) => ({
     alignItems: "center" as const,
     justifyContent: "center" as const,
   },
+  // Трек — "muted" (тёмная поверхность в обеих темах), а не "secondary":
+  // в тёмной палитре secondary = сплошной белый, задуман только для
+  // использования с низкой прозрачностью (см. lib/ui/palettes.ts) —
+  // применённый как сплошной фон, он давал белый трек с белым текстом.
   buttonsContainer: {
     flexDirection: "row" as const,
     height: 40,
-    backgroundColor: getColor("secondary", undefined, theme),
+    backgroundColor: getColor("muted", undefined, theme),
     alignItems: "center" as const,
     justifyContent: "center" as const,
     borderRadius: 999,
