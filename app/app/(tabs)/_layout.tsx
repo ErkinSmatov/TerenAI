@@ -6,7 +6,12 @@ import useThemedStyles from "@/lib/ui/useThemedStyles";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { Tabs } from "expo-router";
-import { HomeIcon, SettingsIcon } from "lucide-react-native";
+import {
+  CircleUserIcon,
+  HomeIcon,
+  IdCardLanyardIcon,
+  MessageSquareTextIcon,
+} from "lucide-react-native";
 import { PressableProps, StyleSheet, View } from "react-native";
 import TabsAddOptions from "@/components/tabs/TabsAddOptions";
 
@@ -24,7 +29,9 @@ const createStyles = (_theme: ThemeName) => ({
     borderTopWidth: 0,
     position: "absolute" as const,
     elevation: 0,
-    paddingHorizontal: 25,
+    // 5 вкладок вместо прежних 3 (07.1-07-CORRECTION-8) — уменьшено с 25,
+    // иначе крайние иконки прижимались к краю экрана на небольших ширинах.
+    paddingHorizontal: 14,
   },
   tabBarLabelStyle: {
     fontSize: 12,
@@ -79,6 +86,15 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
+          name="maps"
+          options={{
+            tabBarLabel: "Карты",
+            tabBarIcon: ({ color }) => (
+              <IdCardLanyardIcon color={color} strokeWidth={1.75} size={20} />
+            ),
+          }}
+        />
+        <Tabs.Screen
           name="add"
           options={{
             tabBarLabel: "",
@@ -86,13 +102,24 @@ export default function TabLayout() {
             tabBarButton: () => <TabsAddOptions />,
           }}
         />
-
+        <Tabs.Screen
+          name="tips"
+          options={{
+            tabBarLabel: "Советы",
+            tabBarIcon: ({ color }) => (
+              <MessageSquareTextIcon color={color} strokeWidth={1.75} size={20} />
+            ),
+          }}
+        />
+        {/* Файл/роут остаётся "settings" — меняется только отображаемый
+            label/иконка вкладки на "Профиль" (07.1-07-CORRECTION-8), экран
+            прежний. */}
         <Tabs.Screen
           name="settings"
           options={{
-            tabBarLabel: "Настройки",
+            tabBarLabel: "Профиль",
             tabBarIcon: ({ color }) => (
-              <SettingsIcon color={color} strokeWidth={1.75} size={20} />
+              <CircleUserIcon color={color} strokeWidth={1.75} size={20} />
             ),
           }}
         />
