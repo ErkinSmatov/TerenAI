@@ -9,6 +9,7 @@ import { findBadgeDefinition } from "@/lib/badges/badgeDefinitions";
 import { useThemeContext } from "@/context/ThemeContext";
 import type { ThemeName } from "@/lib/ui/palettes";
 import useThemedStyles from "@/lib/ui/useThemedStyles";
+import EditNameSheet from "./EditNameSheet";
 
 // Figma node 858:5164 ("CareAi"). Пользователь явно решил ПРОПУСТИТЬ блок
 // уровня/XP-прогресса из макета — в приложении нет системы уровней/опыта,
@@ -45,6 +46,7 @@ export default function ProfileHeader() {
   const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
   const userName = useQuery(api.home.getCurrentUserName.default);
+  const rawUserName = useQuery(api.home.getCurrentUserRawName.default);
   const badges = useQuery(api.badges.listBadges.default);
 
   const cardGlow = getNutrientGlow(theme, CARD_GLOW.dark, CARD_GLOW.light);
@@ -78,9 +80,10 @@ export default function ProfileHeader() {
             {initial}
           </Text>
         </View>
-        <Text size="16" weight="600" family="manrope">
+        <Text size="16" weight="600" family="manrope" style={{ flexShrink: 1 }}>
           {userName ?? "Гость"}
         </Text>
+        <EditNameSheet currentName={rawUserName ?? null} />
       </View>
 
       <View style={styles.achievementsRow}>
