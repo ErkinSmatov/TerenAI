@@ -37,6 +37,15 @@ type ConfirmItem = {
   grams: number;
 };
 
+// Convex actions не ретраятся клиентом сами — если соединение обрывается
+// пока action выполняется (переключение wifi/сотовой сети, уход приложения
+// в фон), запрос падает с "Connection lost while action was in flight".
+// Детекция блюда не имеет побочных эффектов, поэтому один повтор безопасен.
+const isTransientConnectionError = (error: unknown) =>
+  error instanceof Error && error.message.includes("Connection lost");
+
+const DETECTION_MAX_ATTEMPTS = 2;
+
 export default function ConfirmMealScreen() {
   const dimensions = useWindowDimensions();
   const router = useRouter();
@@ -113,36 +122,48 @@ export default function ConfirmMealScreen() {
       return;
     }
 
-    try {
-      let result: {
-        mealName: string;
-        items: { name: string; nameRu: string; grams: number }[];
-      };
+    let storageId: Id<"_storage"> | undefined;
 
-      if (photoUri) {
-        const storageId = await uploadAndGetStorageId(photoUri);
-        setPhotoStorageId(storageId);
-        result = await detectMealFromPhoto({ storageId });
-      } else if (description) {
-        result = await detectMealFromText({ description });
-      } else {
+    for (let attempt = 1; attempt <= DETECTION_MAX_ATTEMPTS; attempt++) {
+      try {
+        let result: {
+          mealName: string;
+          items: { name: string; nameRu: string; grams: number }[];
+        };
+
+        if (photoUri) {
+          if (!storageId) {
+            storageId = await uploadAndGetStorageId(photoUri);
+            setPhotoStorageId(storageId);
+          }
+          result = await detectMealFromPhoto({ storageId });
+        } else if (description) {
+          result = await detectMealFromText({ description });
+        } else {
+          return;
+        }
+
+        setMealName(result.mealName);
+        setItems(
+          result.items.map((item) => ({
+            id: uuidv4(),
+            name: item.nameRu,
+            searchName: item.name,
+            grams: item.grams,
+          }))
+        );
+        setIsDetecting(false);
+        return;
+      } catch (e) {
+        const isLastAttempt = attempt === DETECTION_MAX_ATTEMPTS;
+        if (isTransientConnectionError(e) && !isLastAttempt) {
+          continue;
+        }
+        logError("Detect meal error", e);
+        Toast.show({ text: "Ошибка при анализе блюда", variant: "error" });
+        router.replace("/app");
         return;
       }
-
-      setMealName(result.mealName);
-      setItems(
-        result.items.map((item) => ({
-          id: uuidv4(),
-          name: item.nameRu,
-          searchName: item.name,
-          grams: item.grams,
-        }))
-      );
-      setIsDetecting(false);
-    } catch (e) {
-      logError("Detect meal error", e);
-      Toast.show({ text: "Ошибка при анализе блюда", variant: "error" });
-      router.replace("/app");
     }
   }, [
     photoUri,
