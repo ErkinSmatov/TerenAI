@@ -22,6 +22,7 @@ import useThemedStyles from "@/lib/ui/useThemedStyles";
 import { Link } from "expo-router";
 import WithSkeleton from "../ui/WithSkeleton";
 import SafeArea from "../ui/SafeArea";
+import HomeEmptyState from "./HomeEmptyState";
 import calcRatio from "@/lib/utils/calcRatio";
 import macrosToKcal from "@/lib/utils/macrosToKcal";
 import useProgress from "@/lib/hooks/reanimated/useProgress";
@@ -196,7 +197,6 @@ type Props = {
 };
 
 export default function HomeRecentlyLogged({ meals, readOnly = false }: Props) {
-  const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
 
   const targetCalories =
@@ -206,16 +206,13 @@ export default function HomeRecentlyLogged({ meals, readOnly = false }: Props) {
   return (
     <SafeArea edges={["left", "right"]} style={styles.safeArea}>
       <Text size="20" weight="600" style={styles.title}>
-        Недавно добавлено
+        Рацион
       </Text>
       {meals.length === 0 ? (
-        <Text
-          size="14"
-          color={getColor("mutedForeground", 0.5, theme)}
-          style={styles.noMealsAdded}
-        >
-          Добавьте блюда, чтобы увидеть их здесь&hellip;
-        </Text>
+        <HomeEmptyState
+          text="Добавьте блюда, чтобы увидеть их здесь…"
+          href="/app/(add)/describe"
+        />
       ) : (
         <ScrollView
           horizontal
@@ -248,11 +245,6 @@ const createStyles = (theme: ThemeName) => ({
   itemsContainer: {
     gap: 12,
   },
-  noMealsAdded: {
-    textAlign: "center" as const,
-    paddingTop: 16,
-  },
-
   itemCard: {
     width: 169,
     minHeight: 160,

@@ -24,7 +24,7 @@ export default function HomeHeader() {
   return (
     <SafeArea edges={["left", "right"]} style={styles.safeArea}>
       <View style={styles.logoContainer}>
-        <Text size="28" weight="600">
+        <Text size="20" weight="600">
           {userName ? `${userName}, привет!` : "Привет!"}
         </Text>
       </View>

@@ -3,15 +3,14 @@ import Text from "../ui/Text";
 import Button from "../ui/Button";
 import SafeArea from "../ui/SafeArea";
 import WarningBadge from "../ui/WarningBadge";
+import HomeEmptyState from "./HomeEmptyState";
 import SugarByHourChart from "../charts/SugarByHourChart";
 import HomeGlucoseHeroCard from "./HomeGlucoseHeroCard";
 import HomeGlucoseRangeTile from "./HomeGlucoseRangeTile";
 import { Doc } from "@/convex/_generated/dataModel";
-import getColor from "@/lib/ui/getColor";
 import { Link } from "expo-router";
 import { isGlucoseOutOfRange } from "@/convex/observers/utils/thresholds";
 import { GlucoseEstimate } from "@/lib/nutrition/estimateGlucoseFromMeals";
-import { useThemeContext } from "@/context/ThemeContext";
 import useThemedStyles from "@/lib/ui/useThemedStyles";
 import type { ThemeName } from "@/lib/ui/palettes";
 
@@ -47,7 +46,6 @@ export default function HomeGlucoseSummary({
   meals = [],
   dayStart,
 }: Props) {
-  const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
 
   const isOutOfRange =
@@ -88,13 +86,10 @@ export default function HomeGlucoseSummary({
             baselineReadings={weekReadings}
           />
         ) : (
-          <Text
-            size="14"
-            color={getColor("mutedForeground", 0.5, theme)}
-            style={styles.empty}
-          >
-            Добавьте показание, чтобы увидеть его здесь&hellip;
-          </Text>
+          <HomeEmptyState
+            text="Добавьте показание, чтобы увидеть его здесь…"
+            href="/app/(add)/glucose"
+          />
         )}
         {isOutOfRange && <WarningBadge text="Глюкоза вне нормы" color="red" />}
       </View>
@@ -169,10 +164,6 @@ const createStyles = (_theme: ThemeName) => ({
   },
   chartContainer: {
     gap: 16,
-  },
-  empty: {
-    textAlign: "center" as const,
-    paddingVertical: 8,
   },
   tilesRow: {
     flexDirection: "row" as const,

@@ -6,6 +6,7 @@ import Card from "../ui/Card";
 import Button from "../ui/Button";
 import SafeArea from "../ui/SafeArea";
 import BloodPressureLineChart from "../charts/BloodPressureLineChart";
+import HomeEmptyState from "./HomeEmptyState";
 import { Doc } from "@/convex/_generated/dataModel";
 import getColor from "@/lib/ui/getColor";
 import { Link } from "expo-router";
@@ -54,7 +55,6 @@ export default function HomeBloodPressureSummary({
   readings,
   readOnly = false,
 }: Props) {
-  const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
   const latestReadings = readings.slice(0, 3);
 
@@ -68,13 +68,10 @@ export default function HomeBloodPressureSummary({
           ))}
         </>
       ) : (
-        <Text
-          size="14"
-          color={getColor("mutedForeground", 0.5, theme)}
-          style={styles.empty}
-        >
-          Добавьте показание, чтобы увидеть его здесь&hellip;
-        </Text>
+        <HomeEmptyState
+          text="Добавьте показание, чтобы увидеть его здесь…"
+          href="/app/(add)/bloodPressure"
+        />
       )}
     </Card>
   );
@@ -121,10 +118,6 @@ const createStyles = (theme: ThemeName) => ({
   },
   card: {
     gap: 16,
-  },
-  empty: {
-    textAlign: "center" as const,
-    paddingVertical: 8,
   },
   row: {
     flexDirection: "row" as const,

@@ -27,6 +27,7 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 // theme не используется напрямую в стилях — фон зависит только от токена
 // `background`, который вычисляется в компоненте через `getColor` и подставляется
@@ -38,7 +39,6 @@ const createStyles = (_theme: ThemeName) => ({
   },
   scrollView: {
     flexGrow: 1,
-    paddingBottom: 48,
   },
   summaryStack: {
     gap: 18,
@@ -49,6 +49,7 @@ export default function HomeScreen() {
   const dimensions = useWindowDimensions();
   const { theme, isDark } = useThemeContext();
   const styles = useThemedStyles(createStyles);
+  const tabBarHeight = useBottomTabBarHeight();
   const [selectedDay, setSelectedDay] = useState((getDay(new Date()) + 6) % 7);
 
   const profile = useQuery(api.profiles.getProfile.default);
@@ -129,11 +130,14 @@ export default function HomeScreen() {
         style={[styles.gradient, { height: dimensions.height * 0.75 }]}
         pointerEvents="none"
       />
-      <HomeHeader />
       <ScrollView
-        contentContainerStyle={styles.scrollView}
+        contentContainerStyle={[
+          styles.scrollView,
+          { paddingBottom: tabBarHeight + 24 },
+        ]}
         showsVerticalScrollIndicator={false}
       >
+        <HomeHeader />
         <HomeDaySelector
           selectedDay={selectedDay}
           setSelectedDay={setSelectedDay}
