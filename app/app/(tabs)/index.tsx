@@ -143,6 +143,7 @@ export default function HomeScreen() {
           setSelectedDay={setSelectedDay}
           weekTotalMacros={weekTotalMacros}
         />
+        <HomeRecentlyLogged meals={dayMeals} />
         <View style={styles.summaryStack}>
           <HomeMacroSummary
             totalMacros={dayTotals.macros}
@@ -153,7 +154,6 @@ export default function HomeScreen() {
             dayIndex={selectedDay}
           />
         </View>
-        <HomeRecentlyLogged meals={dayMeals} />
         {isGlucometerTrack && (
           <HomeGlucoseSummary
             readings={dayReadings}
