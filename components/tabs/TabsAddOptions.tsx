@@ -2,7 +2,7 @@ import { TriggerRef } from "@rn-primitives/popover";
 import { useRef, useState } from "react";
 import * as PopoverPrimitive from "@rn-primitives/popover";
 import TabsAddButton from "./TabsAddButton";
-import { Platform, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View, useWindowDimensions } from "react-native";
 import Animated, {
   Easing,
   FadeIn,
@@ -32,9 +32,13 @@ const AnimatedPopoverContent = Animated.createAnimatedComponent(
   PopoverPrimitive.Content
 );
 
-// Фиксированная ширина карточки опции — 2 в ряд с gap 16 (см. styles.container)
-// вместо flex:1 в один ряд, чтобы получить сетку 2×2 вместо горизонтального ряда.
-const OPTION_WIDTH = 110;
+// Меню было сжато в маленький фиксированный блок по центру экрана — не на
+// всю ширину, как хотел пользователь. Ширина сетки теперь считается от
+// реальной ширины экрана (минус внешние отступы), а не от фиксированного
+// OPTION_WIDTH — так 2 колонки всегда растягиваются на всю ширину, сколько
+// бы ни было карточек (2 или 4).
+const GRID_GAP = 16;
+const GRID_HORIZONTAL_MARGIN = 16;
 
 const EnterAnimation = new Keyframe({
   0: {
@@ -103,6 +107,14 @@ const bloodPressureOption: Option = {
 
 export default function TabsAddOptions() {
   const router = useRouter();
+  const dimensions = useWindowDimensions();
+  // containerWidth — внешняя ширина меню (отступ GRID_HORIZONTAL_MARGIN от
+  // каждого края экрана). styles.container добавляет СВОЙ внутренний
+  // padding того же размера — поэтому реальная ширина под карточки меньше
+  // containerWidth ещё на 2×GRID_HORIZONTAL_MARGIN.
+  const containerWidth = dimensions.width - GRID_HORIZONTAL_MARGIN * 2;
+  const itemWidth =
+    (containerWidth - GRID_HORIZONTAL_MARGIN * 2 - GRID_GAP) / 2;
   const popoverTriggerRef = useRef<TriggerRef>(null);
   const [isOpen, setIsOpen] = useState(false);
   const { hasProAccess, navigateToPaywall } = useSubscriptionContext();
@@ -166,13 +178,13 @@ export default function TabsAddOptions() {
             entering={EnterAnimation}
             exiting={ExitAnimation}
           >
-            <View style={styles.container}>
+            <View style={[styles.container, { width: containerWidth }]}>
               {options.map((option, index) => (
                 <Button
                   key={`option-${option.label}-${index}`}
                   variant="base"
                   size="base"
-                  style={{ width: OPTION_WIDTH, position: "relative" }}
+                  style={{ width: itemWidth, position: "relative" }}
                   onPress={() => {
                     handleOptionPress(option);
                   }}
@@ -203,9 +215,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
-    gap: 16,
+    gap: GRID_GAP,
     padding: 16,
-    width: OPTION_WIDTH * 2 + 16 + 32,
   },
   card: {
     height: 100,
