@@ -2,6 +2,7 @@ import DiagnosticsSection from "@/components/settings/DiagnosticsSection";
 import SettingsGroup from "@/components/settings/SettingsGroup";
 import SettingsItem from "@/components/settings/SettingsItem";
 import SettingsToggleItem from "@/components/settings/SettingsToggleItem";
+import ProfileHeader from "@/components/profile/ProfileHeader";
 import AlertDialog from "@/components/ui/AlertDialog";
 import SafeArea from "@/components/ui/SafeArea";
 import Title from "@/components/ui/Title";
@@ -113,11 +114,12 @@ export default function SettingsScreen() {
 
   return (
     <SafeArea edges={["top", "left", "right"]}>
-      <Title style={styles.title}>Настройки</Title>
+      <Title style={styles.title}>Профиль</Title>
       <ScrollView
         contentContainerStyle={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
+        <ProfileHeader />
         <SettingsGroup>
           <Link href="/app/(settings)/adjustMacroTargets" asChild>
             <SettingsItem text="Настроить БЖУ" Icon={PieChartIcon} />
