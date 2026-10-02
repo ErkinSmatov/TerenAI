@@ -61,6 +61,7 @@ export default function ConfirmMealItems({
                 skeletonStyle={{
                   height: 44,
                   width: 116,
+                  marginTop: 8,
                   borderRadius: 8,
                 }}
               >
