@@ -6,23 +6,31 @@ import { useAction, useQuery, useConvex, useMutation } from "convex/react";
 import { ConvexError } from "convex/values";
 import tryCatch from "@/lib/utils/tryCatch";
 import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Toast } from "@/components/ui/Toast";
 import logError from "@/lib/utils/logError";
 import { getLocales } from "expo-localization";
 import { fetchProduct } from "@/lib/off/fetchProduct";
 import getFoodName from "@/lib/utils/getFoodName";
+import { resolveAddDate } from "@/lib/utils/parseLocalDate";
+import { getDefaultBarcodeEatenAt } from "@/lib/meals/mealSlots";
 
 export default function MealScreen() {
   const router = useRouter();
   const convex = useConvex();
-  const { mealId: initialMealId, barcode } = useLocalSearchParams<{
+  const {
+    mealId: initialMealId,
+    barcode,
+    date,
+  } = useLocalSearchParams<{
     mealId?: Id<"meals">;
     barcode?: string;
+    date?: string;
   }>();
+  const addDate = useMemo(() => resolveAddDate(date, Date.now()), [date]);
 
   const analyzeMealBarcode = useAction(
-    api.meals.analyze.analyzeMealBarcode.default
+    api.meals.analyze.analyzeMealBarcode.default,
   );
 
   const [mealId, setMealId] = useState<Id<"meals"> | undefined>(initialMealId);
@@ -33,22 +41,22 @@ export default function MealScreen() {
 
   const data = useQuery(
     api.meals.getMeal.default,
-    mealId ? { mealId } : "skip"
+    mealId ? { mealId } : "skip",
   );
 
   const createMealFromBarcode = useCallback(
-    async (barcode: string) => {
+    async (barcode: string, eatenAt?: number) => {
       const locale = getLocales().at(0)?.languageTag ?? "ru-RU";
 
       const existingFood = await convex.query(
         api.foods.getFoodByIdentity.default,
         {
           identity: { source: "off", id: barcode },
-        }
+        },
       );
 
       if (existingFood) {
-        return await analyzeMealBarcode({ barcode });
+        return await analyzeMealBarcode({ barcode, eatenAt });
       }
 
       const product = await fetchProduct(barcode, locale);
@@ -56,9 +64,9 @@ export default function MealScreen() {
         throw new Error("Product not found in Open Food Facts");
       }
 
-      return await analyzeMealBarcode({ barcode, product });
+      return await analyzeMealBarcode({ barcode, product, eatenAt });
     },
-    [analyzeMealBarcode, convex]
+    [analyzeMealBarcode, convex],
   );
 
   const startMealAnalysis = useCallback(async () => {
@@ -66,25 +74,28 @@ export default function MealScreen() {
     startedRef.current = true;
 
     try {
-      const mealId = await createMealFromBarcode(barcode);
+      const eatenAt =
+        addDate && !addDate.isToday
+          ? getDefaultBarcodeEatenAt(addDate.target, Date.now())
+          : undefined;
+      const mealId = await createMealFromBarcode(barcode, eatenAt);
       setMealId(mealId);
     } catch (e) {
       logError("Start meal error", e);
       Toast.show({ text: "Ошибка при анализе блюда", variant: "error" });
       router.replace("/app");
     }
-  }, [createMealFromBarcode, initialMealId, mealId, barcode, router]);
+  }, [createMealFromBarcode, initialMealId, mealId, barcode, router, addDate]);
 
   useEffect(() => {
     void startMealAnalysis();
   }, [startMealAnalysis]);
 
   const canFavoriteQuery =
-    data?.meal.status === "done" &&
-    (data.meal.confirmedItems?.length ?? 0) > 0;
+    data?.meal.status === "done" && (data.meal.confirmedItems?.length ?? 0) > 0;
   const favoriteId = useQuery(
     api.favorites.getMealFavorite.default,
-    canFavoriteQuery && mealId ? { mealId } : "skip"
+    canFavoriteQuery && mealId ? { mealId } : "skip",
   );
 
   if (mealId && data === null) {
@@ -117,7 +128,7 @@ export default function MealScreen() {
     setFavoritePending(true);
     const wasFavorite = !!favoriteId;
     const { error } = await tryCatch(
-      favoriteId ? removeFavorite({ favoriteId }) : addFavorite({ mealId })
+      favoriteId ? removeFavorite({ favoriteId }) : addFavorite({ mealId }),
     );
     setFavoritePending(false);
 

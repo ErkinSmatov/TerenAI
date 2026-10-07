@@ -6,7 +6,8 @@ import {
   useCameraPermissions,
 } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { resolveAddDate } from "@/lib/utils/parseLocalDate";
 import { useRateLimit } from "@convex-dev/rate-limiter/react";
 import { ArrowLeftIcon } from "lucide-react-native";
 
@@ -27,6 +28,9 @@ type CameraMode = "photo" | "barcode";
 
 export default function CameraScreen() {
   const router = useRouter();
+  const { date } = useLocalSearchParams<{ date?: string }>();
+  const addDate = resolveAddDate(date, Date.now());
+  const dateParams = addDate ? { date: addDate.date } : {};
   const [permission, requestPermission] = useCameraPermissions();
   const { hasProAccess, navigateToPaywall } = useSubscriptionContext();
   const { status } = useRateLimit(api.rateLimit.getAiFeaturesRateLimit, {
@@ -35,7 +39,7 @@ export default function CameraScreen() {
 
   const [enableTorch, setEnableTorch] = useState(false);
   const [selectedOption, setSelectedOption] = useState<CameraMode>(
-    hasProAccess ? "photo" : "barcode"
+    hasProAccess ? "photo" : "barcode",
   );
 
   const cameraRef = useRef<CameraView>(null);
@@ -76,7 +80,7 @@ export default function CameraScreen() {
       if (photo.uri) {
         router.replace({
           pathname: "/app/(meal)/confirm-meal",
-          params: { photoUri: photo.uri, source: "camera" },
+          params: { photoUri: photo.uri, source: "camera", ...dateParams },
         });
       }
     } catch (error) {
@@ -109,7 +113,7 @@ export default function CameraScreen() {
       isBusyRef.current = true;
       router.replace({
         pathname: "/app/(meal)/confirm-meal",
-        params: { photoUri: asset.uri, source: "library" },
+        params: { photoUri: asset.uri, source: "library", ...dateParams },
       });
     } catch (error) {
       logError("Error picking photo", error);
@@ -125,7 +129,7 @@ export default function CameraScreen() {
     try {
       router.replace({
         pathname: "/app/(meal)/meal",
-        params: { barcode: data, source: "camera" },
+        params: { barcode: data, source: "camera", ...dateParams },
       });
     } catch (error) {
       logError("Error scanning barcode", error);

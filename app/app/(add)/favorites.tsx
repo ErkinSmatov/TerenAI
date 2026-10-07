@@ -1,7 +1,8 @@
 import { View } from "react-native";
 import { Image } from "expo-image";
 import { useMutation, useQuery } from "convex/react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { resolveAddDate } from "@/lib/utils/parseLocalDate";
 import { StarIcon, TrashIcon } from "lucide-react-native";
 import {
   ScreenHeader,
@@ -31,6 +32,8 @@ import logError from "@/lib/utils/logError";
 
 export default function FavoritesScreen() {
   const router = useRouter();
+  const { date } = useLocalSearchParams<{ date?: string }>();
+  const addDate = resolveAddDate(date, Date.now());
   const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
   const { scrollY, onScroll } = useScrollY();
@@ -86,7 +89,10 @@ export default function FavoritesScreen() {
                 onPress={() => {
                   router.replace({
                     pathname: "/app/(meal)/confirm-meal",
-                    params: { favoriteId: favorite._id },
+                    params: {
+                      favoriteId: favorite._id,
+                      ...(addDate ? { date: addDate.date } : {}),
+                    },
                   });
                 }}
               >

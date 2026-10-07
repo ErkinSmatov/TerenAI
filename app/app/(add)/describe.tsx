@@ -13,7 +13,8 @@ import TextInput from "@/components/ui/TextInput";
 import { useState } from "react";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { api } from "@/convex/_generated/api";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { resolveAddDate } from "@/lib/utils/parseLocalDate";
 import { useRateLimit } from "@convex-dev/rate-limiter/react";
 import { Toast } from "@/components/ui/Toast";
 import { StyleSheet } from "react-native";
@@ -22,6 +23,8 @@ import { analyzeMealConfig } from "@/convex/meals/analyze/analyzeMealConfig";
 export default function DescribeScreen() {
   const insets = useSafeArea();
   const router = useRouter();
+  const { date } = useLocalSearchParams<{ date?: string }>();
+  const addDate = resolveAddDate(date, Date.now());
   const { status } = useRateLimit(api.rateLimit.getAiFeaturesRateLimit, {
     getServerTimeMutation: api.rateLimit.getServerTime,
   });
@@ -40,7 +43,7 @@ export default function DescribeScreen() {
 
     router.replace({
       pathname: "/app/(meal)/confirm-meal",
-      params: { description },
+      params: { description, ...(addDate ? { date: addDate.date } : {}) },
     });
   };
 
