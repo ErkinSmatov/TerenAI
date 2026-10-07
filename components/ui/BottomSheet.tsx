@@ -13,7 +13,7 @@ import type { ThemeName } from "@/lib/ui/palettes";
 import useThemedStyles from "@/lib/ui/useThemedStyles";
 
 type Props = {
-  Trigger: React.ReactElement<{ onPress?: () => void }>;
+  Trigger?: React.ReactElement<{ onPress?: () => void }>;
   children: React.ReactNode;
   ref?: React.Ref<BottomSheetModal>;
 };
@@ -40,9 +40,11 @@ export default function BottomSheet({ Trigger, children, ref }: Props) {
 
   return (
     <>
-      {React.cloneElement(Trigger, {
-        onPress: () => bottomSheetModalRef.current?.present(),
-      })}
+      {Trigger
+        ? React.cloneElement(Trigger, {
+            onPress: () => bottomSheetModalRef.current?.present(),
+          })
+        : null}
       <BottomSheetModal
         ref={mergedRef}
         backdropComponent={renderBackdrop}

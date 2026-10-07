@@ -9,31 +9,47 @@ import useThemedStyles from "@/lib/ui/useThemedStyles";
 
 type Props = {
   text: string;
-  href: Href;
+  href?: Href;
+  // Если задан — вместо перехода по href вызывается обработчик (например,
+  // открытие листа выбора способа добавления за конкретный день).
+  onPress?: () => void;
 };
 
 // Общее пустое состояние для блоков Главной без данных (Сахар/Давление/
 // Рацион) — иконка-кнопка "добавить показание" ведёт сразу на нужный экран
 // добавления вместо нейтрального текста без действия.
-export default function HomeEmptyState({ text, href }: Props) {
+export default function HomeEmptyState({ text, href, onPress }: Props) {
   const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
 
+  const content = (
+    <Button
+      variant="base"
+      size="base"
+      style={styles.container}
+      onPress={onPress}
+    >
+      <CircleFadingPlusIcon
+        size={28}
+        color={getColor("mutedForeground", undefined, theme)}
+      />
+      <Text
+        size="14"
+        color={getColor("mutedForeground", 0.8, theme)}
+        style={styles.text}
+      >
+        {text}
+      </Text>
+    </Button>
+  );
+
+  if (onPress || !href) {
+    return content;
+  }
+
   return (
     <Link href={href} asChild>
-      <Button variant="base" size="base" style={styles.container}>
-        <CircleFadingPlusIcon
-          size={28}
-          color={getColor("mutedForeground", undefined, theme)}
-        />
-        <Text
-          size="14"
-          color={getColor("mutedForeground", 0.8, theme)}
-          style={styles.text}
-        >
-          {text}
-        </Text>
-      </Button>
+      {content}
     </Link>
   );
 }

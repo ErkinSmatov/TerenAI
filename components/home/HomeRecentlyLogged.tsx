@@ -5,6 +5,7 @@ import { useQuery } from "convex/react";
 import { useDerivedValue } from "react-native-reanimated";
 import {
   DropletIcon,
+  PlusIcon,
   UtensilsCrossedIcon,
 } from "lucide-react-native";
 import Text from "../ui/Text";
@@ -195,9 +196,17 @@ function MealCard({ meal, readOnly = false, targetCalories }: CardProps) {
 type Props = {
   meals: MealWithOptionalPhoto[];
   readOnly?: boolean;
+  // Экран дня: кнопка «+» рядом с заголовком и пустое состояние, открывающее
+  // выбор способа добавления за этот день. Без пропа разметка не меняется.
+  onAddPress?: () => void;
 };
 
-export default function HomeRecentlyLogged({ meals, readOnly = false }: Props) {
+export default function HomeRecentlyLogged({
+  meals,
+  readOnly = false,
+  onAddPress,
+}: Props) {
+  const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
 
   const targetCalories =
@@ -206,14 +215,41 @@ export default function HomeRecentlyLogged({ meals, readOnly = false }: Props) {
 
   return (
     <SafeArea edges={["left", "right"]} style={styles.safeArea}>
-      <Text size="20" weight="600" style={styles.title}>
-        Рацион
-      </Text>
+      {onAddPress ? (
+        <View style={styles.titleRow}>
+          <Text size="20" weight="600">
+            Рацион
+          </Text>
+          <Button
+            size="sm"
+            variant="secondary"
+            style={styles.addButton}
+            accessibilityLabel="Добавить блюдо"
+            onPress={onAddPress}
+          >
+            <PlusIcon
+              size={22}
+              color={getColor("foreground", undefined, theme)}
+            />
+          </Button>
+        </View>
+      ) : (
+        <Text size="20" weight="600" style={styles.title}>
+          Рацион
+        </Text>
+      )}
       {meals.length === 0 ? (
-        <HomeEmptyState
-          text="Добавьте блюда, чтобы увидеть их здесь…"
-          href="/app/(add)/describe"
-        />
+        onAddPress ? (
+          <HomeEmptyState
+            text="Добавьте блюда за этот день…"
+            onPress={onAddPress}
+          />
+        ) : (
+          <HomeEmptyState
+            text="Добавьте блюда, чтобы увидеть их здесь…"
+            href="/app/(add)/describe"
+          />
+        )
       ) : (
         <ScrollView
           horizontal
@@ -243,6 +279,15 @@ const createStyles = (theme: ThemeName) => ({
   },
   title: {
     paddingBottom: 16,
+  },
+  titleRow: {
+    flexDirection: "row" as const,
+    justifyContent: "space-between" as const,
+    alignItems: "center" as const,
+    paddingBottom: 16,
+  },
+  addButton: {
+    paddingHorizontal: 12,
   },
   itemsContainer: {
     gap: 12,

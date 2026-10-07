@@ -19,45 +19,20 @@ import { calculateDayTotals } from "@/lib/nutrition/calculateDayTotals";
 import getLocalMonthBounds, {
   LocalMonthBounds,
 } from "@/lib/utils/getLocalMonthBounds";
+import DayAddMealSheet from "@/components/home/DayAddMealSheet";
+import {
+  isFutureLocalDay,
+  parseLocalDate,
+} from "@/lib/utils/parseLocalDate";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
 import getColor from "@/lib/ui/getColor";
 import { useQuery } from "convex/react";
 import { useLocalSearchParams } from "expo-router";
+import { useRef } from "react";
+import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { Platform, StyleSheet, View } from "react-native";
-
-const DATE_PARAM_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-
-type ParsedDayParam = {
-  target: Date;
-  day: number;
-};
-
-// Разбор строки маршрута вручную, а не передачей строки напрямую в
-// конструктор Date: для формата "YYYY-MM-DD" спецификация трактует строку
-// как полночь UTC, из-за чего в отрицательных смещениях (Америка) экран
-// показал бы предыдущий день.
-// Восстановление даты обратно в строку и сравнение с исходной строкой —
-// защита от «мусорных» календарных значений вроде «2026-02-31».
-function parseDayParam(date: string | undefined): ParsedDayParam | null {
-  if (!date || !DATE_PARAM_PATTERN.test(date)) return null;
-
-  const [year, month, day] = date.split("-").map(Number);
-  if (Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(day)) {
-    return null;
-  }
-
-  const target = new Date(year, month - 1, day);
-  if (Number.isNaN(target.getTime())) return null;
-
-  const reconstructed = `${target.getFullYear()}-${String(
-    target.getMonth() + 1
-  ).padStart(2, "0")}-${String(target.getDate()).padStart(2, "0")}`;
-  if (reconstructed !== date) return null;
-
-  return { target, day };
-}
 
 function capitalize(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
@@ -83,11 +58,17 @@ function EmptyState({ body }: { body: string }) {
 export default function DayScreen() {
   const { date } = useLocalSearchParams<{ date: string }>();
   const { scrollY, onScroll } = useScrollY();
+  const sheetRef = useRef<BottomSheetModal>(null);
 
-  const parsed = parseDayParam(date);
+  const parsed = parseLocalDate(date);
   const bounds: LocalMonthBounds | null = parsed
     ? getLocalMonthBounds(parsed.target)
     : null;
+  // D-07: для будущей даты добавления нет (маршрут можно открыть вручную).
+  const canAdd = parsed !== null && !isFutureLocalDay(parsed.target, Date.now());
+  const openAddSheet = () => {
+    sheetRef.current?.present();
+  };
   const dayIndex = parsed ? parsed.day - 1 : -1;
   const isValidRoute =
     parsed !== null &&
@@ -199,7 +180,11 @@ export default function DayScreen() {
       >
         {hasData ? (
           <>
-            <HomeRecentlyLogged meals={dayMeals} readOnly />
+            <HomeRecentlyLogged
+              meals={dayMeals}
+              readOnly
+              onAddPress={canAdd ? openAddSheet : undefined}
+            />
             <View style={styles.summaryStack}>
               <HomeMacroSummary
                 totalMacros={dayTotals.macros}
@@ -226,10 +211,16 @@ export default function DayScreen() {
               />
             )}
           </>
+        ) : canAdd ? (
+          <>
+            <HomeRecentlyLogged meals={[]} readOnly onAddPress={openAddSheet} />
+            <EmptyState body="Записи о питании и показателях за эту дату отсутствуют." />
+          </>
         ) : (
           <EmptyState body="Записи о питании и показателях за эту дату отсутствуют. Выберите другой день в календаре." />
         )}
       </ScreenMainScrollView>
+      {canAdd && date ? <DayAddMealSheet ref={sheetRef} date={date} /> : null}
     </ScreenMain>
   );
 }
