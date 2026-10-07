@@ -17,6 +17,7 @@ import {
   LucideIcon,
   PenLineIcon,
   ScanIcon,
+  StarIcon,
 } from "lucide-react-native";
 import getColor from "../../lib/ui/getColor";
 import Button from "../ui/Button";
@@ -72,6 +73,14 @@ type Option = {
   isAiFeature: boolean;
 };
 
+const favoritesOption: Option = {
+  label: "Избранное",
+  icon: StarIcon,
+  href: "/app/(add)/favorites",
+  isPro: false,
+  isAiFeature: false,
+};
+
 const baseOptions: Option[] = [
   {
     label: "Описать",
@@ -87,6 +96,7 @@ const baseOptions: Option[] = [
     isPro: false,
     isAiFeature: true,
   },
+  favoritesOption,
 ];
 
 const glucoseOption: Option = {

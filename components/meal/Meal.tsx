@@ -7,6 +7,7 @@ import {
 import {
   RefreshCwIcon,
   SparklesIcon,
+  StarIcon,
   TrashIcon,
   TriangleAlertIcon,
 } from "lucide-react-native";
@@ -41,6 +42,8 @@ import { MacrosType, MicrosType } from "@/convex/tables/mealItems";
 import ProLabel from "../ProLabel";
 import { useSubscriptionContext } from "@/context/SubscriptionContext";
 import tryCatch from "@/lib/utils/tryCatch";
+import Button from "../ui/Button";
+import { useThemeContext } from "@/context/ThemeContext";
 
 type Props = {
   loading: boolean;
@@ -50,6 +53,9 @@ type Props = {
   totalMacros?: MacrosType;
   totalMicros?: MicrosType;
   mealItems?: React.ComponentProps<typeof MealItems>["items"];
+  isFavorite?: boolean;
+  onToggleFavorite?: () => void;
+  favoritePending?: boolean;
 };
 
 export default function Meal({
@@ -60,8 +66,12 @@ export default function Meal({
   totalMacros,
   totalMicros,
   mealItems,
+  isFavorite,
+  onToggleFavorite,
+  favoritePending,
 }: Props) {
   const router = useRouter();
+  const { theme } = useThemeContext();
   const updateMeal = useMutation(api.meals.updateMeal.default);
   const retryProcessDetectedItems = useMutation(
     api.meals.retryProcessDetectedItems.default
@@ -129,16 +139,44 @@ export default function Meal({
       <ScreenHeader scrollY={scrollY}>
         <ScreenHeaderBackButton />
         <ScreenHeaderTitle title="Блюдо" />
-        <ScreenHeaderActions
-          options={[
-            {
-              Icon: TrashIcon,
-              text: "Удалить",
-              onPress: handleDelete,
-              destructive: true,
-            },
-          ]}
-        />
+        <View style={styles.headerRight}>
+          {onToggleFavorite && (
+            <Button
+              size="sm"
+              variant="secondary"
+              style={styles.starButton}
+              onPress={onToggleFavorite}
+              disabled={favoritePending}
+              accessibilityLabel={
+                isFavorite ? "Убрать из избранного" : "Добавить в избранное"
+              }
+            >
+              <StarIcon
+                size={22}
+                color={
+                  isFavorite
+                    ? getColor("yellow", undefined, theme)
+                    : getColor("foreground", undefined, theme)
+                }
+                fill={
+                  isFavorite
+                    ? getColor("yellow", undefined, theme)
+                    : "transparent"
+                }
+              />
+            </Button>
+          )}
+          <ScreenHeaderActions
+            options={[
+              {
+                Icon: TrashIcon,
+                text: "Удалить",
+                onPress: handleDelete,
+                destructive: true,
+              },
+            ]}
+          />
+        </View>
       </ScreenHeader>
 
       <ScreenMainScrollView
@@ -227,6 +265,14 @@ export default function Meal({
 }
 
 const styles = StyleSheet.create({
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  starButton: {
+    aspectRatio: 1,
+  },
   errorContainer: {
     flex: 0,
     alignItems: "center",

@@ -2,7 +2,9 @@ import Meal from "@/components/meal/Meal";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import macrosToKcal from "@/lib/utils/macrosToKcal";
-import { useAction, useQuery, useConvex } from "convex/react";
+import { useAction, useQuery, useConvex, useMutation } from "convex/react";
+import { ConvexError } from "convex/values";
+import tryCatch from "@/lib/utils/tryCatch";
 import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Toast } from "@/components/ui/Toast";
@@ -14,10 +16,7 @@ import getFoodName from "@/lib/utils/getFoodName";
 export default function MealScreen() {
   const router = useRouter();
   const convex = useConvex();
-  const {
-    mealId: initialMealId,
-    barcode,
-  } = useLocalSearchParams<{
+  const { mealId: initialMealId, barcode } = useLocalSearchParams<{
     mealId?: Id<"meals">;
     barcode?: string;
   }>();
@@ -28,6 +27,9 @@ export default function MealScreen() {
 
   const [mealId, setMealId] = useState<Id<"meals"> | undefined>(initialMealId);
   const startedRef = useRef(false);
+  const [favoritePending, setFavoritePending] = useState(false);
+  const addFavorite = useMutation(api.favorites.addFavoriteFromMeal.default);
+  const removeFavorite = useMutation(api.favorites.removeFavorite.default);
 
   const data = useQuery(
     api.meals.getMeal.default,
@@ -77,6 +79,14 @@ export default function MealScreen() {
     void startMealAnalysis();
   }, [startMealAnalysis]);
 
+  const canFavoriteQuery =
+    data?.meal.status === "done" &&
+    (data.meal.confirmedItems?.length ?? 0) > 0;
+  const favoriteId = useQuery(
+    api.favorites.getMealFavorite.default,
+    canFavoriteQuery && mealId ? { mealId } : "skip"
+  );
+
   if (mealId && data === null) {
     return <Redirect href="/app" />;
   }
@@ -100,6 +110,41 @@ export default function MealScreen() {
       }))
     : undefined;
 
+  const canFavorite = isDone && (meal.confirmedItems?.length ?? 0) > 0;
+
+  const handleToggleFavorite = async () => {
+    if (!mealId || favoritePending) return;
+    setFavoritePending(true);
+    const wasFavorite = !!favoriteId;
+    const { error } = await tryCatch(
+      favoriteId ? removeFavorite({ favoriteId }) : addFavorite({ mealId })
+    );
+    setFavoritePending(false);
+
+    if (error) {
+      if (
+        error instanceof ConvexError &&
+        (error.data as { code?: string } | undefined)?.code ===
+          "FAVORITES_LIMIT"
+      ) {
+        Toast.show({
+          text: "В избранном может быть не больше 50 блюд",
+          variant: "error",
+        });
+      } else {
+        logError("Toggle favorite error", error);
+        Toast.show({
+          text: "Не удалось обновить избранное",
+          variant: "error",
+        });
+      }
+      return;
+    }
+    Toast.show({
+      text: wasFavorite ? "Удалено из избранного" : "Добавлено в избранное",
+    });
+  };
+
   const isLoading = !mealId || !data || !isDone;
 
   return (
@@ -111,6 +156,11 @@ export default function MealScreen() {
       totalMacros={meal?.totalMacros}
       totalMicros={meal?.totalMicros}
       mealItems={items}
+      isFavorite={!!favoriteId}
+      onToggleFavorite={
+        canFavorite ? () => void handleToggleFavorite() : undefined
+      }
+      favoritePending={favoritePending}
     />
   );
 }
