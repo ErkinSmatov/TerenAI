@@ -89,6 +89,7 @@ function OTPInputBox({
 
 export type OTPInputHandle = {
   flashError: () => void;
+  clear: () => void;
 };
 
 type Props = {
@@ -157,6 +158,9 @@ export default function OTPInput({
           withTiming(8, { duration: 50 }),
           withTiming(0, { duration: 50 })
         );
+      },
+      clear: () => {
+        setText("");
       },
     }),
     [errorShared, shakeShared]

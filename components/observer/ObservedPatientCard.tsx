@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 import { StyleSheet, View } from "react-native";
 import { format } from "date-fns";
 import {
@@ -8,6 +9,13 @@ import {
 } from "lucide-react-native";
 import { Link } from "expo-router";
 import Text from "../ui/Text";
+import SportShoeIcon from "../icons/SportShoeIcon";
+import {
+  CARD_BACKGROUND_DARK,
+  CARD_GLOW,
+  TILE_BACKGROUND_DARK,
+  TILE_GLOW,
+} from "./observerCardTheme";
 import Button from "../ui/Button";
 import AlertDialog from "../ui/AlertDialog";
 import WarningBadge from "../ui/WarningBadge";
@@ -36,25 +44,12 @@ export type ObservedPatient = {
     recordedAt: number;
   } | null;
   isGlucoseOutOfRange: boolean;
+  steps: number | null;
   isGlucometerTrack: boolean;
 };
 
-// Те же фиксированные декоративные цвета, что у карточки профиля
-// (`ProfileHeader.tsx`, Figma node 858:5164): плоский тёмный фон и мягкое
-// шалфейное свечение. Светлая тема — амбиентный аналог.
-const CARD_BACKGROUND_DARK = "#0A0D12";
-const TILE_BACKGROUND_DARK = "#15181F";
-const CARD_GLOW = {
-  dark: "#73887b",
-  light: "rgba(115, 136, 123, 0.22)",
-};
-const TILE_GLOW = {
-  dark: "#313131",
-  light: "rgba(49, 49, 49, 0.14)",
-};
-
 type StatProps = {
-  Icon: typeof FlameIcon;
+  Icon: ComponentType<{ size?: number; color?: string }>;
   value: string;
   label: string;
 };
@@ -76,7 +71,13 @@ function Stat({ Icon, value, label }: StatProps) {
       ]}
     >
       <Icon size={20} color={getColor("foreground", undefined, theme)} />
-      <Text size="16" weight="600" family="outfit" numberOfLines={1}>
+      <Text
+        size="16"
+        weight="600"
+        family="outfit"
+        numberOfLines={1}
+        adjustsFontSizeToFit
+      >
         {value}
       </Text>
       <Text
@@ -167,10 +168,19 @@ export default function ObservedPatientCard({ patient, onRemove }: Props) {
       </View>
 
       <View style={styles.metricsRow}>
+        {/* «—» только для nullable-полей (steps, latestGlucose);
+            caloriesTotal/mealsCount всегда числа — 0 это данные. */}
         <Stat
           Icon={FlameIcon}
           value={String(patient.caloriesTotal)}
           label={caloriesLabel}
+        />
+        <Stat
+          Icon={SportShoeIcon}
+          value={
+            patient.steps === null ? "—" : patient.steps.toLocaleString("ru-RU")
+          }
+          label="шаги"
         />
         <Stat
           Icon={UtensilsIcon}
@@ -245,7 +255,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 24,
     paddingVertical: 14,
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     alignItems: "center",
     gap: 4,
   },
