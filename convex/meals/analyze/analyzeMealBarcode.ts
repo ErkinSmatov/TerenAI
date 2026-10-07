@@ -13,6 +13,7 @@ import getFoodNutrients from "@/lib/food/getFoodNutrients";
 const analyzeMealBarcode = action({
   args: {
     barcode: v.string(),
+    eatenAt: v.optional(v.number()),
     product: v.optional(
       v.object({
         name: v.string(),
@@ -20,7 +21,7 @@ const analyzeMealBarcode = action({
       })
     ),
   },
-  handler: async (ctx, { barcode, product }): Promise<Id<"meals">> => {
+  handler: async (ctx, { barcode, product, eatenAt }): Promise<Id<"meals">> => {
     let mealId: Id<"meals"> | undefined = undefined;
     try {
       const userId = await getAuthUserId(ctx);
@@ -28,6 +29,7 @@ const analyzeMealBarcode = action({
 
       mealId = await ctx.runMutation(api.meals.createMeal.default, {
         status: "processing",
+        eatenAt,
       });
 
       const existingFood = await ctx.runQuery(

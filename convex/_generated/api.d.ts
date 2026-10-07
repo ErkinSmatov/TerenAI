@@ -114,6 +114,7 @@ import type * as utils_localMonthBounds from "../utils/localMonthBounds.js";
 import type * as utils_localWeekBounds from "../utils/localWeekBounds.js";
 import type * as utils_observerAuth from "../utils/observerAuth.js";
 import type * as utils_otp from "../utils/otp.js";
+import type * as utils_resolveEatenAt from "../utils/resolveEatenAt.js";
 import type * as utils_streakDays from "../utils/streakDays.js";
 
 import type {
@@ -237,6 +238,7 @@ declare const fullApi: ApiFromModules<{
   "utils/localWeekBounds": typeof utils_localWeekBounds;
   "utils/observerAuth": typeof utils_observerAuth;
   "utils/otp": typeof utils_otp;
+  "utils/resolveEatenAt": typeof utils_resolveEatenAt;
   "utils/streakDays": typeof utils_streakDays;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

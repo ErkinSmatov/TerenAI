@@ -5,7 +5,15 @@ import { mealsFields } from "../tables/meals";
 import { partial } from "convex-helpers/validators";
 import logError from "@/lib/utils/logError";
 
-const { userId, totalMacros, totalNutrients, ...updatableFields } = mealsFields;
+// eatenAt исключён: дата приёма задаётся только при создании и проходит
+// resolveEatenAt (D-07), иначе клиент обошёл бы проверку будущей даты.
+const {
+  userId,
+  totalMacros,
+  totalNutrients,
+  eatenAt,
+  ...updatableFields
+} = mealsFields;
 
 const updateMeal = mutation({
   args: {

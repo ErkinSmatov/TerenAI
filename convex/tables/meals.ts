@@ -26,6 +26,11 @@ export const mealsFields = {
   totalMacros: v.optional(v.object(macrosFields)),
   totalMicros: v.optional(v.object(microsFields)),
   totalNutrients: v.optional(v.object(nutrientsFields)),
+  // Реальное время приёма пищи, мс UTC (фаза 71, D-10). Не заполнено только у
+  // строк до бэкфилла — читать через getMealTime().
+  eatenAt: v.optional(v.number()),
 };
 
-export const meals = defineTable(mealsFields).index("byUserId", ["userId"]);
+export const meals = defineTable(mealsFields)
+  .index("byUserId", ["userId"])
+  .index("byUserIdAndEatenAt", ["userId", "eatenAt"]);

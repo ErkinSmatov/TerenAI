@@ -8,6 +8,7 @@ const {
   userId: _userId,
   totalMacros,
   totalNutrients,
+  eatenAt: _eatenAt,
   ...updatableFields
 } = mealsFields;
 
