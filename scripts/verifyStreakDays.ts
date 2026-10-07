@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { computeStreakFromMealTimes } from "@/convex/utils/streakDays";
+import { getMealTime } from "@/lib/meals/getMealTime";
 
 const dayMs = 24 * 60 * 60 * 1000;
 const hourMs = 60 * 60 * 1000;
@@ -59,5 +60,25 @@ assert.strictEqual(
   computeStreakFromMealTimes([now2, meal2330Utc], now2, 0),
   2
 );
+
+// фаза 71: время по eatenAt, порядок desc. Вчерашний ужин добавлен задним
+// числом (создан позже сегодняшнего блюда), но по eatenAt он вчерашний.
+const backfilled = [
+  { _creationTime: now - 3 * hourMs, eatenAt: now - 3 * hourMs }, // сегодня
+  { _creationTime: now - hourMs, eatenAt: now - dayMs }, // вчера, добавлено задним числом
+  { _creationTime: now - 2 * hourMs, eatenAt: now - 2 * dayMs }, // позавчера
+];
+const byEatenAtDesc = backfilled
+  .map(getMealTime)
+  .sort((a, b) => b - a);
+assert.strictEqual(computeStreakFromMealTimes(byEatenAtDesc, now, 0), 3);
+
+// Порядок по _creationTime desc (без сортировки по eatenAt) даёт массив не в
+// убывающем порядке; после сортировки по eatenAt desc результат тот же: 3.
+const byCreationDesc = [...backfilled]
+  .sort((a, b) => b._creationTime - a._creationTime)
+  .map(getMealTime)
+  .sort((a, b) => b - a);
+assert.strictEqual(computeStreakFromMealTimes(byCreationDesc, now, 0), 3);
 
 console.log("verifyStreakDays: OK");

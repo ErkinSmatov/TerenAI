@@ -23,6 +23,7 @@ import { Link } from "expo-router";
 import WithSkeleton from "../ui/WithSkeleton";
 import SafeArea from "../ui/SafeArea";
 import HomeEmptyState from "./HomeEmptyState";
+import { getMealTime } from "@/lib/meals/getMealTime";
 import calcRatio from "@/lib/utils/calcRatio";
 import macrosToKcal from "@/lib/utils/macrosToKcal";
 import useProgress from "@/lib/hooks/reanimated/useProgress";
@@ -130,7 +131,7 @@ function MealCard({ meal, readOnly = false, targetCalories }: CardProps) {
       <View style={styles.thumbnailRow}>
         <MealThumbnail meal={meal} targetCalories={targetCalories} />
         <Text size="12" color={getColor("mutedForeground", undefined, theme)}>
-          {format(meal._creationTime, "HH:mm")}
+          {format(getMealTime(meal), "HH:mm")}
         </Text>
       </View>
       <WithSkeleton
@@ -219,9 +220,9 @@ export default function HomeRecentlyLogged({ meals, readOnly = false }: Props) {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.itemsContainer}
         >
-          {meals.map((meal, index) => (
+          {meals.map((meal) => (
             <MealCard
-              key={`log-item-${index}-${meal.name}`}
+              key={meal._id}
               meal={meal}
               readOnly={readOnly}
               targetCalories={targetCalories}

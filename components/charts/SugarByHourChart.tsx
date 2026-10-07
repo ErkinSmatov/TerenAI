@@ -22,6 +22,7 @@ import {
 import { UtensilsIcon } from "lucide-react-native";
 import { useMemo, useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
+import { getMealTime } from "@/lib/meals/getMealTime";
 
 const HOURS = 24;
 const GAP = 4; // токен spacing xs
@@ -41,7 +42,7 @@ const MEAL_MARKER_ICON_COLOR = "#151810";
 
 type MealForChart = Pick<
   Doc<"meals">,
-  "_id" | "_creationTime" | "totalNutrients"
+  "_id" | "_creationTime" | "eatenAt" | "totalNutrients"
 >;
 
 type HourBucket = {
@@ -95,7 +96,7 @@ export default function SugarByHourChart({
   const mealHours = useMemo(() => {
     const hours = new Set<number>();
     for (const meal of meals) {
-      hours.add(new Date(meal._creationTime).getHours());
+      hours.add(new Date(getMealTime(meal)).getHours());
     }
     return hours;
   }, [meals]);
@@ -185,7 +186,7 @@ export default function SugarByHourChart({
       // реальные показания и не участвует в агрегатах — см. комментарий
       // estimateGlucoseFromMeals.ts.
       const mealsBeforeHourEnd: EstimateMealInput[] = meals.filter(
-        (meal) => meal._creationTime < hourEnd
+        (meal) => getMealTime(meal) < hourEnd
       );
       if (mealsBeforeHourEnd.length === 0) return null;
 

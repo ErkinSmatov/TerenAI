@@ -1,3 +1,4 @@
+import { getMealTime } from "@/lib/meals/getMealTime";
 import type { GlucoseContext, GlucoseUnit } from "@/convex/observers/utils/thresholds";
 
 /**
@@ -31,6 +32,7 @@ import type { GlucoseContext, GlucoseUnit } from "@/convex/observers/utils/thres
 
 export type EstimateMealInput = {
   _creationTime: number;
+  eatenAt?: number;
   totalNutrients?: {
     carbs: { total: number; fiber: number; sugar: number };
   };
@@ -138,7 +140,7 @@ export default function estimateGlucoseFromMeals(
       continue;
     }
 
-    const minutesSinceMeal = (now - meal._creationTime) / 60000;
+    const minutesSinceMeal = (now - getMealTime(meal)) / 60000;
     if (minutesSinceMeal < 0 || minutesSinceMeal >= WINDOW_MINUTES) {
       continue;
     }

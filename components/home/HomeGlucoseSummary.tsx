@@ -16,7 +16,7 @@ import type { ThemeName } from "@/lib/ui/palettes";
 
 type MealForChart = Pick<
   Doc<"meals">,
-  "_id" | "_creationTime" | "totalNutrients"
+  "_id" | "_creationTime" | "eatenAt" | "totalNutrients"
 >;
 
 type Props = {

@@ -2,7 +2,6 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { query } from "../_generated/server";
 import { Id } from "../_generated/dataModel";
 import { v } from "convex/values";
-import { getMealTime } from "@/lib/meals/getMealTime";
 import logError from "@/lib/utils/logError";
 import { localDayBoundaries } from "../utils/localDayBoundaries";
 import { isGlucoseOutOfRange, isCaloriesExceeded } from "./utils/thresholds";
