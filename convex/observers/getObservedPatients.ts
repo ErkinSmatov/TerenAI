@@ -49,6 +49,7 @@ const getObservedPatients = query({
         } | null;
         isGlucoseOutOfRange: boolean;
         steps: number | null;
+        distanceMeters: number | null;
         isGlucometerTrack: boolean;
         _creationTime: number;
       }[] = [];
@@ -136,6 +137,7 @@ const getObservedPatients = query({
           latestGlucose,
           isGlucoseOutOfRange: glucoseOutOfRange,
           steps: movementRow?.steps ?? null,
+          distanceMeters: movementRow?.distanceMeters ?? null,
           isGlucometerTrack: patientProfile?.data?.goalTrack === "glucometer",
           _creationTime: link._creationTime,
         });
