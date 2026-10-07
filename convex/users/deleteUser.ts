@@ -1,5 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation } from "../_generated/server";
+import type { Id } from "../_generated/dataModel";
+import logError from "@/lib/utils/logError";
 
 const deleteUser = mutation({
   handler: async (ctx) => {
@@ -15,6 +17,18 @@ const deleteUser = mutation({
     for (const profile of profiles) {
       await ctx.db.delete(profile._id);
     }
+
+    // Фото делится между meals и favoriteMeals — удаляем каждый файл один раз.
+    const deletedStorageIds = new Set<Id<"_storage">>();
+    const deleteStorageOnce = async (storageId: Id<"_storage">) => {
+      if (deletedStorageIds.has(storageId)) return;
+      deletedStorageIds.add(storageId);
+      try {
+        await ctx.storage.delete(storageId);
+      } catch (error) {
+        logError("deleteUser storage delete error", error);
+      }
+    };
 
     const meals = await ctx.db
       .query("meals")
@@ -32,10 +46,21 @@ const deleteUser = mutation({
       }
 
       if (meal.photoStorageId) {
-        await ctx.storage.delete(meal.photoStorageId);
+        await deleteStorageOnce(meal.photoStorageId);
       }
 
       await ctx.db.delete(meal._id);
+    }
+
+    const favorites = await ctx.db
+      .query("favoriteMeals")
+      .withIndex("byUserId", (q) => q.eq("userId", userId))
+      .collect();
+    for (const favorite of favorites) {
+      if (favorite.photoStorageId) {
+        await deleteStorageOnce(favorite.photoStorageId);
+      }
+      await ctx.db.delete(favorite._id);
     }
 
     const glucoseReadings = await ctx.db
