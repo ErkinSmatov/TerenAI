@@ -22,7 +22,7 @@ import macrosToKcal from "@/lib/utils/macrosToKcal";
 import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, TextInput, useWindowDimensions, View } from "react-native";
 import {
   cancelAnimation,
   SharedValue,
@@ -35,6 +35,8 @@ import {
 // макета), как у hero-карточек Главной; светлая тема — мягкое амбиентное
 // свечение того же оттенка (см. getNutrientGlow).
 const TILE_DARK_BACKGROUND = "#15181F";
+const GRID_GAP = 12;
+const GRID_PADDING = 16;
 
 type Macro = {
   name: string;
@@ -47,6 +49,7 @@ type Macro = {
 
 export default function AdjustMacroTargetsScreen() {
   const { theme } = useThemeContext();
+  const { width: windowWidth } = useWindowDimensions();
   const targets = useQuery(api.profiles.getProfile.default)?.targets;
   const updateProfile = useMutation(api.profiles.updateProfile.default);
 
@@ -163,6 +166,7 @@ export default function AdjustMacroTargetsScreen() {
   ]);
 
   const inputFontFamily = resolveFontFamily({ family: "outfit" });
+  const tileSize = (windowWidth - GRID_PADDING * 2 - GRID_GAP) / 2;
 
   return (
     <ScreenMain edges={[]}>
@@ -178,6 +182,7 @@ export default function AdjustMacroTargetsScreen() {
               key={`macro-tile-${macro.name}`}
               style={[
                 styles.tile,
+                { width: tileSize, height: tileSize },
                 {
                   backgroundColor:
                     theme === "dark"
@@ -252,13 +257,10 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 12,
-    paddingHorizontal: 16,
+    gap: GRID_GAP,
+    paddingHorizontal: GRID_PADDING,
   },
   tile: {
-    width: "48%",
-    flexGrow: 1,
-    aspectRatio: 1,
     borderRadius: 24,
     padding: 14,
   },

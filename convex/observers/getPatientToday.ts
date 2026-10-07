@@ -23,7 +23,7 @@ const getPatientToday = query({
       // Единственная проверка авторизации — до любого чтения данных пациента.
       await assertObserverAccess(ctx, patientId);
 
-      const { startUtc, endUtc } = localDayBoundaries(
+      const { startUtc, endUtc, dateString } = localDayBoundaries(
         Date.now(),
         timezoneOffsetMinutes
       );
@@ -67,6 +67,13 @@ const getPatientToday = query({
         .collect();
       bloodPressureReadings.sort((a, b) => b._creationTime - a._creationTime);
 
+      const movement = await ctx.db
+        .query("movementData")
+        .withIndex("byUserIdAndDate", (q) =>
+          q.eq("userId", patientId).eq("date", dateString)
+        )
+        .first();
+
       const patientProfile = await ctx.db
         .query("profiles")
         .withIndex("byUserId", (q) => q.eq("userId", patientId))
@@ -101,6 +108,7 @@ const getPatientToday = query({
       return {
         meals: mealsWithPhotoUrls,
         streak,
+        movement: movement ?? null,
         glucoseReadings,
         bloodPressureReadings,
         targets: patientProfile?.targets ?? null,

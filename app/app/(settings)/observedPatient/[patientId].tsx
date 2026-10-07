@@ -117,7 +117,7 @@ export default function ObservedPatientScreen() {
 
       <ScreenMainScrollView
         scrollViewProps={{ onScroll }}
-        safeAreaProps={{ edges: ["left", "right", "bottom"] }}
+        safeAreaProps={{ edges: ["bottom"] }}
       >
         <View style={styles.titleRow}>
           <View style={styles.titleText}>
@@ -144,6 +144,7 @@ export default function ObservedPatientScreen() {
           <HomeMacroSummary
             totalMacros={dayTotals.macros}
             targets={data.targets ?? undefined}
+            movement={data.movement}
             readOnly
           />
           <HomeMicroSummary

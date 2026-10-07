@@ -25,7 +25,7 @@ import { useQuery } from "convex/react";
 import { useLocalSearchParams } from "expo-router";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 
 const DATE_PARAM_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -115,6 +115,13 @@ export default function DayScreen() {
       : "skip"
   );
 
+  const rawMonthMovement = useQuery(
+    api.movement.getMonthMovement.default,
+    isValidRoute && Platform.OS === "ios"
+      ? { monthDates: bounds.monthDates }
+      : "skip"
+  );
+
   if (parsed === null || bounds === null || !isValidRoute) {
     return (
       <ScreenMain edges={[]}>
@@ -135,7 +142,8 @@ export default function DayScreen() {
   const stillLoading =
     rawMonthMeals === undefined ||
     (isGlucometerTrack &&
-      (rawMonthReadings === undefined || rawMonthBloodPressure === undefined));
+      (rawMonthReadings === undefined || rawMonthBloodPressure === undefined)) ||
+    (Platform.OS === "ios" && rawMonthMovement === undefined);
 
   if (stillLoading) {
     return (
@@ -159,15 +167,19 @@ export default function DayScreen() {
     rawMonthReadings ?? Array.from({ length: monthLength }, () => []);
   const monthBloodPressure =
     rawMonthBloodPressure ?? Array.from({ length: monthLength }, () => []);
+  const monthMovement =
+    rawMonthMovement ?? Array.from({ length: monthLength }, () => null);
 
   const dayMeals = rawMonthMeals.at(dayIndex) ?? [];
   const dayReadings = monthReadings.at(dayIndex) ?? [];
   const dayBloodPressure = monthBloodPressure.at(dayIndex) ?? [];
+  const dayMovement = monthMovement.at(dayIndex) ?? null;
 
   const hasData =
     dayMeals.length > 0 ||
     dayReadings.length > 0 ||
-    dayBloodPressure.length > 0;
+    dayBloodPressure.length > 0 ||
+    dayMovement !== null;
 
   const dayTotals = calculateDayTotals(dayMeals);
   const title = capitalize(
@@ -183,7 +195,7 @@ export default function DayScreen() {
 
       <ScreenMainScrollView
         scrollViewProps={{ onScroll }}
-        safeAreaProps={{ edges: ["left", "right", "bottom"] }}
+        safeAreaProps={{ edges: ["bottom"] }}
       >
         {hasData ? (
           <>
@@ -192,6 +204,7 @@ export default function DayScreen() {
               <HomeMacroSummary
                 totalMacros={dayTotals.macros}
                 targets={profile?.targets ?? undefined}
+                movement={dayMovement}
                 readOnly
               />
               <HomeMicroSummary

@@ -21,6 +21,7 @@ import { getDay } from "date-fns";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import {
+  Platform,
   ScrollView,
   StyleSheet,
   View,
@@ -79,7 +80,14 @@ export default function HomeScreen() {
     rawWeekBloodPressure ?? Array.from({ length: 7 }, () => []);
   const dayBloodPressure = weekBloodPressure.at(selectedDay) ?? [];
 
-  const weekTotalMacros = weekMeals.map((meals) =>
+  const rawWeekMovement = useQuery(
+    api.movement.getWeekMovement.default,
+    Platform.OS === "ios" ? { weekDates: weekBounds.weekDates } : "skip"
+  );
+  const weekMovement = rawWeekMovement ?? Array.from({ length: 7 }, () => null);
+  const dayMovement = weekMovement.at(selectedDay) ?? null;
+
+  const weekTotalMacros =weekMeals.map((meals) =>
     meals.reduce(
       (acc, meal) => ({
         calories: acc.calories + (meal.totalMacros?.calories ?? 0),
@@ -137,7 +145,10 @@ export default function HomeScreen() {
         />
         <HomeRecentlyLogged meals={dayMeals} />
         <View style={styles.summaryStack}>
-          <HomeMacroSummary totalMacros={dayTotals.macros} />
+          <HomeMacroSummary
+            totalMacros={dayTotals.macros}
+            movement={dayMovement}
+          />
           <HomeMicroSummary
             totalMicros={dayTotals.micros}
             dayIndex={selectedDay}
