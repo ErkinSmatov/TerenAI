@@ -58,6 +58,7 @@ import type * as meals_analyze_searchFdcCandidates from "../meals/analyze/search
 import type * as meals_analyze_selectCandidates from "../meals/analyze/selectCandidates.js";
 import type * as meals_analyze_translateFood from "../meals/analyze/translateFood.js";
 import type * as meals_confirmMeal from "../meals/confirmMeal.js";
+import type * as meals_countMealsWithoutEatenAt from "../meals/countMealsWithoutEatenAt.js";
 import type * as meals_createMeal from "../meals/createMeal.js";
 import type * as meals_getMeal from "../meals/getMeal.js";
 import type * as meals_getMonthMeals from "../meals/getMonthMeals.js";
@@ -182,6 +183,7 @@ declare const fullApi: ApiFromModules<{
   "meals/analyze/selectCandidates": typeof meals_analyze_selectCandidates;
   "meals/analyze/translateFood": typeof meals_analyze_translateFood;
   "meals/confirmMeal": typeof meals_confirmMeal;
+  "meals/countMealsWithoutEatenAt": typeof meals_countMealsWithoutEatenAt;
   "meals/createMeal": typeof meals_createMeal;
   "meals/getMeal": typeof meals_getMeal;
   "meals/getMonthMeals": typeof meals_getMonthMeals;
