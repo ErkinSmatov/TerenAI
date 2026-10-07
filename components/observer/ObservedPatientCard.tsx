@@ -59,9 +59,9 @@ export default function ObservedPatientCard({ patient, onRemove }: Props) {
 
   const stepsRatio = Math.min(1, Math.max(0, (patient.steps ?? 0) / STEPS_GOAL));
   const distanceKm =
-    patient.distanceMeters === null
-      ? null
-      : Math.round(patient.distanceMeters / 1000);
+    typeof patient.distanceMeters === "number"
+      ? Math.round(patient.distanceMeters / 1000)
+      : null;
 
   const glucoseValue = patient.latestGlucose
     ? String(patient.latestGlucose.value)
@@ -139,9 +139,9 @@ export default function ObservedPatientCard({ patient, onRemove }: Props) {
           <View style={styles.activityHeader}>
             <View style={styles.activityLeft}>
               <Text size="12" weight="600" family="outfit">
-                {patient.steps === null
-                  ? "—"
-                  : patient.steps.toLocaleString("ru-RU")}
+                {typeof patient.steps === "number"
+                  ? patient.steps.toLocaleString("ru-RU")
+                  : "—"}
               </Text>
             </View>
             <SportShoeIcon

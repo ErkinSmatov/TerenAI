@@ -21,10 +21,15 @@ import { Id } from "@/convex/_generated/dataModel";
 import { calculateDayTotals } from "@/lib/nutrition/calculateDayTotals";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
 import { useQuery } from "convex/react";
-import { useLocalSearchParams, type ErrorBoundaryProps } from "expo-router";
-import { getDay } from "date-fns";
+import {
+  useLocalSearchParams,
+  useRouter,
+  type ErrorBoundaryProps,
+} from "expo-router";
+import { format, getDay } from "date-fns";
+import { ru } from "date-fns/locale";
 import { StyleSheet, View } from "react-native";
-import { FlameIcon } from "lucide-react-native";
+import { FlameIcon, HistoryIcon } from "lucide-react-native";
 import getColor from "@/lib/ui/getColor";
 import { useThemeContext } from "@/context/ThemeContext";
 
@@ -70,6 +75,17 @@ const styles = StyleSheet.create({
   titleText: {
     flex: 1,
   },
+  titleActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  historyPill: {
+    width: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   streakPill: {
     minWidth: 56,
   },
@@ -78,7 +94,12 @@ const styles = StyleSheet.create({
   },
 });
 
+function capitalize(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 export default function ObservedPatientScreen() {
+  const router = useRouter();
   const { theme } = useThemeContext();
   const { patientId } = useLocalSearchParams<{ patientId: Id<"users"> }>();
   const { scrollY, onScroll } = useScrollY();
@@ -123,20 +144,42 @@ export default function ObservedPatientScreen() {
           <View style={styles.titleText}>
             <ScreenMainTitle
               title={data.displayName}
-              description="Данные за сегодня. Наблюдателю доступен только текущий день — отсутствие данных за вчера не означает сбой."
+              description={capitalize(
+                format(new Date(), "d MMMM, EEEE", { locale: ru })
+              )}
               style={{ paddingBottom: 0 }}
             />
           </View>
-          <Pill style={styles.streakPill}>
-            <FlameIcon
-              size={20}
-              color={getColor("orange", undefined, theme)}
-              fill={getColor("orange", undefined, theme)}
-            />
-            <Text family="outfit" weight="600">
-              {data.streak}
-            </Text>
-          </Pill>
+          <View style={styles.titleActions}>
+            <Button
+              variant="base"
+              size="base"
+              accessibilityLabel="История"
+              onPress={() => {
+                router.push({
+                  pathname: "/app/(settings)/observedHistory/[patientId]",
+                  params: { patientId },
+                });
+              }}
+            >
+              <Pill style={styles.historyPill}>
+                <HistoryIcon
+                  size={20}
+                  color={getColor("foreground", undefined, theme)}
+                />
+              </Pill>
+            </Button>
+            <Pill style={styles.streakPill}>
+              <FlameIcon
+                size={20}
+                color={getColor("orange", undefined, theme)}
+                fill={getColor("orange", undefined, theme)}
+              />
+              <Text family="outfit" weight="600">
+                {data.streak}
+              </Text>
+            </Pill>
+          </View>
         </View>
 
         <HomeRecentlyLogged meals={data.meals} readOnly />

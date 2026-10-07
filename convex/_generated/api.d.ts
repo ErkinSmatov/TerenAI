@@ -80,6 +80,7 @@ import type * as nutrition_computeNutritionTargets from "../nutrition/computeNut
 import type * as observers_generateCode from "../observers/generateCode.js";
 import type * as observers_getMyObservers from "../observers/getMyObservers.js";
 import type * as observers_getObservedPatients from "../observers/getObservedPatients.js";
+import type * as observers_getPatientHistory from "../observers/getPatientHistory.js";
 import type * as observers_getPatientToday from "../observers/getPatientToday.js";
 import type * as observers_redeemCode from "../observers/redeemCode.js";
 import type * as observers_regenerateCode from "../observers/regenerateCode.js";
@@ -202,6 +203,7 @@ declare const fullApi: ApiFromModules<{
   "observers/generateCode": typeof observers_generateCode;
   "observers/getMyObservers": typeof observers_getMyObservers;
   "observers/getObservedPatients": typeof observers_getObservedPatients;
+  "observers/getPatientHistory": typeof observers_getPatientHistory;
   "observers/getPatientToday": typeof observers_getPatientToday;
   "observers/redeemCode": typeof observers_redeemCode;
   "observers/regenerateCode": typeof observers_regenerateCode;
