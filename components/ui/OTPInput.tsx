@@ -55,7 +55,9 @@ function OTPInputBox({
       // непрозрачности в тёмной теме.
       const initialBorderColor = isFocused
         ? getColor("foreground", undefined, theme)
-        : getColor("secondary", theme === "dark" ? 0.08 : undefined, theme);
+        : theme === "dark"
+          ? getColor("foreground", 0.3, theme)
+          : getColor("secondary", undefined, theme);
       const borderColor = interpolateColor(
         error.value,
         [0, 1],

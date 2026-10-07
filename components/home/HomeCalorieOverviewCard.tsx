@@ -9,22 +9,13 @@ import Animated, {
 } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
 import Text from "../ui/Text";
-import SportShoeIcon from "../icons/SportShoeIcon";
 import CircularProgress from "../ui/CircularProgress";
-import { Doc } from "@/convex/_generated/dataModel";
 import getColor from "@/lib/ui/getColor";
 import getShadow from "@/lib/ui/getShadow";
 import { useThemeContext } from "@/context/ThemeContext";
 import type { ThemeName } from "@/lib/ui/palettes";
 import useThemedStyles from "@/lib/ui/useThemedStyles";
 import calcRatio from "@/lib/utils/calcRatio";
-
-// Figma node 863:5405 не задаёт шаговую цель — в проекте вообще нет
-// конфига дневной цели по шагам (в отличие от целей по калориям/БЖУ).
-// Claude's Discretion: используем фиксированное значение 10000 только для
-// заполнения прогресс-бара шагов. Кандидат на будущий конфиг (например,
-// профильную настройку), если в проекте появится персонализация цели.
-const DEFAULT_STEPS_GOAL = 10000;
 
 // Фиксированные декоративные градиенты/цвета этой карточки — буквально из
 // Figma (node 863:5405), НЕ через getColor()/тему и НЕ завязаны на статус
@@ -46,7 +37,6 @@ const CALORIE_RING_END_CAP = {
   borderWidth: 2,
   radius: 8,
 };
-const STEPS_GRADIENT: [string, string] = ["#C9F14C", "#F7F1E3"];
 
 type MacroRow = {
   name: string;
@@ -65,17 +55,7 @@ type Props = {
   };
   // Порядок фиксирован по Figma-макету: Белки, Жиры, Углеводы.
   macros: [MacroRow, MacroRow, MacroRow];
-  // Опционально: экраны вне скоупа этой волны (Дневник, наблюдатель) вызывают
-  // родителя (`HomeMacroSummary`) без этого пропа — им пока рендерится
-  // отдельная `HomeMovementSummary` рядом, как раньше.
-  movement?: Doc<"movementData"> | null;
   progress: SharedValue<number>;
-  // Скрывает блок шагов/активности в нижней строке — используется на экране
-  // блюда (`MealCalorieOverview`), где активность не имеет смысла для
-  // одного приёма пищи, только для целого дня (D-03, 6-й раунд коррекции).
-  // По умолчанию true, чтобы существующее использование на Главной не
-  // требовало изменений.
-  showActivity?: boolean;
 };
 
 type BarProps = {
@@ -147,9 +127,7 @@ function ProgressBar({
 export default function HomeCalorieOverviewCard({
   calories,
   macros,
-  movement = null,
   progress,
-  showActivity = true,
 }: Props) {
   const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
@@ -168,10 +146,6 @@ export default function HomeCalorieOverviewCard({
   const trackColor = getColor("foreground", 0.12, theme);
 
   const remaining = Math.round(calories.target - calories.value);
-
-  const steps = movement?.steps ?? 0;
-  const distanceKm = movement ? movement.distanceMeters / 1000 : 0;
-  const stepsRatio = calcRatio(steps, DEFAULT_STEPS_GOAL);
 
   return (
     <LinearGradient
@@ -253,35 +227,6 @@ export default function HomeCalorieOverviewCard({
             {Math.round(calories.target)}
           </Text>
         </View>
-
-        {showActivity && (
-          <View style={styles.stepsBlock}>
-            <View style={styles.stepsHeaderRow}>
-              <Text size="12" weight="600" family="outfit">
-                {steps.toLocaleString("ru-RU")}
-              </Text>
-              <SportShoeIcon
-                size={20}
-                color={getColor("foreground", 0.65, theme)}
-              />
-              <Text
-                size="12"
-                family="outfit"
-                color={getColor("foreground", 0.45, theme)}
-              >
-                {distanceKm.toFixed(1)} км
-              </Text>
-            </View>
-            <ProgressBar
-              ratio={stepsRatio}
-              progress={progress}
-              gradientColors={STEPS_GRADIENT}
-              trackColor={trackColor}
-              trackHeight={6}
-              fillHeight={6}
-            />
-          </View>
-        )}
 
         <View style={[styles.bottomItem, styles.bottomItemRight]}>
           <Text size="12" color={getColor("foreground", 0.65, theme)}>
@@ -366,18 +311,6 @@ const createStyles = (theme: ThemeName) => ({
   },
   bottomItemRight: {
     alignItems: "flex-end" as const,
-  },
-  stepsBlock: {
-    flex: 1,
-    paddingHorizontal: 28,
-    gap: 6,
-  },
-  // Три слота: счётчик шагов слева, иконка по центру, дистанция+единица
-  // справа — над баром (D-03, 2-й раунд коррекции).
-  stepsHeaderRow: {
-    flexDirection: "row" as const,
-    alignItems: "center" as const,
-    justifyContent: "space-between" as const,
   },
 });
 

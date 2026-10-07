@@ -8,12 +8,12 @@ import {
   ScreenMainScrollView,
   ScreenMainTitle,
 } from "@/components/ui/screen/ScreenMain";
-import Carousel from "@/components/ui/Carousel";
 import Button from "@/components/ui/Button";
+import Pill from "@/components/ui/Pill";
+import Text from "@/components/ui/Text";
 import HomeMacroSummary from "@/components/home/HomeMacroSummary";
 import HomeMicroSummary from "@/components/home/HomeMicroSummary";
 import HomeRecentlyLogged from "@/components/home/HomeRecentlyLogged";
-import HomeMovementSummary from "@/components/home/HomeMovementSummary";
 import HomeGlucoseSummary from "@/components/home/HomeGlucoseSummary";
 import HomeBloodPressureSummary from "@/components/home/HomeBloodPressureSummary";
 import { api } from "@/convex/_generated/api";
@@ -23,7 +23,10 @@ import useScrollY from "@/lib/hooks/reanimated/useScrollY";
 import { useQuery } from "convex/react";
 import { useLocalSearchParams, type ErrorBoundaryProps } from "expo-router";
 import { getDay } from "date-fns";
-import { Platform } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { FlameIcon } from "lucide-react-native";
+import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 
 /**
  * Экспорт с именем ErrorBoundary — соглашение expo-router: файл маршрута
@@ -55,7 +58,28 @@ export function ErrorBoundary({ retry }: ErrorBoundaryProps) {
   );
 }
 
+const styles = StyleSheet.create({
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+  },
+  titleText: {
+    flex: 1,
+  },
+  streakPill: {
+    minWidth: 56,
+  },
+  summaryStack: {
+    gap: 18,
+  },
+});
+
 export default function ObservedPatientScreen() {
+  const { theme } = useThemeContext();
   const { patientId } = useLocalSearchParams<{ patientId: Id<"users"> }>();
   const { scrollY, onScroll } = useScrollY();
 
@@ -95,12 +119,28 @@ export default function ObservedPatientScreen() {
         scrollViewProps={{ onScroll }}
         safeAreaProps={{ edges: ["left", "right", "bottom"] }}
       >
-        <ScreenMainTitle
-          title={data.displayName}
-          description="Данные за сегодня. Наблюдателю доступен только текущий день — отсутствие данных за вчера не означает сбой."
-        />
+        <View style={styles.titleRow}>
+          <View style={styles.titleText}>
+            <ScreenMainTitle
+              title={data.displayName}
+              description="Данные за сегодня. Наблюдателю доступен только текущий день — отсутствие данных за вчера не означает сбой."
+              style={{ paddingBottom: 0 }}
+            />
+          </View>
+          <Pill style={styles.streakPill}>
+            <FlameIcon
+              size={20}
+              color={getColor("orange", undefined, theme)}
+              fill={getColor("orange", undefined, theme)}
+            />
+            <Text family="outfit" weight="600">
+              {data.streak}
+            </Text>
+          </Pill>
+        </View>
 
-        <Carousel showIndicators>
+        <HomeRecentlyLogged meals={data.meals} readOnly />
+        <View style={styles.summaryStack}>
           <HomeMacroSummary
             totalMacros={dayTotals.macros}
             targets={data.targets ?? undefined}
@@ -111,11 +151,7 @@ export default function ObservedPatientScreen() {
             dayIndex={dayIndex}
             readOnly
           />
-        </Carousel>
-        <HomeRecentlyLogged meals={data.meals} readOnly />
-        {Platform.OS === "ios" && (
-          <HomeMovementSummary movement={data.movement} readOnly />
-        )}
+        </View>
         {data.isGlucometerTrack && (
           <HomeGlucoseSummary readings={data.glucoseReadings} readOnly />
         )}

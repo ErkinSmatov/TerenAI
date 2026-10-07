@@ -66,7 +66,6 @@ export default function MealCalorieOverview({ loading, macros }: Props) {
           calories={{ value: macros?.calories ?? 0, target: targets.calories }}
           macros={macroRows}
           progress={progress}
-          showActivity={false}
         />
       </WithSkeleton>
     </View>

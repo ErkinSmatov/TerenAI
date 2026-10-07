@@ -3,6 +3,7 @@ import { v } from "convex/values";
 import logError from "@/lib/utils/logError";
 import { assertObserverAccess } from "../utils/observerAuth";
 import { localDayBoundaries } from "../utils/localDayBoundaries";
+import { computeStreakFromMealTimes } from "../utils/streakDays";
 
 function resolveDisplayName(user: {
   name?: string;
@@ -22,7 +23,7 @@ const getPatientToday = query({
       // Единственная проверка авторизации — до любого чтения данных пациента.
       await assertObserverAccess(ctx, patientId);
 
-      const { startUtc, endUtc, dateString } = localDayBoundaries(
+      const { startUtc, endUtc } = localDayBoundaries(
         Date.now(),
         timezoneOffsetMinutes
       );
@@ -66,13 +67,6 @@ const getPatientToday = query({
         .collect();
       bloodPressureReadings.sort((a, b) => b._creationTime - a._creationTime);
 
-      const movement = await ctx.db
-        .query("movementData")
-        .withIndex("byUserIdAndDate", (q) =>
-          q.eq("userId", patientId).eq("date", dateString)
-        )
-        .first();
-
       const patientProfile = await ctx.db
         .query("profiles")
         .withIndex("byUserId", (q) => q.eq("userId", patientId))
@@ -83,11 +77,32 @@ const getPatientToday = query({
         ? resolveDisplayName(patient)
         : ("Гость" as const);
 
+      const mealsWithPhotoUrls = await Promise.all(
+        meals.map(async (meal) => ({
+          ...meal,
+          photoUrl: meal.photoStorageId
+            ? await ctx.storage.getUrl(meal.photoStorageId)
+            : null,
+        }))
+      );
+
+      const doneMeals = await ctx.db
+        .query("meals")
+        .withIndex("byUserId", (q) => q.eq("userId", patientId))
+        .order("desc")
+        .filter((q) => q.eq(q.field("status"), "done"))
+        .collect();
+      const streak = computeStreakFromMealTimes(
+        doneMeals.map((meal) => meal._creationTime),
+        Date.now(),
+        timezoneOffsetMinutes
+      );
+
       return {
-        meals,
+        meals: mealsWithPhotoUrls,
+        streak,
         glucoseReadings,
         bloodPressureReadings,
-        movement: movement ?? null,
         targets: patientProfile?.targets ?? null,
         isGlucometerTrack: patientProfile?.data?.goalTrack === "glucometer",
         displayName,

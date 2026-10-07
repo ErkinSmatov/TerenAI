@@ -47,7 +47,18 @@ const getMonthMeals = query({
         dayMeals.sort((a, b) => b._creationTime - a._creationTime);
       }
 
-      return month;
+      return await Promise.all(
+        month.map((dayMeals) =>
+          Promise.all(
+            dayMeals.map(async (meal) => ({
+              ...meal,
+              photoUrl: meal.photoStorageId
+                ? await ctx.storage.getUrl(meal.photoStorageId)
+                : null,
+            }))
+          )
+        )
+      );
     } catch (error) {
       logError("getMonthMeals error", error);
       throw error;

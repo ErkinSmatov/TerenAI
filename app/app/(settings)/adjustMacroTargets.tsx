@@ -1,7 +1,3 @@
-import CalorieIcon from "@/components/icons/macros/CalorieIcon";
-import CarbIcon from "@/components/icons/macros/CarbIcon";
-import FatIcon from "@/components/icons/macros/FatIcon";
-import ProteinIcon from "@/components/icons/macros/ProteinIcon";
 import CircularProgress from "@/components/ui/CircularProgress";
 import {
   ScreenFooter,
@@ -16,16 +12,17 @@ import {
   ScreenMain,
   ScreenMainScrollView,
 } from "@/components/ui/screen/ScreenMain";
-import TextInput from "@/components/ui/TextInput";
+import Text from "@/components/ui/Text";
 import { api } from "@/convex/_generated/api";
-import useScrollY from "@/lib/hooks/reanimated/useScrollY";
+import { useThemeContext } from "@/context/ThemeContext";
 import getColor from "@/lib/ui/getColor";
+import getNutrientGlow from "@/lib/ui/getNutrientGlow";
+import resolveFontFamily from "@/lib/ui/resolveFontFamily";
 import macrosToKcal from "@/lib/utils/macrosToKcal";
 import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "expo-router";
-import { LucideProps } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TextInput, View } from "react-native";
 import {
   cancelAnimation,
   SharedValue,
@@ -33,21 +30,27 @@ import {
   withTiming,
 } from "react-native-reanimated";
 
+// Figma node 1333:795 — плитки 2×2: плоский фон #15181F, цветное внутреннее
+// свечение и кольцо с градиентом. Цвета фиксированные (литеральные hex из
+// макета), как у hero-карточек Главной; светлая тема — мягкое амбиентное
+// свечение того же оттенка (см. getNutrientGlow).
+const TILE_DARK_BACKGROUND = "#15181F";
+
 type Macro = {
   name: string;
-  color: string;
-  Icon: React.ComponentType<LucideProps>;
+  ringColors: { dark: [string, string]; light: [string, string] };
+  glow: { dark: string; light: string };
   value: number | undefined;
   setValue: React.Dispatch<React.SetStateAction<number | undefined>>;
   ratio: SharedValue<number>;
 };
 
 export default function AdjustMacroTargetsScreen() {
+  const { theme } = useThemeContext();
   const targets = useQuery(api.profiles.getProfile.default)?.targets;
   const updateProfile = useMutation(api.profiles.updateProfile.default);
 
   const router = useRouter();
-  const { scrollY, onScroll } = useScrollY();
 
   const [calories, setCalories] = useState(targets?.calories);
   const [carbs, setCarbs] = useState(targets?.carbs);
@@ -64,32 +67,44 @@ export default function AdjustMacroTargetsScreen() {
   const macros: Macro[] = [
     {
       name: "Калории",
-      color: getColor("calorie"),
-      Icon: CalorieIcon,
+      ringColors: {
+        dark: ["#EE6A22", "#FEE8D9"],
+        light: ["#EE6A22", "#F8C7A6"],
+      },
+      glow: { dark: "#a78154", light: "rgba(167, 129, 84, 0.3)" },
       value: calories,
       setValue: setCalories,
       ratio: caloriesRatio,
     },
     {
-      name: "Углеводы",
-      color: getColor("carb"),
-      Icon: CarbIcon,
-      value: carbs,
-      setValue: setCarbs,
-      ratio: carbsRatio,
-    },
-    {
       name: "Белки",
-      color: getColor("protein"),
-      Icon: ProteinIcon,
+      ringColors: {
+        dark: ["#FFFFFF", "#C9CCD2"],
+        light: ["#4B5563", "#C9CCD2"],
+      },
+      glow: { dark: "#FFFFFF", light: "rgba(75, 85, 99, 0.2)" },
       value: protein,
       setValue: setProtein,
       ratio: proteinRatio,
     },
     {
+      name: "Углеводы",
+      ringColors: {
+        dark: ["#F47F6E", "#F7F1E3"],
+        light: ["#F47F6E", "#F9CFC8"],
+      },
+      glow: { dark: "#b84244", light: "rgba(184, 66, 68, 0.25)" },
+      value: carbs,
+      setValue: setCarbs,
+      ratio: carbsRatio,
+    },
+    {
       name: "Жиры",
-      color: getColor("fat"),
-      Icon: FatIcon,
+      ringColors: {
+        dark: ["#8489DA", "#F7F1E3"],
+        light: ["#8489DA", "#D3D5F1"],
+      },
+      glow: { dark: "#4772eb", light: "rgba(71, 114, 235, 0.25)" },
       value: fat,
       setValue: setFat,
       ratio: fatRatio,
@@ -147,46 +162,66 @@ export default function AdjustMacroTargetsScreen() {
     proteinRatio,
   ]);
 
+  const inputFontFamily = resolveFontFamily({ family: "outfit" });
+
   return (
     <ScreenMain edges={[]}>
-      <ScreenHeader scrollY={scrollY}>
+      <ScreenHeader>
         <ScreenHeaderBackButton />
         <ScreenHeaderTitle title="Настроить цели" />
       </ScreenHeader>
 
-      <ScreenMainScrollView
-        scrollViewProps={{ onScroll }}
-        safeAreaProps={{ edges: ["left", "right"] }}
-      >
-        <View style={styles.container}>
-          {macros.map((macro, index) => (
+      <ScreenMainScrollView safeAreaProps={{ edges: ["left", "right"] }}>
+        <View style={styles.grid}>
+          {macros.map((macro) => (
             <View
-              key={`macro-input-${macro.name}-${index}`}
-              style={styles.macroRow}
+              key={`macro-tile-${macro.name}`}
+              style={[
+                styles.tile,
+                {
+                  backgroundColor:
+                    theme === "dark"
+                      ? TILE_DARK_BACKGROUND
+                      : getColor("base", undefined, theme),
+                },
+                getNutrientGlow(theme, macro.glow.dark, macro.glow.light),
+              ]}
             >
-              <View style={styles.macroCardProgressContainer}>
+              <View style={styles.ring}>
                 <CircularProgress
                   progress={macro.ratio}
-                  color={macro.color}
-                  strokeWidth={3}
+                  gradientColors={macro.ringColors[theme]}
+                  trackColor={getColor("foreground", 0.12, theme)}
+                  strokeWidth={8}
                 />
-                <View style={styles.caloriesIconContainer}>
-                  <macro.Icon size={16} strokeWidth={2.25} />
-                </View>
               </View>
-              <TextInput
-                label={macro.name}
-                value={String(macro.value ?? "")}
-                inputMode="numeric"
-                onChangeText={(text) => {
-                  const numberText = text.replace(/[^0-9]/g, "");
-                  macro.setValue(
-                    numberText === "" ? undefined : Number(numberText)
-                  );
-                }}
-                maxLength={5}
-                containerStyle={{ flex: 1, alignItems: "stretch" }}
-              />
+              <View style={styles.center} pointerEvents="box-none">
+                <TextInput
+                  value={String(macro.value ?? "")}
+                  inputMode="numeric"
+                  keyboardType="number-pad"
+                  maxLength={5}
+                  selectTextOnFocus
+                  placeholder="0"
+                  placeholderTextColor={getColor("foreground", 0.3, theme)}
+                  onChangeText={(text) => {
+                    const numberText = text.replace(/[^0-9]/g, "");
+                    macro.setValue(
+                      numberText === "" ? undefined : Number(numberText)
+                    );
+                  }}
+                  style={[
+                    styles.input,
+                    {
+                      fontFamily: inputFontFamily,
+                      color: getColor("foreground", undefined, theme),
+                    },
+                  ]}
+                />
+                <Text size="12" color={getColor("foreground", 0.6, theme)}>
+                  {macro.name}
+                </Text>
+              </View>
             </View>
           ))}
         </View>
@@ -214,27 +249,35 @@ export default function AdjustMacroTargetsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    gap: 16,
-  },
-  macroRow: {
+  grid: {
     flexDirection: "row",
-    alignItems: "stretch",
+    flexWrap: "wrap",
     gap: 12,
+    paddingHorizontal: 16,
   },
-  macroCardProgressContainer: {
+  tile: {
+    width: "48%",
+    flexGrow: 1,
     aspectRatio: 1,
+    borderRadius: 24,
+    padding: 14,
+  },
+  ring: {
+    ...StyleSheet.absoluteFillObject,
+    margin: 14,
+  },
+  center: {
+    ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
   },
-  caloriesIconContainer: {
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 28,
-    height: 28,
-    borderRadius: 999,
-    backgroundColor: getColor("muted"),
+  input: {
+    fontSize: 42,
+    lineHeight: 48,
+    minWidth: 90,
+    textAlign: "center",
+    padding: 0,
+    includeFontPadding: false,
   },
   footer: {
     flexDirection: "column",

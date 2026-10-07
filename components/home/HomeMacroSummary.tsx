@@ -6,7 +6,6 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import HomeCalorieOverviewCard from "./HomeCalorieOverviewCard";
 import { MacrosType } from "@/convex/tables/mealItems";
-import { Doc } from "@/convex/_generated/dataModel";
 import useProgress from "@/lib/hooks/reanimated/useProgress";
 
 type Props = {
@@ -18,12 +17,6 @@ type Props = {
     protein: number;
     fat: number;
   };
-  // Опционален по историческим причинам: экраны вне скоупа этой волны
-  // (Дневник, наблюдатель — `app/app/(home)/day/[date].tsx`,
-  // `app/app/(settings)/observedPatient/[patientId].tsx`) продолжают
-  // вызывать этот компонент без movement и рендерят отдельную
-  // `HomeMovementSummary` рядом, как раньше.
-  movement?: Doc<"movementData"> | null;
 };
 
 // Фиксированные декоративные градиенты каждого макроса — буквально из Figma
@@ -40,7 +33,6 @@ export default function HomeMacroSummary({
   totalMacros,
   readOnly = false,
   targets: targetsProp,
-  movement = null,
 }: Props) {
   const styles = useThemedStyles(createStyles);
 
@@ -89,7 +81,6 @@ export default function HomeMacroSummary({
       <HomeCalorieOverviewCard
         calories={{ value: totalMacros.calories, target: targets.calories }}
         macros={macros}
-        movement={movement}
         progress={progress}
       />
     </View>

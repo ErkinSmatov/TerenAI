@@ -16,7 +16,7 @@ import { PressableProps, StyleSheet, View } from "react-native";
 import TabsAddOptions from "@/components/tabs/TabsAddOptions";
 
 function TabBarButton(props: PressableProps) {
-  return <Button {...props} />;
+  return <Button variant="base" size="base" {...props} />;
 }
 TabBarButton.displayName = "TabBarButton";
 
@@ -34,7 +34,10 @@ const createStyles = (_theme: ThemeName) => ({
     paddingHorizontal: 14,
   },
   tabBarLabelStyle: {
-    fontSize: 12,
+    fontSize: 10,
+  },
+  tabBarItemStyle: {
+    paddingHorizontal: 0,
   },
   background: {
     ...StyleSheet.absoluteFillObject,
@@ -57,6 +60,8 @@ export default function TabLayout() {
           tabBarInactiveTintColor: getColor("mutedForeground", 0.5, theme),
           tabBarStyle: styles.tabBarStyle,
           tabBarLabelStyle: styles.tabBarLabelStyle,
+          tabBarItemStyle: styles.tabBarItemStyle,
+          tabBarAllowFontScaling: false,
           tabBarButton: (props) => <TabBarButton {...props} />,
           tabBarBackground: () => (
             <View style={styles.background} pointerEvents="none">

@@ -11,9 +11,20 @@ import {
 import WithSkeleton from "../WithSkeleton";
 import Text from "../Text";
 import getColor from "@/lib/ui/getColor";
+import {
+  ScreenHeaderProvider,
+  useClaimScreenHeader,
+} from "./ScreenHeaderContext";
 
-export function ScreenMain(props: ComponentProps<typeof SafeArea>) {
-  return <SafeArea {...props} />;
+export function ScreenMain({
+  children,
+  ...props
+}: ComponentProps<typeof SafeArea>) {
+  return (
+    <SafeArea {...props}>
+      <ScreenHeaderProvider>{children}</ScreenHeaderProvider>
+    </SafeArea>
+  );
 }
 
 export function ScreenMainScrollView({
@@ -25,6 +36,8 @@ export function ScreenMainScrollView({
   scrollViewProps?: ScrollViewProps;
   safeAreaProps?: ComponentProps<typeof SafeArea>;
 }) {
+  const header = useClaimScreenHeader();
+
   return (
     <Animated.ScrollView
       contentContainerStyle={styles.scrollView}
@@ -32,6 +45,7 @@ export function ScreenMainScrollView({
       keyboardShouldPersistTaps="handled"
       {...scrollViewProps}
     >
+      {header}
       <SafeArea {...safeAreaProps}>{children}</SafeArea>
     </Animated.ScrollView>
   );

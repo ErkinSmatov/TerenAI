@@ -8,12 +8,10 @@ import {
   ScreenMainScrollView,
   ScreenMainTitle,
 } from "@/components/ui/screen/ScreenMain";
-import Carousel from "@/components/ui/Carousel";
 import Text from "@/components/ui/Text";
 import HomeMacroSummary from "@/components/home/HomeMacroSummary";
 import HomeMicroSummary from "@/components/home/HomeMicroSummary";
 import HomeRecentlyLogged from "@/components/home/HomeRecentlyLogged";
-import HomeMovementSummary from "@/components/home/HomeMovementSummary";
 import HomeGlucoseSummary from "@/components/home/HomeGlucoseSummary";
 import HomeBloodPressureSummary from "@/components/home/HomeBloodPressureSummary";
 import { api } from "@/convex/_generated/api";
@@ -27,7 +25,7 @@ import { useQuery } from "convex/react";
 import { useLocalSearchParams } from "expo-router";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { Platform, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 const DATE_PARAM_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -116,12 +114,6 @@ export default function DayScreen() {
       ? { dayStartsUtc: bounds.dayStartsUtc }
       : "skip"
   );
-  const rawMonthMovement = useQuery(
-    api.movement.getMonthMovement.default,
-    isValidRoute && Platform.OS === "ios"
-      ? { monthDates: bounds.monthDates }
-      : "skip"
-  );
 
   if (parsed === null || bounds === null || !isValidRoute) {
     return (
@@ -143,8 +135,7 @@ export default function DayScreen() {
   const stillLoading =
     rawMonthMeals === undefined ||
     (isGlucometerTrack &&
-      (rawMonthReadings === undefined || rawMonthBloodPressure === undefined)) ||
-    (Platform.OS === "ios" && rawMonthMovement === undefined);
+      (rawMonthReadings === undefined || rawMonthBloodPressure === undefined));
 
   if (stillLoading) {
     return (
@@ -168,19 +159,15 @@ export default function DayScreen() {
     rawMonthReadings ?? Array.from({ length: monthLength }, () => []);
   const monthBloodPressure =
     rawMonthBloodPressure ?? Array.from({ length: monthLength }, () => []);
-  const monthMovement =
-    rawMonthMovement ?? Array.from({ length: monthLength }, () => null);
 
   const dayMeals = rawMonthMeals.at(dayIndex) ?? [];
   const dayReadings = monthReadings.at(dayIndex) ?? [];
   const dayBloodPressure = monthBloodPressure.at(dayIndex) ?? [];
-  const dayMovement = monthMovement.at(dayIndex) ?? null;
 
   const hasData =
     dayMeals.length > 0 ||
     dayReadings.length > 0 ||
-    dayBloodPressure.length > 0 ||
-    dayMovement !== null;
+    dayBloodPressure.length > 0;
 
   const dayTotals = calculateDayTotals(dayMeals);
   const title = capitalize(
@@ -200,7 +187,8 @@ export default function DayScreen() {
       >
         {hasData ? (
           <>
-            <Carousel showIndicators>
+            <HomeRecentlyLogged meals={dayMeals} readOnly />
+            <View style={styles.summaryStack}>
               <HomeMacroSummary
                 totalMacros={dayTotals.macros}
                 targets={profile?.targets ?? undefined}
@@ -211,11 +199,7 @@ export default function DayScreen() {
                 dayIndex={dayIndex}
                 readOnly
               />
-            </Carousel>
-            <HomeRecentlyLogged meals={dayMeals} readOnly />
-            {Platform.OS === "ios" && (
-              <HomeMovementSummary movement={dayMovement} readOnly />
-            )}
+            </View>
             {isGlucometerTrack && (
               // estimate намеренно не передаётся: оценка глюкозы по сахару
               // в еде считается от "сейчас" (кривая распада от текущего
@@ -238,6 +222,9 @@ export default function DayScreen() {
 }
 
 const styles = StyleSheet.create({
+  summaryStack: {
+    gap: 18,
+  },
   emptyStateContainer: {
     alignItems: "center",
     paddingTop: 64,

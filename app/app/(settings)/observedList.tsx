@@ -5,7 +5,6 @@ import {
 } from "@/components/ui/screen/ScreenHeader";
 import { ScreenMain, ScreenMainScrollView } from "@/components/ui/screen/ScreenMain";
 import Text from "@/components/ui/Text";
-import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { Toast } from "@/components/ui/Toast";
 import OTPInput, { OTPInputHandle } from "@/components/ui/OTPInput";
@@ -16,11 +15,8 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import getColor from "@/lib/ui/getColor";
-import useScrollY from "@/lib/hooks/reanimated/useScrollY";
 
 export default function ObservedListScreen() {
-  const { scrollY, onScroll } = useScrollY();
-
   const patients = useQuery(api.observers.getObservedPatients.default, {
     timezoneOffsetMinutes: new Date().getTimezoneOffset(),
   });
@@ -69,14 +65,14 @@ export default function ObservedListScreen() {
   };
 
   const codeEntry = isEnteringCode ? (
-    <Card style={styles.codeEntryCard}>
+    <View style={styles.codeEntry}>
       <OTPInput
         ref={inputRef}
         length={5}
         autoFocus
         onFilled={(code) => void handleFilled(code)}
       />
-    </Card>
+    </View>
   ) : (
     <Button
       variant="primary"
@@ -92,13 +88,12 @@ export default function ObservedListScreen() {
 
   return (
     <ScreenMain edges={[]}>
-      <ScreenHeader scrollY={scrollY}>
+      <ScreenHeader>
         <ScreenHeaderBackButton />
         <ScreenHeaderTitle title="Кого я наблюдаю" />
       </ScreenHeader>
 
       <ScreenMainScrollView
-        scrollViewProps={{ onScroll }}
         safeAreaProps={{ edges: ["left", "right", "bottom"] }}
       >
         {patients === undefined ? null : patients.length === 0 ? (
@@ -148,7 +143,7 @@ const styles = StyleSheet.create({
   emptyBody: {
     textAlign: "center",
   },
-  codeEntryCard: {
+  codeEntry: {
     alignSelf: "stretch",
   },
   enterCodeButton: {

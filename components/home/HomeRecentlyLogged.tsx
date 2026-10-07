@@ -237,7 +237,8 @@ const createStyles = (theme: ThemeName) => ({
   safeArea: {
     flex: 0,
     backgroundColor: "transparent",
-    paddingTop: 32,
+    paddingTop: 12,
+    paddingBottom: 24,
   },
   title: {
     paddingBottom: 16,

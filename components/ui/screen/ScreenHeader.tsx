@@ -7,47 +7,36 @@ import {
   LucideIcon,
 } from "lucide-react-native";
 import Text from "../Text";
-import getShadow from "@/lib/ui/getShadow";
+import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import { useRouter } from "expo-router";
 import Popover, { PopoverOption } from "../Popover";
 import { ComponentProps } from "react";
-import Animated, {
-  Extrapolation,
-  interpolate,
-  SharedValue,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+import { SharedValue } from "react-native-reanimated";
+import { useRegisterScreenHeader } from "./ScreenHeaderContext";
 
+// Шапка не фиксируется: ScreenMainScrollView выводит её внутри прокрутки.
+// `scrollY` оставлен в типе только для совместимости со старыми вызовами.
 export function ScreenHeader({
   children,
-  scrollY,
   safeAreaStyle,
 }: {
   children: React.ReactNode;
   scrollY?: SharedValue<number>;
   safeAreaStyle?: ViewStyle;
 }) {
-  const shadowStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(
-      scrollY?.value ?? 0,
-      [0, 24],
-      [0, 1],
-      Extrapolation.CLAMP
-    ),
-  }));
-
-  return (
+  const node = (
     <SafeArea
       edges={["top", "left", "right"]}
       style={[styles.safeArea, safeAreaStyle]}
     >
-      <Animated.View
-        pointerEvents="none"
-        style={[StyleSheet.absoluteFillObject, styles.shadow, shadowStyle]}
-      />
       <View style={styles.container}>{children}</View>
     </SafeArea>
   );
+
+  const isRegistered = useRegisterScreenHeader(node);
+
+  return isRegistered ? null : node;
 }
 
 export function ScreenHeaderButton({
@@ -56,6 +45,8 @@ export function ScreenHeaderButton({
 }: {
   Icon: LucideIcon;
 } & ComponentProps<typeof Button>) {
+  const { theme } = useThemeContext();
+
   return (
     <Button
       size="sm"
@@ -63,7 +54,7 @@ export function ScreenHeaderButton({
       style={styles.button}
       {...buttonProps}
     >
-      <Icon size={22} />
+      <Icon size={22} color={getColor("foreground", undefined, theme)} />
     </Button>
   );
 }
@@ -119,8 +110,5 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
-  },
-  shadow: {
-    ...getShadow("lg"),
   },
 });
