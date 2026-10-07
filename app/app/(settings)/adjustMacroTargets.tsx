@@ -175,7 +175,7 @@ export default function AdjustMacroTargetsScreen() {
         <ScreenHeaderTitle title="Настроить цели" />
       </ScreenHeader>
 
-      <ScreenMainScrollView safeAreaProps={{ edges: ["left", "right"] }}>
+      <ScreenMainScrollView safeAreaProps={{ edges: [] }}>
         <View style={styles.grid}>
           {macros.map((macro) => (
             <View

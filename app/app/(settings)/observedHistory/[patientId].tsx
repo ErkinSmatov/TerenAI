@@ -29,17 +29,28 @@ function capitalize(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-type CellProps = { label: string; value: string; align?: "flex-start" | "flex-end" };
+type CellProps = {
+  label: string;
+  value: string;
+  align?: "flex-start" | "flex-end";
+  flex?: number;
+};
 
-function Cell({ label, value, align = "flex-start" }: CellProps) {
+function Cell({ label, value, align = "flex-start", flex = 1 }: CellProps) {
   const { theme } = useThemeContext();
 
   return (
-    <View style={[styles.cell, { alignItems: align }]}>
+    <View style={[styles.cell, { alignItems: align, flex }]}>
       <Text size="12" color={getColor("foreground", 0.65, theme)}>
         {label}
       </Text>
-      <Text size="20" weight="600" family="outfit" numberOfLines={1}>
+      <Text
+        size="20"
+        weight="600"
+        family="outfit"
+        numberOfLines={1}
+        adjustsFontSizeToFit
+      >
         {value}
       </Text>
     </View>
@@ -114,9 +125,12 @@ export default function ObservedHistoryScreen() {
                     <Cell label="Калории" value={String(day.calories)} />
                     <Cell
                       label="Активность"
+                      flex={1.6}
                       value={
                         typeof day.steps === "number"
-                          ? day.steps.toLocaleString("ru-RU")
+                          ? distanceKm !== null
+                            ? `${day.steps.toLocaleString("ru-RU")} / ${distanceKm} км`
+                            : day.steps.toLocaleString("ru-RU")
                           : "—"
                       }
                     />
@@ -126,21 +140,14 @@ export default function ObservedHistoryScreen() {
                       align="flex-end"
                     />
                   </View>
-                  {(distanceKm !== null || glucoseHint !== null) && (
-                    <View style={styles.row}>
-                      <Text
-                        size="12"
-                        color={getColor("mutedForeground", undefined, theme)}
-                      >
-                        {distanceKm !== null ? `${distanceKm} км` : ""}
-                      </Text>
-                      <Text
-                        size="12"
-                        color={getColor("mutedForeground", undefined, theme)}
-                      >
-                        {glucoseHint ?? ""}
-                      </Text>
-                    </View>
+                  {glucoseHint !== null && (
+                    <Text
+                      size="12"
+                      color={getColor("mutedForeground", undefined, theme)}
+                      style={styles.glucoseHint}
+                    >
+                      {`Глюкоза: ${glucoseHint}`}
+                    </Text>
                   )}
                 </View>
               );
@@ -169,6 +176,9 @@ const styles = StyleSheet.create({
   cell: {
     flex: 1,
     gap: 4,
+  },
+  glucoseHint: {
+    textAlign: "right",
   },
   empty: {
     alignItems: "center",
