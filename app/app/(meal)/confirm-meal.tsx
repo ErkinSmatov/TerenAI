@@ -3,7 +3,7 @@ import { Alert, StyleSheet, useWindowDimensions } from "react-native";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { usePreventRemove } from "@react-navigation/native";
-import { useAction, useMutation } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { useRateLimit } from "@convex-dev/rate-limiter/react";
 import { z } from "zod";
 import { api } from "@/convex/_generated/api";
@@ -50,11 +50,17 @@ export default function ConfirmMealScreen() {
   const dimensions = useWindowDimensions();
   const router = useRouter();
   const navigation = useNavigation();
-  const { photoUri, description, source } = useLocalSearchParams<{
+  const { photoUri, description, source, favoriteId } = useLocalSearchParams<{
     photoUri?: string;
     description?: string;
     source?: "camera" | "library";
+    favoriteId?: string;
   }>();
+
+  const favorite = useQuery(
+    api.favorites.getFavorite.default,
+    favoriteId ? { favoriteId: favoriteId as Id<"favoriteMeals"> } : "skip"
+  );
 
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl.default);
   const detectMealFromPhoto = useAction(
@@ -71,7 +77,8 @@ export default function ConfirmMealScreen() {
 
   const [items, setItems] = useState<ConfirmItem[]>([]);
   const [mealName, setMealName] = useState("");
-  const [isDetecting, setIsDetecting] = useState(true);
+  const [isDetecting, setIsDetecting] = useState(!favoriteId);
+  const [isPrefilling, setIsPrefilling] = useState(!!favoriteId);
   const [isConfirming, setIsConfirming] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [photoStorageId, setPhotoStorageId] = useState<
@@ -79,6 +86,7 @@ export default function ConfirmMealScreen() {
   >(undefined);
 
   const startedRef = useRef(false);
+  const prefilledRef = useRef(false);
   const fromCamera = source === "camera";
 
   const uploadAndGetStorageId = useCallback(
@@ -179,8 +187,33 @@ export default function ConfirmMealScreen() {
     void runDetection();
   }, [runDetection]);
 
+  useEffect(() => {
+    if (!favoriteId || prefilledRef.current || favorite === undefined) return;
+    if (favorite === null) {
+      Toast.show({
+        text: "Блюдо не найдено в избранном",
+        variant: "error",
+      });
+      router.replace("/app");
+      return;
+    }
+    // Один раз: реактивное обновление запроса не должно затирать правки граммов.
+    prefilledRef.current = true;
+    setMealName(favorite.name);
+    setItems(
+      favorite.items.map((i) => ({
+        id: uuidv4(),
+        name: i.nameRu ?? i.name,
+        searchName: i.name,
+        grams: i.grams,
+      }))
+    );
+    setPhotoStorageId(favorite.photoStorageId);
+    setIsPrefilling(false);
+  }, [favorite, favoriteId, router]);
+
   const handleConfirm = async () => {
-    if (isDetecting || isConfirming) return;
+    if (isDetecting || isPrefilling || isConfirming) return;
     const validItems = items.filter((i) => i.name.trim().length > 0);
     if (validItems.length === 0) return;
 
@@ -233,15 +266,18 @@ export default function ConfirmMealScreen() {
       </ScreenHeader>
 
       <ScreenMainScrollView safeAreaProps={{ edges: ["left", "right"] }}>
-        {photoUri && (
+        {(photoUri ?? favorite?.photoUrl) && (
           <Card style={styles.photoCard}>
-            <Image source={{ uri: photoUri }} style={styles.photo} />
+            <Image
+              source={{ uri: photoUri ?? favorite?.photoUrl ?? undefined }}
+              style={styles.photo}
+            />
           </Card>
         )}
 
         <ConfirmMealItems
           items={items}
-          loading={isDetecting}
+          loading={isDetecting || isPrefilling}
           onChangeName={(id, name) =>
             setItems((prev) =>
               prev.map((i) =>
@@ -266,7 +302,9 @@ export default function ConfirmMealScreen() {
       <ScreenFooter style={{ boxShadow: [] }}>
         <ScreenFooterButton
           onPress={() => void handleConfirm()}
-          disabled={isDetecting || isConfirming || validCount === 0}
+          disabled={
+            isDetecting || isPrefilling || isConfirming || validCount === 0
+          }
         >
           {isConfirming ? "Подтверждаем…" : "Подтвердить"}
         </ScreenFooterButton>
