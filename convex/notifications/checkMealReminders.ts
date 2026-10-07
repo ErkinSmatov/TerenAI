@@ -4,6 +4,7 @@ import {
   isMealReminderDeduped,
   resolveDueMealPoint,
 } from "@/lib/notifications/reminderSchedule";
+import { getMealTime } from "@/lib/meals/getMealTime";
 import { computeStreakFromMealTimes } from "../utils/streakDays";
 import logError from "@/lib/utils/logError";
 
@@ -48,13 +49,15 @@ const checkMealReminders = internalMutation({
         // D-12: «уже записан приём пищи» определяется попаданием любого
         // неудалённого блюда во временное окно точки, а не классификацией по
         // типу приёма пищи — в схеме meals такого поля нет и не вводится.
+        // фаза 71: по eatenAt — блюдо, добавленное задним числом, не подавляет
+        // сегодняшнее напоминание.
         const existingMeal = await ctx.db
           .query("meals")
-          .withIndex("byUserId", (q) =>
+          .withIndex("byUserIdAndEatenAt", (q) =>
             q
               .eq("userId", token.userId)
-              .gte("_creationTime", point.windowStartUtcMs)
-              .lt("_creationTime", point.windowEndUtcMs)
+              .gte("eatenAt", point.windowStartUtcMs)
+              .lt("eatenAt", point.windowEndUtcMs)
           )
           .filter((q) => q.neq(q.field("status"), "deleted"))
           .first();
@@ -64,12 +67,12 @@ const checkMealReminders = internalMutation({
         // предыдущие отсечки — единицы записей за тик, а не полная таблица.
         const doneMeals = await ctx.db
           .query("meals")
-          .withIndex("byUserId", (q) => q.eq("userId", token.userId))
+          .withIndex("byUserIdAndEatenAt", (q) => q.eq("userId", token.userId))
           .order("desc")
           .filter((q) => q.eq(q.field("status"), "done"))
           .collect();
         const streak = computeStreakFromMealTimes(
-          doneMeals.map((meal) => meal._creationTime),
+          doneMeals.map(getMealTime),
           now,
           token.timezoneOffsetMinutes
         );

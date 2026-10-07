@@ -1,6 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { query } from "../_generated/server";
 import { v } from "convex/values";
+import { getMealTime } from "@/lib/meals/getMealTime";
 import logError from "@/lib/utils/logError";
 import {
   assertLocalWeekBounds,
@@ -22,11 +23,11 @@ const getWeekMeals = query({
 
       const mealsQuery = ctx.db
         .query("meals")
-        .withIndex("byUserId", (idx) =>
+        .withIndex("byUserIdAndEatenAt", (idx) =>
           idx
             .eq("userId", userId)
-            .gte("_creationTime", weekStartUtc)
-            .lt("_creationTime", weekEndUtc)
+            .gte("eatenAt", weekStartUtc)
+            .lt("eatenAt", weekEndUtc)
         )
         .filter((q) => q.neq(q.field("status"), "deleted"));
 
@@ -34,14 +35,14 @@ const getWeekMeals = query({
 
       const week = Array.from({ length: 7 }, () => [] as typeof meals);
       for (const meal of meals) {
-        const dayIndex = getLocalWeekDayIndex(dayStartsUtc, meal._creationTime);
+        const dayIndex = getLocalWeekDayIndex(dayStartsUtc, getMealTime(meal));
         if (dayIndex >= 0 && dayIndex < 7) {
           week[dayIndex].push(meal);
         }
       }
 
       for (const dayMeals of week) {
-        dayMeals.sort((a, b) => b._creationTime - a._creationTime);
+        dayMeals.sort((a, b) => getMealTime(b) - getMealTime(a));
       }
 
       // Разрешаем storage id фото блюда в реальный URL здесь, а не на

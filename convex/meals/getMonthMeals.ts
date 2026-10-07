@@ -1,6 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { query } from "../_generated/server";
 import { v } from "convex/values";
+import { getMealTime } from "@/lib/meals/getMealTime";
 import logError from "@/lib/utils/logError";
 import {
   assertLocalMonthBounds,
@@ -22,11 +23,11 @@ const getMonthMeals = query({
 
       const mealsQuery = ctx.db
         .query("meals")
-        .withIndex("byUserId", (idx) =>
+        .withIndex("byUserIdAndEatenAt", (idx) =>
           idx
             .eq("userId", userId)
-            .gte("_creationTime", monthStartUtc)
-            .lt("_creationTime", monthEndUtc)
+            .gte("eatenAt", monthStartUtc)
+            .lt("eatenAt", monthEndUtc)
         )
         .filter((q) => q.neq(q.field("status"), "deleted"));
 
@@ -37,14 +38,14 @@ const getMonthMeals = query({
         () => [] as typeof meals
       );
       for (const meal of meals) {
-        const dayIndex = getLocalMonthDayIndex(dayStartsUtc, meal._creationTime);
+        const dayIndex = getLocalMonthDayIndex(dayStartsUtc, getMealTime(meal));
         if (dayIndex >= 0 && dayIndex < dayStartsUtc.length - 1) {
           month[dayIndex].push(meal);
         }
       }
 
       for (const dayMeals of month) {
-        dayMeals.sort((a, b) => b._creationTime - a._creationTime);
+        dayMeals.sort((a, b) => getMealTime(b) - getMealTime(a));
       }
 
       return await Promise.all(

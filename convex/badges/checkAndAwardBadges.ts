@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { internalMutation } from "../_generated/server";
+import { getMealTime } from "@/lib/meals/getMealTime";
 import { computeStreakFromMealTimes } from "../utils/streakDays";
 import { resolveNewBadges } from "@/lib/badges/badgeDefinitions";
 import logError from "@/lib/utils/logError";
@@ -23,14 +24,14 @@ const checkAndAwardBadges = internalMutation({
 
       const meals = await ctx.db
         .query("meals")
-        .withIndex("byUserId", (q) => q.eq("userId", userId))
+        .withIndex("byUserIdAndEatenAt", (q) => q.eq("userId", userId))
         .order("desc")
         .filter((q) => q.eq(q.field("status"), "done"))
         .collect();
 
       const mealCount = meals.length;
       const streak = computeStreakFromMealTimes(
-        meals.map((meal) => meal._creationTime),
+        meals.map(getMealTime),
         Date.now(),
         offset
       );
