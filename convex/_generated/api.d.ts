@@ -23,6 +23,10 @@ import type * as bloodPressure_getAllReadings from "../bloodPressure/getAllReadi
 import type * as bloodPressure_getMonthReadings from "../bloodPressure/getMonthReadings.js";
 import type * as bloodPressure_getWeekReadings from "../bloodPressure/getWeekReadings.js";
 import type * as crons from "../crons.js";
+import type * as favorites_addFavoriteFromMeal from "../favorites/addFavoriteFromMeal.js";
+import type * as favorites_favoriteSignature from "../favorites/favoriteSignature.js";
+import type * as favorites_favoritesConfig from "../favorites/favoritesConfig.js";
+import type * as favorites_removeFavorite from "../favorites/removeFavorite.js";
 import type * as foods_createFood from "../foods/createFood.js";
 import type * as foods_getFoodByIdentity from "../foods/getFoodByIdentity.js";
 import type * as foods_getFoodByIdentityInternal from "../foods/getFoodByIdentityInternal.js";
@@ -97,6 +101,7 @@ import type * as reports_getMonthlyReport from "../reports/getMonthlyReport.js";
 import type * as storage_generateUploadUrl from "../storage/generateUploadUrl.js";
 import type * as tables_badges from "../tables/badges.js";
 import type * as tables_bloodPressureReadings from "../tables/bloodPressureReadings.js";
+import type * as tables_favoriteMeals from "../tables/favoriteMeals.js";
 import type * as tables_foods from "../tables/foods.js";
 import type * as tables_glucoseReadings from "../tables/glucoseReadings.js";
 import type * as tables_mealItems from "../tables/mealItems.js";
@@ -148,6 +153,10 @@ declare const fullApi: ApiFromModules<{
   "bloodPressure/getMonthReadings": typeof bloodPressure_getMonthReadings;
   "bloodPressure/getWeekReadings": typeof bloodPressure_getWeekReadings;
   crons: typeof crons;
+  "favorites/addFavoriteFromMeal": typeof favorites_addFavoriteFromMeal;
+  "favorites/favoriteSignature": typeof favorites_favoriteSignature;
+  "favorites/favoritesConfig": typeof favorites_favoritesConfig;
+  "favorites/removeFavorite": typeof favorites_removeFavorite;
   "foods/createFood": typeof foods_createFood;
   "foods/getFoodByIdentity": typeof foods_getFoodByIdentity;
   "foods/getFoodByIdentityInternal": typeof foods_getFoodByIdentityInternal;
@@ -222,6 +231,7 @@ declare const fullApi: ApiFromModules<{
   "storage/generateUploadUrl": typeof storage_generateUploadUrl;
   "tables/badges": typeof tables_badges;
   "tables/bloodPressureReadings": typeof tables_bloodPressureReadings;
+  "tables/favoriteMeals": typeof tables_favoriteMeals;
   "tables/foods": typeof tables_foods;
   "tables/glucoseReadings": typeof tables_glucoseReadings;
   "tables/mealItems": typeof tables_mealItems;

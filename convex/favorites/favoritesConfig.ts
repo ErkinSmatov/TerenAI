@@ -1,0 +1,2 @@
+export const FAVORITES_LIMIT = 50;
+export const FAVORITES_LIMIT_ERROR_CODE = "FAVORITES_LIMIT";
