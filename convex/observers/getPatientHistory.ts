@@ -1,5 +1,6 @@
 import { query } from "../_generated/server";
 import { v } from "convex/values";
+import { getMealTime } from "@/lib/meals/getMealTime";
 import logError from "@/lib/utils/logError";
 import { assertObserverAccess } from "../utils/observerAuth";
 import { localDayBoundaries } from "../utils/localDayBoundaries";
@@ -22,11 +23,11 @@ const getPatientHistory = query({
 
       const meals = await ctx.db
         .query("meals")
-        .withIndex("byUserId", (q) =>
+        .withIndex("byUserIdAndEatenAt", (q) =>
           q
             .eq("userId", patientId)
-            .gte("_creationTime", rangeStartUtc)
-            .lt("_creationTime", today.endUtc)
+            .gte("eatenAt", rangeStartUtc)
+            .lt("eatenAt", today.endUtc)
         )
         .filter((q) =>
           q.and(
@@ -56,7 +57,7 @@ const getPatientHistory = query({
         );
 
         const dayMeals = meals.filter(
-          (meal) => meal._creationTime >= startUtc && meal._creationTime < endUtc
+          (meal) => getMealTime(meal) >= startUtc && getMealTime(meal) < endUtc
         );
         const dayReadings = readings
           .filter(

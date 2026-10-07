@@ -1,6 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { query } from "../_generated/server";
 import { v } from "convex/values";
+import { getMealTime } from "@/lib/meals/getMealTime";
 import logError from "@/lib/utils/logError";
 import { isGlucoseOutOfRange } from "../observers/utils/thresholds";
 import { Doc } from "../_generated/dataModel";
@@ -180,11 +181,11 @@ const getMonthlyReport = query({
       // Питание
       const meals = await ctx.db
         .query("meals")
-        .withIndex("byUserId", (idx) =>
+        .withIndex("byUserIdAndEatenAt", (idx) =>
           idx
             .eq("userId", userId)
-            .gte("_creationTime", rangeStartUtc)
-            .lt("_creationTime", rangeEndUtc)
+            .gte("eatenAt", rangeStartUtc)
+            .lt("eatenAt", rangeEndUtc)
         )
         .filter((q) =>
           q.and(
@@ -197,7 +198,7 @@ const getMonthlyReport = query({
       let nutrientTotals: NonNullable<NutrientTotals> | null = null;
 
       for (const meal of meals) {
-        const entry = days.get(localDateOf(meal._creationTime));
+        const entry = days.get(localDateOf(getMealTime(meal)));
         if (!entry) continue;
 
         entry.mealsCount += 1;

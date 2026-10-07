@@ -1,5 +1,6 @@
 import { query } from "../_generated/server";
 import { v } from "convex/values";
+import { getMealTime } from "@/lib/meals/getMealTime";
 import logError from "@/lib/utils/logError";
 import { assertObserverAccess } from "../utils/observerAuth";
 import { localDayBoundaries } from "../utils/localDayBoundaries";
@@ -30,11 +31,11 @@ const getPatientToday = query({
 
       const meals = await ctx.db
         .query("meals")
-        .withIndex("byUserId", (q) =>
+        .withIndex("byUserIdAndEatenAt", (q) =>
           q
             .eq("userId", patientId)
-            .gte("_creationTime", startUtc)
-            .lt("_creationTime", endUtc)
+            .gte("eatenAt", startUtc)
+            .lt("eatenAt", endUtc)
         )
         .filter((q) =>
           q.and(
@@ -43,7 +44,7 @@ const getPatientToday = query({
           )
         )
         .collect();
-      meals.sort((a, b) => b._creationTime - a._creationTime);
+      meals.sort((a, b) => getMealTime(b) - getMealTime(a));
 
       const glucoseReadings = await ctx.db
         .query("glucoseReadings")
@@ -95,12 +96,12 @@ const getPatientToday = query({
 
       const doneMeals = await ctx.db
         .query("meals")
-        .withIndex("byUserId", (q) => q.eq("userId", patientId))
+        .withIndex("byUserIdAndEatenAt", (q) => q.eq("userId", patientId))
         .order("desc")
         .filter((q) => q.eq(q.field("status"), "done"))
         .collect();
       const streak = computeStreakFromMealTimes(
-        doneMeals.map((meal) => meal._creationTime),
+        doneMeals.map(getMealTime),
         Date.now(),
         timezoneOffsetMinutes
       );

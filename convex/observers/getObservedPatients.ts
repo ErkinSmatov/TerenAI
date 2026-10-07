@@ -2,6 +2,7 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { query } from "../_generated/server";
 import { Id } from "../_generated/dataModel";
 import { v } from "convex/values";
+import { getMealTime } from "@/lib/meals/getMealTime";
 import logError from "@/lib/utils/logError";
 import { localDayBoundaries } from "../utils/localDayBoundaries";
 import { isGlucoseOutOfRange, isCaloriesExceeded } from "./utils/thresholds";
@@ -65,11 +66,11 @@ const getObservedPatients = query({
 
         const meals = await ctx.db
           .query("meals")
-          .withIndex("byUserId", (q) =>
+          .withIndex("byUserIdAndEatenAt", (q) =>
             q
               .eq("userId", link.patientId)
-              .gte("_creationTime", startUtc)
-              .lt("_creationTime", endUtc)
+              .gte("eatenAt", startUtc)
+              .lt("eatenAt", endUtc)
           )
           .filter((q) =>
             q.and(
