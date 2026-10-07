@@ -3,7 +3,7 @@ import getColor from "@/lib/ui/getColor";
 import type { ThemeName } from "@/lib/ui/palettes";
 import useThemedStyles from "@/lib/ui/useThemedStyles";
 import Text from "../ui/Text";
-import { FlameIcon, UsersIcon } from "lucide-react-native";
+import { FlameIcon } from "lucide-react-native";
 import Pill from "../ui/Pill";
 import Button from "../ui/Button";
 import { useQuery } from "convex/react";
@@ -40,25 +40,12 @@ export default function HomeHeader() {
           <Pill style={styles.streakContainer}>
             <FlameIcon
               size={20}
-              color={getColor("orange")}
-              fill={getColor("orange")}
+              color={getColor("orange", undefined, theme)}
+              fill={getColor("orange", undefined, theme)}
             />
             <Text family="outfit" weight="600">
               {streak ?? 0}
             </Text>
-          </Pill>
-        </Button>
-        <Button
-          variant="base"
-          size="base"
-          accessibilityLabel="Кого я наблюдаю"
-          onPress={() => {
-            router.push("/app/(settings)/observedList");
-          }}
-        >
-          {/* Слот теперь занят кнопкой наблюдаемых, имя стиля сохранено как есть */}
-          <Pill style={styles.calendarContainer}>
-            <UsersIcon size={20} color={getColor("foreground", undefined, theme)} />
           </Pill>
         </Button>
       </View>
@@ -86,12 +73,6 @@ const createStyles = (_theme: ThemeName) => ({
     flexDirection: "row" as const,
     alignItems: "center" as const,
     gap: 8,
-  },
-  calendarContainer: {
-    width: 44,
-    height: 44,
-    alignItems: "center" as const,
-    justifyContent: "center" as const,
   },
   streakContainer: {
     minWidth: 56,

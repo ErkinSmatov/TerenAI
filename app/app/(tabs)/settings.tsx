@@ -25,7 +25,6 @@ import {
   CreditCardIcon,
   RefreshCwIcon,
   HeartPulseIcon,
-  UsersIcon,
   FileDownIcon,
   ScaleIcon,
   BellIcon,
@@ -132,9 +131,6 @@ export default function SettingsScreen() {
               <SettingsItem text="Здоровье" Icon={HeartPulseIcon} />
             </Link>
           )}
-          <Link href="/app/(settings)/observerCode" asChild>
-            <SettingsItem text="Доступ наблюдателя" Icon={UsersIcon} />
-          </Link>
           <Link href="/app/(settings)/notificationSettings" asChild>
             <SettingsItem text="Уведомления" Icon={BellIcon} />
           </Link>
