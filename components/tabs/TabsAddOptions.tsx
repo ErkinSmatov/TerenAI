@@ -2,32 +2,18 @@ import { TriggerRef } from "@rn-primitives/popover";
 import { useRef, useState } from "react";
 import * as PopoverPrimitive from "@rn-primitives/popover";
 import TabsAddButton from "./TabsAddButton";
-import { Platform, StyleSheet, View, useWindowDimensions } from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import Animated, {
   Easing,
   FadeIn,
   FadeOut,
   Keyframe,
 } from "react-native-reanimated";
-import Card from "../ui/Card";
-import Text from "../ui/Text";
-import {
-  DropletIcon,
-  HeartPulseIcon,
-  LucideIcon,
-  PenLineIcon,
-  ScanIcon,
-  StarIcon,
-} from "lucide-react-native";
-import getColor from "../../lib/ui/getColor";
-import Button from "../ui/Button";
-import { Href, useRouter } from "expo-router";
-import { useRateLimit } from "@convex-dev/rate-limiter/react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Toast } from "../ui/Toast";
-import ProLabel from "../ProLabel";
-import { useSubscriptionContext } from "@/context/SubscriptionContext";
+import AddOptionsGrid from "./AddOptionsGrid";
+import { getTabAddOptions } from "./addMealOptions";
+import { useAddOptionPress } from "./useAddOptionPress";
 
 const AnimatedPopoverContent = Animated.createAnimatedComponent(
   PopoverPrimitive.Content
@@ -38,7 +24,6 @@ const AnimatedPopoverContent = Animated.createAnimatedComponent(
 // реальной ширины экрана (минус внешние отступы), а не от фиксированного
 // OPTION_WIDTH — так 2 колонки всегда растягиваются на всю ширину, сколько
 // бы ни было карточек (2 или 4).
-const GRID_GAP = 16;
 const GRID_HORIZONTAL_MARGIN = 16;
 
 const EnterAnimation = new Keyframe({
@@ -65,109 +50,18 @@ const ExitAnimation = new Keyframe({
   },
 }).duration(200);
 
-type Option = {
-  label: string;
-  icon: LucideIcon;
-  href: Href;
-  isPro: boolean;
-  isAiFeature: boolean;
-};
-
-const favoritesOption: Option = {
-  label: "Избранное",
-  icon: StarIcon,
-  href: "/app/(add)/favorites",
-  isPro: false,
-  isAiFeature: false,
-};
-
-const baseOptions: Option[] = [
-  {
-    label: "Описать",
-    icon: PenLineIcon,
-    href: "/app/(add)/describe",
-    isPro: true,
-    isAiFeature: true,
-  },
-  {
-    label: "Сканировать",
-    icon: ScanIcon,
-    href: "/app/(add)/camera",
-    isPro: false,
-    isAiFeature: true,
-  },
-  favoritesOption,
-];
-
-const glucoseOption: Option = {
-  label: "Сахар",
-  icon: DropletIcon,
-  href: "/app/(add)/glucose",
-  isPro: false,
-  isAiFeature: false,
-};
-
-const bloodPressureOption: Option = {
-  label: "Давление",
-  icon: HeartPulseIcon,
-  href: "/app/(add)/bloodPressure",
-  isPro: false,
-  isAiFeature: false,
-};
-
 export default function TabsAddOptions() {
-  const router = useRouter();
   const dimensions = useWindowDimensions();
   // containerWidth — внешняя ширина меню (отступ GRID_HORIZONTAL_MARGIN от
-  // каждого края экрана). styles.container добавляет СВОЙ внутренний
-  // padding того же размера — поэтому реальная ширина под карточки меньше
-  // containerWidth ещё на 2×GRID_HORIZONTAL_MARGIN.
+  // каждого края экрана). AddOptionsGrid добавляет СВОЙ внутренний padding
+  // того же размера.
   const containerWidth = dimensions.width - GRID_HORIZONTAL_MARGIN * 2;
-  const itemWidth =
-    (containerWidth - GRID_HORIZONTAL_MARGIN * 2 - GRID_GAP) / 2;
   const popoverTriggerRef = useRef<TriggerRef>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { hasProAccess, navigateToPaywall } = useSubscriptionContext();
-  const { status } = useRateLimit(api.rateLimit.getAiFeaturesRateLimit, {
-    getServerTimeMutation: api.rateLimit.getServerTime,
-  });
+  const press = useAddOptionPress();
   const profile = useQuery(api.profiles.getProfile.default);
 
-  const options: Option[] =
-    profile?.data?.goalTrack === "glucometer"
-      ? [...baseOptions, glucoseOption, bloodPressureOption]
-      : baseOptions;
-
-  const handleOptionPress = (option: Option) => {
-    popoverTriggerRef.current?.close();
-
-    if (!hasProAccess && option.isPro) {
-      if (Platform.OS === "android") {
-        setTimeout(() => {
-          navigateToPaywall();
-        }, 200);
-      } else {
-        navigateToPaywall();
-      }
-      return;
-    }
-
-    if (option.isAiFeature && status && !status.ok) {
-      Toast.show({
-        text: "Вы достигли дневного лимита функций ИИ.",
-        variant: "error",
-      });
-      return;
-    }
-
-    if (Platform.OS === "android") {
-      setTimeout(() => {
-        router.push(option.href);
-      }, 200);
-    } else {
-      router.push(option.href);
-    }
-  };
+  const options = getTabAddOptions(profile?.data?.goalTrack === "glucometer");
 
   return (
     <PopoverPrimitive.Root onOpenChange={setIsOpen}>
@@ -188,26 +82,18 @@ export default function TabsAddOptions() {
             entering={EnterAnimation}
             exiting={ExitAnimation}
           >
-            <View style={[styles.container, { width: containerWidth }]}>
-              {options.map((option, index) => (
-                <Button
-                  key={`option-${option.label}-${index}`}
-                  variant="base"
-                  size="base"
-                  style={{ width: itemWidth, position: "relative" }}
-                  onPress={() => {
-                    handleOptionPress(option);
-                  }}
-                >
-                  {option.isPro && <ProLabel />}
-                  <Card style={styles.card}>
-                    <option.icon size={28} color={getColor("foreground")} />
-                    <Text size="14" weight="500">
-                      {option.label}
-                    </Text>
-                  </Card>
-                </Button>
-              ))}
+            <View style={{ width: containerWidth }}>
+              <AddOptionsGrid
+                options={options}
+                width={containerWidth}
+                onPress={(option) => {
+                  press(option, {
+                    beforeNavigate: () => {
+                      popoverTriggerRef.current?.close();
+                    },
+                  });
+                }}
+              />
             </View>
           </AnimatedPopoverContent>
         </PopoverPrimitive.Overlay>
@@ -220,18 +106,5 @@ const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  container: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: GRID_GAP,
-    padding: 16,
-  },
-  card: {
-    height: 100,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 4,
   },
 });
