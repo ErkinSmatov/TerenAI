@@ -30,7 +30,7 @@ export default function MealScreen() {
   const addDate = useMemo(() => resolveAddDate(date, Date.now()), [date]);
 
   const analyzeMealBarcode = useAction(
-    api.meals.analyze.analyzeMealBarcode.default,
+    api.meals.analyze.analyzeMealBarcode.default
   );
 
   const [mealId, setMealId] = useState<Id<"meals"> | undefined>(initialMealId);
@@ -41,7 +41,7 @@ export default function MealScreen() {
 
   const data = useQuery(
     api.meals.getMeal.default,
-    mealId ? { mealId } : "skip",
+    mealId ? { mealId } : "skip"
   );
 
   const createMealFromBarcode = useCallback(
@@ -52,7 +52,7 @@ export default function MealScreen() {
         api.foods.getFoodByIdentity.default,
         {
           identity: { source: "off", id: barcode },
-        },
+        }
       );
 
       if (existingFood) {
@@ -66,7 +66,7 @@ export default function MealScreen() {
 
       return await analyzeMealBarcode({ barcode, product, eatenAt });
     },
-    [analyzeMealBarcode, convex],
+    [analyzeMealBarcode, convex]
   );
 
   const startMealAnalysis = useCallback(async () => {
@@ -95,7 +95,7 @@ export default function MealScreen() {
     data?.meal.status === "done" && (data.meal.confirmedItems?.length ?? 0) > 0;
   const favoriteId = useQuery(
     api.favorites.getMealFavorite.default,
-    canFavoriteQuery && mealId ? { mealId } : "skip",
+    canFavoriteQuery && mealId ? { mealId } : "skip"
   );
 
   if (mealId && data === null) {
@@ -128,7 +128,7 @@ export default function MealScreen() {
     setFavoritePending(true);
     const wasFavorite = !!favoriteId;
     const { error } = await tryCatch(
-      favoriteId ? removeFavorite({ favoriteId }) : addFavorite({ mealId }),
+      favoriteId ? removeFavorite({ favoriteId }) : addFavorite({ mealId })
     );
     setFavoritePending(false);
 

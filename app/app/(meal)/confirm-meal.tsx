@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert, StyleSheet, useWindowDimensions } from "react-native";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
@@ -27,6 +27,16 @@ import ConfirmMealItems from "@/components/meal/ConfirmMealItems";
 import cropImageToAspect from "@/lib/image/cropImageToAspect";
 import processLibraryImage from "@/lib/image/processLibraryImage";
 import uuidv4 from "@/lib/utils/uuidv4";
+import MealTimePicker from "@/components/meal/MealTimePicker";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
+import {
+  buildEatenAt,
+  DEFAULT_BACKFILL_SLOT,
+  getSlotHour,
+  type MealSlotId,
+} from "@/lib/meals/mealSlots";
+import { resolveAddDate } from "@/lib/utils/parseLocalDate";
 import tryCatch from "@/lib/utils/tryCatch";
 import logError from "@/lib/utils/logError";
 
@@ -50,12 +60,26 @@ export default function ConfirmMealScreen() {
   const dimensions = useWindowDimensions();
   const router = useRouter();
   const navigation = useNavigation();
-  const { photoUri, description, source, favoriteId } = useLocalSearchParams<{
-    photoUri?: string;
-    description?: string;
-    source?: "camera" | "library";
-    favoriteId?: string;
-  }>();
+  const { photoUri, description, source, favoriteId, date } =
+    useLocalSearchParams<{
+      photoUri?: string;
+      description?: string;
+      source?: "camera" | "library";
+      favoriteId?: string;
+      date?: string;
+    }>();
+
+  const addDate = useMemo(() => resolveAddDate(date, Date.now()), [date]);
+  const isBackfill = addDate !== null && !addDate.isToday;
+  const [mealTime, setMealTime] = useState<{
+    slot: MealSlotId;
+    hour: number;
+    minute: number;
+  }>({
+    slot: DEFAULT_BACKFILL_SLOT,
+    hour: getSlotHour("dinner"),
+    minute: 0,
+  });
 
   const favorite = useQuery(
     api.favorites.getFavorite.default,
@@ -223,6 +247,9 @@ export default function ConfirmMealScreen() {
         photoStorageId,
         description,
         mealName: mealName || "Блюдо",
+        eatenAt: isBackfill
+          ? buildEatenAt(addDate.target, mealTime.hour, mealTime.minute)
+          : undefined,
         items: validItems.map(({ name, searchName, grams }) => ({
           name: searchName ?? name,
           nameRu: name,
@@ -238,7 +265,14 @@ export default function ConfirmMealScreen() {
     }
 
     setConfirmed(true);
-    router.replace("/app");
+    if (addDate) {
+      router.dismissTo({
+        pathname: "/app/(home)/day/[date]",
+        params: { date: addDate.date },
+      });
+    } else {
+      router.replace("/app");
+    }
   };
 
   usePreventRemove(!confirmed, ({ data }) => {
@@ -275,6 +309,16 @@ export default function ConfirmMealScreen() {
           </Card>
         )}
 
+        {isBackfill && (
+          <MealTimePicker
+            dateLabel={format(addDate.target, "d MMMM", { locale: ru })}
+            slot={mealTime.slot}
+            hour={mealTime.hour}
+            minute={mealTime.minute}
+            onChange={setMealTime}
+          />
+        )}
+
         <ConfirmMealItems
           items={items}
           loading={isDetecting || isPrefilling}
@@ -290,11 +334,12 @@ export default function ConfirmMealScreen() {
               prev.map((i) => (i.id === id ? { ...i, grams } : i))
             )
           }
-          onRemove={(id) =>
-            setItems((prev) => prev.filter((i) => i.id !== id))
-          }
+          onRemove={(id) => setItems((prev) => prev.filter((i) => i.id !== id))}
           onAdd={() =>
-            setItems((prev) => [...prev, { id: uuidv4(), name: "", grams: 100 }])
+            setItems((prev) => [
+              ...prev,
+              { id: uuidv4(), name: "", grams: 100 },
+            ])
           }
         />
       </ScreenMainScrollView>

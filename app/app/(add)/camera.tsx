@@ -39,7 +39,7 @@ export default function CameraScreen() {
 
   const [enableTorch, setEnableTorch] = useState(false);
   const [selectedOption, setSelectedOption] = useState<CameraMode>(
-    hasProAccess ? "photo" : "barcode",
+    hasProAccess ? "photo" : "barcode"
   );
 
   const cameraRef = useRef<CameraView>(null);
