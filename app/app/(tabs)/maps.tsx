@@ -139,7 +139,7 @@ export default function MapsScreen() {
               hint="Введите код выше, чтобы увидеть данные человека за сегодня."
             />
           ) : (
-            <View style={styles.observedList}>
+            <View style={styles.observedCards}>
               {patients.map((item) => (
                 <ObservedPatientCard
                   key={item.linkId}
@@ -189,7 +189,7 @@ const createStyles = (_theme: ThemeName) =>
       alignSelf: "stretch",
       alignItems: "center",
     },
-    observedList: {
+    observedCards: {
       gap: 16,
     },
     observersList: {
