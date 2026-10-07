@@ -1,8 +1,8 @@
 ---
 phase: 71
 slug: favorites-and-backfill
-status: draft
-nyquist_compliant: false
+status: planned
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-10-08
 ---
@@ -38,14 +38,38 @@ created: 2026-10-08
 
 ## Per-Task Verification Map
 
-Заполняется планировщиком по задачам планов (автоматические критерии — grep по `_creationTime`, наличие индекса/поля, verify-скрипты). Новые скрипты: `scripts/verifyEatenAt.ts` (`getMealTime`, `resolveEatenAt`: будущая дата отклоняется, fallback на `_creationTime`).
+| Task ID | Plan | Wave | Решения | Проверка | Automated Command | Статус |
+|---------|------|------|---------|----------|-------------------|--------|
+| 71-01-01 | 01 | 1 | D-07, D-08, D-10 | ts-node unit (Wave 0) | `npm run script:verifyEatenAt && npx tsc --noEmit` | ⬜ |
+| 71-01-02 | 01 | 1 | D-07, D-10 | grep + типы | `npx convex codegen && npx tsc --noEmit` + grep `byUserIdAndEatenAt`, `resolveEatenAt(`, `eatenAt` в updateMeal | ⬜ |
+| 71-01-03 | 01 | 1 | D-10 | grep + codegen (Wave 0: internalQuery) | `npx convex codegen && npx tsc --noEmit` + grep `backfillMealEatenAt` | ⬜ |
+| 71-02-01 | 02 | 1 | D-01, D-02 | grep + типы | `npx convex codegen && npx tsc --noEmit && npx eslint convex/favorites` | ⬜ |
+| 71-02-02 | 02 | 1 | D-02, D-05 | grep + типы | `npx convex codegen && npx tsc --noEmit` | ⬜ |
+| 71-02-03 | 02 | 1 | D-01 (приватность) | grep | `npx tsc --noEmit` + grep `favoriteMeals`, `new Set` в deleteUser | ⬜ |
+| 71-03-01 | 03 | 2 | D-10 | CLI dev | `npx convex run meals/countMealsWithoutEatenAt '{}'` → missing = 0 | ⬜ |
+| 71-03-02 | 03 | 2 | D-10 | human-action (prod) | resume-signal «prod: missing=0» | ⬜ |
+| 71-04-01 | 04 | 3 | D-09 | ts-node + grep | `npm run script:verifyWeekBucketing && npm run script:verifyMonthBucketing && npm run script:verifyMealReminderWindows && npm run script:verifyBadgeThresholds` + grep `_creationTime` == 0 | ⬜ |
+| 71-04-02 | 04 | 3 | D-09 | grep + типы | `npx tsc --noEmit` + grep остатка `_creationTime` (только давление/link) | ⬜ |
+| 71-04-03 | 04 | 3 | D-09 | ts-node | `npm run script:verifyStreakDays && npm run script:verifyGlucoseEstimate` | ⬜ |
+| 71-05-01 | 05 | 2 | D-02, D-04 | grep + типы | `npx tsc --noEmit` + grep `api.favorites.*` в meal.tsx, `/app/(add)/favorites` в TabsAddOptions | ⬜ |
+| 71-05-02 | 05 | 2 | D-02, D-05 | grep + типы | `npx tsc --noEmit && npx eslint "app/app/(add)/favorites.tsx"` | ⬜ |
+| 71-05-03 | 05 | 2 | D-05 | grep + eslint baseline | `npx tsc --noEmit` + eslint confirm-meal.tsx ≤ 5 ошибок + grep `isTransientConnectionError` == 2 | ⬜ |
+| 71-06-01 | 06 | 3 | D-06, D-07 | grep + типы | `npx tsc --noEmit` + grep `resolveAddDate` в 4 экранах | ⬜ |
+| 71-06-02 | 06 | 3 | D-08 | grep + ts-node | `npx tsc --noEmit && npm run script:verifyEatenAt` + grep `buildEatenAt`, `dismissTo` | ⬜ |
+| 71-07-01 | 07 | 4 | D-04, D-06 | grep + типы | `npx tsc --noEmit && npx eslint components/tabs` | ⬜ |
+| 71-07-02 | 07 | 4 | D-06, D-07 | grep + типы | `npx tsc --noEmit` + grep `isFutureLocalDay`, `onAddPress`, `DayAddMealSheet` | ⬜ |
+| 71-08-01 | 08 | 5 | все | полный прогон | Full suite command + `npm run script:verifyEatenAt` + аудит `_creationTime` | ⬜ |
+| 71-08-02 | 08 | 5 | D-01..D-09 | human-verify (устройство) | чеклист 10 пунктов | ⬜ |
+| 71-08-03 | 08 | 5 | D-10 | human-action (prod) | resume-signal «prod deployed» | ⬜ |
+
+Нет 3 подряд задач без автоматической проверки: ручные задачи (71-03-02, 71-08-02, 71-08-03) окружены задачами с CLI/ts-node проверками.
 
 ---
 
 ## Wave 0 Requirements
 
-- [ ] `scripts/verifyEatenAt.ts` + npm-скрипт `script:verifyEatenAt` — чистая логика `getMealTime` / `resolveEatenAt`
-- [ ] Временная internalQuery «число meals без eatenAt» — проверка полноты бэкфилла между деплоями A и B
+- [ ] `scripts/verifyEatenAt.ts` + npm-скрипт `script:verifyEatenAt` — чистая логика `getMealTime` / `resolveEatenAt` / `parseLocalDate` / `mealSlots` (план 71-01, задача 1)
+- [ ] Временная internalQuery `convex/meals/countMealsWithoutEatenAt.ts` — проверка полноты бэкфилла между деплоями A и B (план 71-01, задача 3)
 
 ---
 
@@ -63,11 +87,11 @@ created: 2026-10-08
 
 ## Validation Sign-Off
 
-- [ ] У всех задач есть `<automated>` проверка или зависимость от Wave 0
-- [ ] Нет 3 подряд задач без автоматической проверки
-- [ ] Wave 0 покрывает все отсутствующие ссылки
-- [ ] Нет watch-режимов
-- [ ] Latency < 90 с
-- [ ] `nyquist_compliant: true` в frontmatter
+- [x] У всех задач есть `<automated>` проверка или зависимость от Wave 0
+- [x] Нет 3 подряд задач без автоматической проверки
+- [x] Wave 0 покрывает все отсутствующие ссылки
+- [x] Нет watch-режимов
+- [x] Latency < 90 с
+- [x] `nyquist_compliant: true` в frontmatter
 
 **Approval:** pending
