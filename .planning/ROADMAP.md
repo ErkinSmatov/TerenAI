@@ -234,6 +234,7 @@ Plans:
 **Вне скоупа:** интерактивность графиков (D-04, кандидат в отдельную будущую фазу), анимации переходов между экранами, разделы «Обучение»/«Карты»/«Советы»/отдельное «Питание», четвёртый таб в нижней навигации.
 
 Plans:
+
 - [x] 07.1-01-PLAN.md — Фундамент темы: палитры light/dark, тема-осведомлённый getColor, ThemeContext с персистентностью, переключатель в Настройках
 - [x] 07.1-02-PLAN.md — Шрифты: Manrope + Outfit вместо Inter, резолвер семейства, проп family у Text
 - [x] 07.1-03-PLAN.md — UI-примитивы: Card (radius 24 / padding 14 / свечение статуса), акцентный FAB, Pill, кольцо калорий
@@ -408,6 +409,7 @@ Plans:
 **Plans:** 3/3 plans complete
 
 Plans:
+
 - [x] 70-01-PLAN.md — Компоненты: плитка «Активность» в карточке наблюдаемого, ObserverCard, ShareCodeCard, OTPInput.clear()
 - [x] 70-02-PLAN.md — Сборка вкладки «Карты»: код, ввод кода, табы «Наблюдаемые / Наблюдатели», пустые состояния
 - [x] 70-03-PLAN.md — Удаление точек входа из Профиля/шапки Главной и старых экранов + проверка пользователем
@@ -420,6 +422,7 @@ Plans:
 **Plans:** 7/8 plans executed
 
 Plans:
+
 - [x] 71-01-PLAN.md — деплой A: поле eatenAt + индекс, запись и валидация, миграция-бэкфилл, чистые модули даты
 - [x] 71-02-PLAN.md — бэкенд избранного (таблица favoriteMeals, add/remove/list/get) + очистка в deleteUser
 - [x] 71-03-PLAN.md — контрольная точка: бэкфилл eatenAt на dev/prod, missing = 0
@@ -437,12 +440,26 @@ Plans:
 **Plans:** 7 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 72-01-PLAN.md — Push: проверка Expo receipts, internalAction тестовой отправки, автопроверка push-конфига (projectId, плагин, aps-environment) (wave 1)
 - [ ] 72-02-PLAN.md — OTP сервер: коды ошибок ConvexError, Telegram checkSendAbility, Twilio разбор ошибок, лимиты otpSend и otpSendGlobal (wave 1)
 - [ ] 72-03-PLAN.md — Выбор страны СНГ и маска номера на phone-sign-in вместо хардкода +7 (wave 1)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 72-04-PLAN.md — OTP клиент: понятные ошибки с предложением другого канала (wave 2)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 72-05-PLAN.md — Ручные шаги: APNs/EAS, Telegram баланс, Twilio WhatsApp Sender, env, deploy, TestFlight, проверка на устройстве (wave 3, checkpoints)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 72-06-PLAN.md — Экран смены цели: доспрос, превью «было → станет», сохранение (wave 4, после 72-05)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 72-07-PLAN.md — Карточка цели в Настройках + ручная проверка сценария (wave 5)
 
 ### Phase 73: Подписка: инфраструктура RevenueCat, вебхук и включение монетизации
@@ -453,4 +470,5 @@ Plans:
 **Plans:** 0 plans
 
 Plans:
+
 - [ ] TBD (run /gsd-plan-phase 73 to break down)
