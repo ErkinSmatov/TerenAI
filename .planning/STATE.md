@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: milestone
 status: executing
-stopped_at: Phase 71 context gathered
-last_updated: "2026-10-07T21:17:41.860Z"
+stopped_at: Phase 72 context gathered
+last_updated: "2026-10-09T10:16:47.273Z"
 progress:
-  total_phases: 13
+  total_phases: 15
   completed_phases: 7
   total_plans: 64
   completed_plans: 62
-  percent: 54
+  percent: 47
 ---
 
 # Project State
@@ -89,6 +89,8 @@ Recent decisions affecting current work:
 
 ### Roadmap Evolution
 
+- Phase 73 добавлена (2026-10-09): подписка вынесена из Phase 72 по решению пользователя на discuss-phase 72 — модель (что платное, тарифы, триал) нужно сначала обсудить с менеджерами проекта; уже решено: вебхук RevenueCat → Convex и включение флага монетизации после sandbox-теста
+- Phase 72 добавлена (2026-10-09): подписка (оплата), push в TestFlight (работают только в локальной сборке), просмотр и смена цели, Telegram OTP для других номеров, WhatsApp OTP для авторизации
 - Phase 71 добавлена (2026-10-08): избранные блюда (быстрый выбор вместо повторного ввода) и добавление рациона за прошлые дни (забытые приёмы пищи). Две крупные задачи в одной фазе по запросу пользователя; при планировании может быть разбита на две
 - Phase 70 добавлена (2026-10-07): страница «Карты» — код-шеринг, ввод кода, табы Наблюдаемые/Наблюдатели, карточки с Калории/Активность/Приём пищи; перенос кнопок наблюдения из Профиля и шапки Главной. Заменяет заглушку вкладки «Карты» из Phase 07.1
 - Phase 3 переопределена (2026-08-05): вместо «гостевой доступ без регистрации» — «вход в конце онбординга + гостевой доступ». Проверка кода показала, что шаг входа уже существует и стоит в верном месте потока; реальный блокер — отсутствие OAuth-ключей на бэкенде. Вход остаётся необязательным
@@ -142,6 +144,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-10-07T21:17:41.849Z
-Stopped at: Phase 71 context gathered
-Resume file: None
+Last session: 2026-10-09T10:16:47.257Z
+Stopped at: Phase 72 context gathered
+Resume file: .planning/phases/72-push-testflight-telegram-whatsapp-otp/72-CONTEXT.md
