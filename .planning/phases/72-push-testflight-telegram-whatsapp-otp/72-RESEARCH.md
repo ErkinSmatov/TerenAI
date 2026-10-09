@@ -210,12 +210,21 @@ throw new ConvexError({ code: "CHANNEL_UNREACHABLE", channel: "telegram" });
 | A8 | Коды стран СНГ | Telegram | Опечатки в списке |
 | A9 | Доставка WhatsApp в РФ/БЛР ограничений не имеет | WhatsApp | Канал не работает для части пользователей |
 
-## Open Questions
-1. Что именно в EAS credentials для prod bundle (ключ, profile)? Ответ даст `eas credentials` (ручной шаг).
-2. Проходит ли `ConvexError` через Convex Auth `signIn`? Решает спайк.
-3. Доставляется ли WhatsApp на RU/KZ/UZ номера с выбранным Sender? Тест после настройки.
+## Open Questions (RESOLVED)
+1. Что именно в EAS credentials для prod bundle (ключ, profile)?
+   RESOLVED: проверяется ручным шагом 72-05 Task 1 (A1-A4: `eas credentials -p ios` → production, Push Key, Push capability в App ID и provisioning profile). Конфиг в репозитории (projectId, плагин expo-notifications, bundle id, отсутствие `credentialsSource`, `aps-environment` в introspect-конфиге) проверяется автоматически в 72-01 Task 3; фактический `aps-environment=production` в подписанной сборке Claude проверяет в 72-05 Task 2 (шаг 5, `codesign -d --entitlements`).
+2. Проходит ли `ConvexError` через Convex Auth `signIn`?
+   RESOLVED: проверено при планировании по исходникам `@convex-dev/auth` 0.0.90 (`signIn.js` вызывает `sendVerificationRequest` без try/catch, `react/client.js` пробрасывает ошибку без обёртки). Выбран вариант (1): `ConvexError({ code, channel })` из провайдеров (72-02 Task 2), чтение `error.data` на клиенте (72-04). Финальное подтверждение на prod: 72-05 Task 3, пункт 9.
+3. Доставляется ли WhatsApp на RU/KZ/UZ номера с выбранным Sender?
+   RESOLVED: проверяется тестовой отправкой в 72-05 Task 3, пункт 8. При отказе код Twilio попадает в логи (72-02), пользователь получает CHANNEL_UNREACHABLE и предложение Telegram (72-04); FAIL по стране оформляется gap через `/gsd:plan-phase 72 --gaps`.
 4. Нужно ли переписывать на `VerificationCheck`, если CustomCode недоступен?
+   RESOLVED: заранее не переписываем. Явный путь решения:
+   (а) 72-05 Task 1, пункт C4: проверка `custom_code_enabled` у Verify Service через Twilio API (`GET https://verify.twilio.com/v2/Services/{sid}`), команду выполняет пользователь со своими ключами;
+   (б) отказ CustomCode в рантайме виден в логах Convex по маркеру `CUSTOM_CODE_REJECTED` (72-02 Task 2) и даёт клиенту SERVICE_UNAVAILABLE;
+   (в) если флаг выключен: сначала запрос в поддержку Twilio на включение CustomCode (код не меняется); если поддержка отказывает или не отвечает до конца фазы, пользователь выбирает в 72-05 Task 1 вариант «fallback», и Claude создаёт gap-план через `/gsd:plan-phase 72 --gaps` со следующим дизайном.
+   Дизайн fallback (зафиксирован, чтобы gap-план не требовал нового исследования): Phone-провайдер Convex Auth сравнивает введённый код со своим токеном, поэтому код, сгенерированный Twilio, через `Phone()` не проходит, а `authorize(params, account)` не отменяет эту проверку. Fallback = отдельный провайдер `ConvexCredentials` (`@convex-dev/auth/providers/ConvexCredentials`) с id `whatsapp-otp`: публичный action отправки вызывает Twilio `Verifications` без `CustomCode` (с тем же лимитом otpSend и классификацией ошибок), а `authorize` провайдера вызывает Twilio `VerificationCheck` (`To`, `Code`) и при `status === "approved"` находит или создаёт пользователя по телефону через `createAccount`/`retrieveAccount`. Клиент в `phone-sign-in.tsx` для WhatsApp вызывает action отправки вместо `signIn` первого шага, второй шаг остаётся `signIn("whatsapp-otp", { phone, code })`.
 5. Страны Telegram Gateway: полный список не получен.
+   RESOLVED: белый список стран не вводим. Перед отправкой всегда вызывается `checkSendAbility` (72-02 Task 2); любой отказ на этапе проверки, в том числе неподдерживаемая страна или номер без Telegram, классифицируется как CHANNEL_UNREACHABLE (`classifyTelegramError(*, "check")`, 72-02 Task 1), и клиент показывает «Не удалось отправить код в Telegram — попробуйте WhatsApp» (72-04). Фактическая доставка на номера KZ/RU и UZ/KG проверяется на устройстве в 72-05 Task 3, пункты 6-7; если для страны стабильно CHANNEL_UNREACHABLE, это фиксируется в 72-05-SUMMARY.md без изменения кода.
 
 ## Environment Availability
 | Зависимость | Нужна для | Доступно | Примечание |

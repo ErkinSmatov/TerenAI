@@ -437,13 +437,13 @@ Plans:
 **Plans:** 7 plans
 
 Plans:
-- [ ] 72-01-PLAN.md — Push: проверка Expo receipts и internalAction тестовой отправки (wave 1)
-- [ ] 72-02-PLAN.md — OTP сервер: коды ошибок ConvexError, Telegram checkSendAbility, Twilio разбор ошибок, лимит otpSend (wave 1)
+- [ ] 72-01-PLAN.md — Push: проверка Expo receipts, internalAction тестовой отправки, автопроверка push-конфига (projectId, плагин, aps-environment) (wave 1)
+- [ ] 72-02-PLAN.md — OTP сервер: коды ошибок ConvexError, Telegram checkSendAbility, Twilio разбор ошибок, лимиты otpSend и otpSendGlobal (wave 1)
 - [ ] 72-03-PLAN.md — Выбор страны СНГ и маска номера на phone-sign-in вместо хардкода +7 (wave 1)
 - [ ] 72-04-PLAN.md — OTP клиент: понятные ошибки с предложением другого канала (wave 2)
 - [ ] 72-05-PLAN.md — Ручные шаги: APNs/EAS, Telegram баланс, Twilio WhatsApp Sender, env, deploy, TestFlight, проверка на устройстве (wave 3, checkpoints)
-- [ ] 72-06-PLAN.md — Экран смены цели: доспрос, превью «было → станет», сохранение (wave 3)
-- [ ] 72-07-PLAN.md — Карточка цели в Настройках + ручная проверка сценария (wave 4)
+- [ ] 72-06-PLAN.md — Экран смены цели: доспрос, превью «было → станет», сохранение (wave 4, после 72-05)
+- [ ] 72-07-PLAN.md — Карточка цели в Настройках + ручная проверка сценария (wave 5)
 
 ### Phase 73: Подписка: инфраструктура RevenueCat, вебхук и включение монетизации
 

@@ -42,19 +42,20 @@ created: 2026-10-09
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
 | 72-01-01 | 01 | 1 | D-13 | T-72-02, T-72-03 | токен в логах только маской | typecheck | `npx tsc --noEmit && npx eslint convex/notifications` | ✅ | ⬜ pending |
 | 72-01-02 | 01 | 1 | D-13 | T-72-01 | sendTestPush только internal | typecheck + grep | `npx tsc --noEmit` | ✅ | ⬜ pending |
+| 72-01-03 | 01 | 1 | D-13 | T-72-02 | токен в логах только суффиксом | script | `node scripts/checks/pushConfig.check.mjs && npx tsc --noEmit` | ❌ W0 (создаётся в задаче) | ⬜ pending |
 | 72-02-01 | 02 | 1 | D-10, D-11 | T-72-06 | классификация по коду, не по тексту | script | `node --experimental-strip-types --no-warnings scripts/checks/otpErrors.check.mjs` | ❌ W0 (создаётся в задаче) | ⬜ pending |
-| 72-02-02 | 02 | 1 | D-09..D-12 | T-72-05, T-72-07, T-72-09 | лимит otpSend, ConvexError без сырого текста, env-проверки | typecheck + grep | `npx tsc --noEmit && npx eslint convex/TelegramOTP.ts convex/WhatsAppOTP.ts convex/rateLimit.ts` | ✅ | ⬜ pending |
+| 72-02-02 | 02 | 1 | D-09..D-12 | T-72-05, T-72-07, T-72-09, T-72-10 | лимиты otpSend и otpSendGlobal, ConvexError без сырого текста, env-проверки, маркер CUSTOM_CODE_REJECTED | typecheck + grep | `npx tsc --noEmit && npx eslint convex/TelegramOTP.ts convex/WhatsAppOTP.ts convex/rateLimit.ts` | ✅ | ⬜ pending |
 | 72-03-01 | 03 | 1 | D-12 | T-72-11 | только цифры, длина по стране | script | `node --experimental-strip-types --no-warnings scripts/checks/phoneCountries.check.mjs` | ❌ W0 (создаётся в задаче) | ⬜ pending |
 | 72-03-02 | 03 | 1 | D-09, D-12 | T-72-11 | E.164 до signIn | typecheck | `npx tsc --noEmit && npx eslint app/auth/phone-sign-in.tsx` | ✅ | ⬜ pending |
 | 72-04-01 | 04 | 2 | D-10 | T-72-14, T-72-15 | фиксированный словарь текстов | script | `node --experimental-strip-types --no-warnings scripts/checks/otpErrorMessage.check.mjs` | ❌ W0 (создаётся в задаче) | ⬜ pending |
 | 72-04-02 | 04 | 2 | D-09, D-10 | T-72-14 | error.message не показывается | typecheck + grep | `npx tsc --noEmit && npx eslint app/auth` | ✅ | ⬜ pending |
-| 72-05-01 | 05 | 3 | D-11, D-13 | T-72-17 | секреты только в консолях/env | manual | `npx convex env list --prod` | — | ⬜ pending |
-| 72-05-02 | 05 | 3 | D-13 | T-72-20 | деплой после tsc/eslint/checks | manual | `npx convex deploy` | — | ⬜ pending |
+| 72-05-01 | 05 | 3 | D-11, D-13, AUTH-07 | T-72-17 | секреты только в консолях/env; custom_code_enabled проверен | manual | `npx convex env list --prod && node scripts/checks/pushConfig.check.mjs` | — | ⬜ pending |
+| 72-05-02 | 05 | 3 | D-13 | T-72-20 | деплой после tsc/eslint/checks; aps-environment=production в подписанной сборке | manual | `npx convex deploy`; `codesign -d --entitlements - Payload/*.app` | — | ⬜ pending |
 | 72-05-03 | 05 | 3 | D-09..D-13 | — | — | manual (device) | `npx convex run --prod notifications/sendTestPush:default` | — | ⬜ pending |
-| 72-06-01 | 06 | 3 | D-04, D-06 | — | — | script | `node --experimental-strip-types --no-warnings scripts/checks/goal.check.mjs` | ❌ W0 (создаётся в задаче) | ⬜ pending |
-| 72-06-02 | 06 | 3 | D-05..D-08 | T-72-21, T-72-23 | спред profile.data при сохранении | typecheck + grep | `npx tsc --noEmit && npx eslint "app/app/(settings)/changeGoal.tsx"` | ✅ | ⬜ pending |
-| 72-07-01 | 07 | 4 | D-04 | T-72-24 | — | typecheck | `npx tsc --noEmit && npx eslint "app/app/(tabs)/settings.tsx"` | ✅ | ⬜ pending |
-| 72-07-02 | 07 | 4 | D-04..D-07 | — | — | manual (simulator) | — | — | ⬜ pending |
+| 72-06-01 | 06 | 4 | D-04, D-06 | — | — | script | `node --experimental-strip-types --no-warnings scripts/checks/goal.check.mjs` | ❌ W0 (создаётся в задаче) | ⬜ pending |
+| 72-06-02 | 06 | 4 | D-05..D-08 | T-72-21, T-72-23 | спред profile.data при сохранении; Save заблокирован при needsGoalDetails | typecheck + grep | `npx tsc --noEmit && npx eslint "app/app/(settings)/changeGoal.tsx"` | ✅ | ⬜ pending |
+| 72-07-01 | 07 | 5 | D-04 | T-72-24 | — | typecheck | `npx tsc --noEmit && npx eslint "app/app/(tabs)/settings.tsx"` | ✅ | ⬜ pending |
+| 72-07-02 | 07 | 5 | D-04..D-07 | — | — | manual (simulator) | — | — | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -62,7 +63,7 @@ created: 2026-10-09
 
 ## Wave 0 Requirements
 
-- [x] Решение планировщика: vitest не вводим. Чистые функции без runtime-импортов (`convex/utils/otpErrors.ts`, `lib/auth/phoneCountries.ts`, `lib/auth/otpErrorMessage.ts`, `lib/goal/goalDetails.ts`) проверяются ESM-скриптами `scripts/checks/*.check.mjs` через `node --experimental-strip-types --no-warnings` (Node 22.22, проверено при планировании). Скрипты создаются первым шагом соответствующих TDD-задач.
+- [x] Решение планировщика: vitest не вводим. Статическая проверка push-конфига — `scripts/checks/pushConfig.check.mjs` (обычный node, 72-01 Task 3). Чистые функции без runtime-импортов (`convex/utils/otpErrors.ts`, `lib/auth/phoneCountries.ts`, `lib/auth/otpErrorMessage.ts`, `lib/goal/goalDetails.ts`) проверяются ESM-скриптами `scripts/checks/*.check.mjs` через `node --experimental-strip-types --no-warnings` (Node 22.22, проверено при планировании). Скрипты создаются первым шагом соответствующих TDD-задач.
 
 ---
 
@@ -74,7 +75,7 @@ created: 2026-10-09
 | Telegram OTP на чужой номер | D-09, D-11, AUTH-06 | Внешний платный сервис | Войти с номера, отличного от владельца Gateway |
 | WhatsApp OTP на номер СНГ | D-09, D-11, D-12, AUTH-07 | Twilio Sender/WABA, внешний сервис | Войти через WhatsApp с номера KZ/RU/UZ |
 | Понятная ошибка и предложение другого канала | D-10 | Нужен реальный отказ провайдера | Ввести номер без Telegram, проверить русский текст ошибки |
-| Смена цели с превью «было → станет» | D-04..D-07 | UI на симуляторе/устройстве | Сменить цель maintain → lose, проверить доспрос, превью и сохранение норм |
+| Смена цели с превью «было → станет» | D-04..D-07 | UI на симуляторе/устройстве | Сменить цель maintain → lose, проверить доспрос, превью и сохранение норм; проверить, что gain с целевым весом = текущему сохранить нельзя |
 
 ---
 
