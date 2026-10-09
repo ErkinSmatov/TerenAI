@@ -434,10 +434,16 @@ Plans:
 **Goal:** Четыре задачи перед запуском (подписка вынесена в Phase 73). (1) Push-уведомления не приходят в сборке из TestFlight, хотя работают в локальной сборке — найти причину (вероятно, APNs production vs sandbox / entitlements / ключи) и починить. (2) Пользователь может посмотреть свою текущую цель и сменить её. (3) Вход по коду через Telegram не работает для других номеров — починить. (4) Настроить OTP через WhatsApp для авторизации. Одна фаза, несколько планов волнами: сначала починки (push, Telegram, WhatsApp), потом цель
 **Requirements**: TBD
 **Depends on:** Phase 71
-**Plans:** 0 plans
+**Plans:** 7 plans
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 72 to break down)
+- [ ] 72-01-PLAN.md — Push: проверка Expo receipts и internalAction тестовой отправки (wave 1)
+- [ ] 72-02-PLAN.md — OTP сервер: коды ошибок ConvexError, Telegram checkSendAbility, Twilio разбор ошибок, лимит otpSend (wave 1)
+- [ ] 72-03-PLAN.md — Выбор страны СНГ и маска номера на phone-sign-in вместо хардкода +7 (wave 1)
+- [ ] 72-04-PLAN.md — OTP клиент: понятные ошибки с предложением другого канала (wave 2)
+- [ ] 72-05-PLAN.md — Ручные шаги: APNs/EAS, Telegram баланс, Twilio WhatsApp Sender, env, deploy, TestFlight, проверка на устройстве (wave 3, checkpoints)
+- [ ] 72-06-PLAN.md — Экран смены цели: доспрос, превью «было → станет», сохранение (wave 3)
+- [ ] 72-07-PLAN.md — Карточка цели в Настройках + ручная проверка сценария (wave 4)
 
 ### Phase 73: Подписка: инфраструктура RevenueCat, вебхук и включение монетизации
 
