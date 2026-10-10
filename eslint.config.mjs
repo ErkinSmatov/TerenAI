@@ -44,6 +44,7 @@ export default defineConfig(
       "babel.config.js",
       "metro.config.js",
       "plugins/*.js",
+      "scripts/checks/*.mjs",
     ],
   }
 );
