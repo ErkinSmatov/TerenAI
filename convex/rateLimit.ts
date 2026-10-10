@@ -33,6 +33,21 @@ export const rateLimiter = new RateLimiter(components.rateLimiter, {
     rate: 10,
     period: HOUR,
   },
+  // Ключ — номер телефона, общий для обоих каналов (Telegram и WhatsApp).
+  // Защищает платную отправку ($0.01 Telegram, Twilio) от спама.
+  otpSend: {
+    kind: "fixed window",
+    rate: 5,
+    period: HOUR,
+  },
+  // Вызывается без key (один счётчик на деплоймент): закрывает обход otpSend
+  // перебором номеров. 500 кодов/сутки ≈ $5 Telegram; значение поднимается
+  // при росте аудитории.
+  otpSendGlobal: {
+    kind: "fixed window",
+    rate: 500,
+    period: DAY,
+  },
 });
 
 export const { getRateLimit: getAiFeaturesRateLimit, getServerTime } =
