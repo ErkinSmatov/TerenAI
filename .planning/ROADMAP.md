@@ -437,7 +437,7 @@ Plans:
 **Goal:** Четыре задачи перед запуском (подписка вынесена в Phase 73). (1) Push-уведомления не приходят в сборке из TestFlight, хотя работают в локальной сборке — найти причину (вероятно, APNs production vs sandbox / entitlements / ключи) и починить. (2) Пользователь может посмотреть свою текущую цель и сменить её. (3) Вход по коду через Telegram не работает для других номеров — починить. (4) Настроить OTP через WhatsApp для авторизации. Одна фаза, несколько планов волнами: сначала починки (push, Telegram, WhatsApp), потом цель
 **Requirements**: TBD
 **Depends on:** Phase 71
-**Plans:** 3/7 plans executed
+**Plans:** 4/7 plans executed
 
 Plans:
 **Wave 1**
@@ -448,7 +448,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 72-04-PLAN.md — OTP клиент: понятные ошибки с предложением другого канала (wave 2)
+- [x] 72-04-PLAN.md — OTP клиент: понятные ошибки с предложением другого канала (wave 2)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
