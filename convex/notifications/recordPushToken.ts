@@ -36,6 +36,12 @@ const recordPushToken = mutation({
         .withIndex("byUserId", (q) => q.eq("userId", userId))
         .first();
 
+      const action = existing
+        ? existing.expoPushToken === expoPushToken
+          ? "refreshed"
+          : "replaced"
+        : "inserted";
+
       if (existing) {
         await ctx.db.patch(existing._id, {
           expoPushToken,
@@ -52,6 +58,15 @@ const recordPushToken = mutation({
           updatedAt: Date.now(),
         });
       }
+
+      console.log(
+        "recordPushToken registered",
+        JSON.stringify({
+          platform,
+          tokenSuffix: expoPushToken.slice(-7),
+          action,
+        })
+      );
 
       return null;
     } catch (error) {
