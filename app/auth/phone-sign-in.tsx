@@ -17,51 +17,41 @@ import {
 } from "@/components/ui/screen/ScreenFooter";
 import tryCatch from "@/lib/utils/tryCatch";
 import { Toast } from "@/components/ui/Toast";
+import BottomSheet from "@/components/ui/BottomSheet";
+import Button from "@/components/ui/Button";
+import Select from "@/components/ui/Select";
+import Text from "@/components/ui/Text";
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import {
+  DEFAULT_PHONE_COUNTRY,
+  PHONE_COUNTRIES,
+  PhoneCountry,
+  extractNationalDigits,
+  formatNationalNumber,
+  isCompleteNationalNumber,
+  toE164,
+} from "@/lib/auth/phoneCountries";
 
 type PhoneOtpProvider = "whatsapp-otp" | "telegram-otp";
 
 const sendCodeErrorText = "Не удалось отправить код. Попробуйте ещё раз";
-
-// +7 XXX XXX XX XX — маска для казахстанских/российских номеров (10 цифр
-// после кода страны), чтобы пользователю не приходилось печатать "+7" самому
-// (69-08 Task 1, п.4).
-const PHONE_PREFIX = "+7 ";
-const MAX_DIGITS = 10;
-
-function formatPhoneDigits(digits: string): string {
-  const groups = [
-    digits.slice(0, 3),
-    digits.slice(3, 6),
-    digits.slice(6, 8),
-    digits.slice(8, 10),
-  ].filter(Boolean);
-  return PHONE_PREFIX + groups.join(" ");
-}
-
-function extractDigits(rawInput: string): string {
-  let digitsOnly = rawInput.replace(/\D/g, "");
-  // Пользователь мог напечатать "7" или "8" в начале по привычке — код
-  // страны уже подставлен префиксом, повторно вводить его не нужно.
-  if (digitsOnly.startsWith("7") || digitsOnly.startsWith("8")) {
-    digitsOnly = digitsOnly.slice(1);
-  }
-  return digitsOnly.slice(0, MAX_DIGITS);
-}
 
 export default function PhoneSignInScreen() {
   const { signIn } = useAuthContext();
   const insets = useSafeArea();
   const router = useRouter();
 
+  const [country, setCountry] = useState<PhoneCountry>(DEFAULT_PHONE_COUNTRY);
   const [digits, setDigits] = useState("");
   const [isSending, setIsSending] = useState(false);
 
   const inputRef = useRef<TextInputHandle>(null);
+  const sheetRef = useRef<BottomSheetModal>(null);
 
-  const phone = `+7${digits}`;
+  const phone = toE164(country, digits);
 
   const handleChangeText = (rawInput: string) => {
-    setDigits(extractDigits(rawInput));
+    setDigits(extractNationalDigits(country, rawInput));
   };
 
   const PhoneForm = z.object({
@@ -70,6 +60,11 @@ export default function PhoneSignInScreen() {
 
   const handleSubmit = async (provider: PhoneOtpProvider) => {
     if (isSending) return;
+
+    if (!isCompleteNationalNumber(country, digits)) {
+      inputRef.current?.flashError();
+      return;
+    }
 
     const result = PhoneForm.safeParse({ phone });
     if (!result.success) {
@@ -109,12 +104,42 @@ export default function PhoneSignInScreen() {
             title="Вход по номеру телефона"
             description="Мы отправим код подтверждения в WhatsApp или Telegram"
           />
+          <BottomSheet
+            ref={sheetRef}
+            Trigger={
+              <Button variant="outline">
+                {`${country.flag} ${country.name} +${country.dialCode}`}
+              </Button>
+            }
+          >
+            <BottomSheetScrollView style={{ maxHeight: 420 }}>
+              <Select
+                options={PHONE_COUNTRIES.map((c) => ({
+                  name: c.iso,
+                  label: c.name,
+                  description: `+${c.dialCode}`,
+                  Icon: <Text size="20">{c.flag}</Text>,
+                }))}
+                selectedOptions={[country.iso]}
+                onSelectOption={(iso) => {
+                  const next = PHONE_COUNTRIES.find((c) => c.iso === iso);
+                  if (!next) return;
+                  setCountry(next);
+                  setDigits("");
+                  sheetRef.current?.dismiss();
+                }}
+              />
+            </BottomSheetScrollView>
+          </BottomSheet>
           <TextInput
             label="Номер телефона"
-            placeholder="+7 999 123 45 67"
+            placeholder={formatNationalNumber(
+              country,
+              "0".repeat(country.nationalDigits),
+            )}
             keyboardType="phone-pad"
             autoComplete="tel"
-            value={formatPhoneDigits(digits)}
+            value={formatNationalNumber(country, digits)}
             onChangeText={handleChangeText}
             ref={inputRef}
             autoFocus
