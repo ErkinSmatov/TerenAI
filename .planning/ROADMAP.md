@@ -437,14 +437,14 @@ Plans:
 **Goal:** Четыре задачи перед запуском (подписка вынесена в Phase 73). (1) Push-уведомления не приходят в сборке из TestFlight, хотя работают в локальной сборке — найти причину (вероятно, APNs production vs sandbox / entitlements / ключи) и починить. (2) Пользователь может посмотреть свою текущую цель и сменить её. (3) Вход по коду через Telegram не работает для других номеров — починить. (4) Настроить OTP через WhatsApp для авторизации. Одна фаза, несколько планов волнами: сначала починки (push, Telegram, WhatsApp), потом цель
 **Requirements**: TBD
 **Depends on:** Phase 71
-**Plans:** 7 plans
+**Plans:** 3/7 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 72-01-PLAN.md — Push: проверка Expo receipts, internalAction тестовой отправки, автопроверка push-конфига (projectId, плагин, aps-environment) (wave 1)
-- [ ] 72-02-PLAN.md — OTP сервер: коды ошибок ConvexError, Telegram checkSendAbility, Twilio разбор ошибок, лимиты otpSend и otpSendGlobal (wave 1)
-- [ ] 72-03-PLAN.md — Выбор страны СНГ и маска номера на phone-sign-in вместо хардкода +7 (wave 1)
+- [x] 72-01-PLAN.md — Push: проверка Expo receipts, internalAction тестовой отправки, автопроверка push-конфига (projectId, плагин, aps-environment) (wave 1)
+- [x] 72-02-PLAN.md — OTP сервер: коды ошибок ConvexError, Telegram checkSendAbility, Twilio разбор ошибок, лимиты otpSend и otpSendGlobal (wave 1)
+- [x] 72-03-PLAN.md — Выбор страны СНГ и маска номера на phone-sign-in вместо хардкода +7 (wave 1)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
