@@ -15,6 +15,11 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import createAccurateInterval from "@/lib/utils/createAccurateInterval";
 import getColor from "@/lib/ui/getColor";
 import tryCatch from "@/lib/utils/tryCatch";
+import { ConvexError } from "convex/values";
+import {
+  getOtpErrorMessage,
+  type PhoneOtpProvider,
+} from "@/lib/auth/otpErrorMessage";
 import { useAuthContext } from "@/context/AuthContext";
 import { ScreenMain, ScreenMainTitle } from "@/components/ui/screen/ScreenMain";
 import {
@@ -32,8 +37,6 @@ const channelNames: Record<string, string> = {
   "whatsapp-otp": "WhatsApp",
   "telegram-otp": "Telegram",
 };
-
-const resendErrorText = "Не удалось отправить код. Попробуйте ещё раз";
 
 export default function ConfirmPhoneScreen() {
   const router = useRouter();
@@ -89,7 +92,7 @@ export default function ConfirmPhoneScreen() {
     }
     hasStartedCompletionRef.current = true;
 
-    (async () => {
+    void (async () => {
       if (isOnboardingDataComplete(data)) {
         await completeOnboarding({ data, targets });
       }
@@ -125,7 +128,11 @@ export default function ConfirmPhoneScreen() {
     if (!error) {
       startResendCountdown();
     } else {
-      Toast.show({ text: resendErrorText, variant: "error" });
+      const { text } = getOtpErrorMessage(
+        error instanceof ConvexError ? error.data : undefined,
+        provider as PhoneOtpProvider
+      );
+      Toast.show({ text, variant: "error" });
     }
   };
 
