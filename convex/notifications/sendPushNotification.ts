@@ -6,6 +6,8 @@ import logError from "@/lib/utils/logError";
 // Лимит Expo Push API на одну пачку.
 const EXPO_PUSH_BATCH_SIZE = 100;
 const EXPO_PUSH_URL = "https://exp.host/--/api/v2/push/send";
+// Задержка перед проверкой receipts (рекомендация Expo: ~15 минут).
+const RECEIPTS_DELAY_MS = 15 * 60 * 1000;
 
 type PushMessage = {
   expoPushToken: string;
@@ -87,12 +89,14 @@ const sendPushNotification = internalAction({
         data: v.optional(v.object({ url: v.string() })),
       })
     ),
+    receiptsDelayMs: v.optional(v.number()),
   },
-  handler: async (ctx, { messages }): Promise<null> => {
+  handler: async (ctx, { messages, receiptsDelayMs }): Promise<null> => {
     try {
       if (messages.length === 0) return null;
 
       const batches = chunk(messages, EXPO_PUSH_BATCH_SIZE);
+      const receiptTickets: { id: string; expoPushToken: string }[] = [];
 
       for (const batch of batches) {
         const result = await sendBatchWithRetry(batch);
@@ -101,6 +105,13 @@ const sendPushNotification = internalAction({
         for (let i = 0; i < result.data.length; i++) {
           const ticket = result.data[i];
           const message = batch[i];
+          if (ticket.status === "ok" && ticket.id) {
+            receiptTickets.push({
+              id: ticket.id,
+              expoPushToken: message.expoPushToken,
+            });
+            continue;
+          }
           if (ticket.status !== "error") continue;
 
           if (ticket.details?.error === "DeviceNotRegistered") {
@@ -109,9 +120,24 @@ const sendPushNotification = internalAction({
               { expoPushToken: message.expoPushToken }
             );
           } else {
-            logError("sendPushNotification ticket error", ticket);
+            logError(
+              "sendPushNotification ticket error",
+              new Error(
+                `${ticket.details?.error ?? "UnknownError"}: ${
+                  ticket.message ?? ""
+                }`
+              )
+            );
           }
         }
+      }
+
+      if (receiptTickets.length > 0) {
+        await ctx.scheduler.runAfter(
+          receiptsDelayMs ?? RECEIPTS_DELAY_MS,
+          internal.notifications.checkPushReceipts.default,
+          { tickets: receiptTickets }
+        );
       }
 
       return null;
