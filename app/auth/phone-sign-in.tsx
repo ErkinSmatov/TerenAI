@@ -16,6 +16,13 @@ import {
   ScreenFooterButton,
 } from "@/components/ui/screen/ScreenFooter";
 import tryCatch from "@/lib/utils/tryCatch";
+import logError from "@/lib/utils/logError";
+import { ConvexError } from "convex/values";
+import {
+  getOtpErrorMessage,
+  isOtpErrorData,
+  type PhoneOtpProvider,
+} from "@/lib/auth/otpErrorMessage";
 import { Toast } from "@/components/ui/Toast";
 import BottomSheet from "@/components/ui/BottomSheet";
 import Button from "@/components/ui/Button";
@@ -32,9 +39,6 @@ import {
   toE164,
 } from "@/lib/auth/phoneCountries";
 
-type PhoneOtpProvider = "whatsapp-otp" | "telegram-otp";
-
-const sendCodeErrorText = "Не удалось отправить код. Попробуйте ещё раз";
 
 export default function PhoneSignInScreen() {
   const { signIn } = useAuthContext();
@@ -77,7 +81,12 @@ export default function PhoneSignInScreen() {
     setIsSending(false);
 
     if (error) {
-      Toast.show({ text: sendCodeErrorText, variant: "error" });
+      const data: unknown = error instanceof ConvexError ? error.data : undefined;
+      if (!isOtpErrorData(data)) {
+        logError("phone-sign-in send code error", error);
+      }
+      const { text } = getOtpErrorMessage(data, provider);
+      Toast.show({ text, variant: "error" });
       return;
     }
 
