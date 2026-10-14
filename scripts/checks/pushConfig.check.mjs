@@ -1,5 +1,5 @@
 // Статическая проверка push-конфига (гипотезы D-13). Запуск из корня: node scripts/checks/pushConfig.check.mjs
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import assert from "node:assert/strict";
 
@@ -50,6 +50,14 @@ assert.ok(
   "eas.json: задан локальный credentialsSource (ожидаются remote credentials)"
 );
 
+assert.ok(
+  appConfig.includes('googleServicesFile: "./google-services.json"'),
+  'app.config.ts: нет googleServicesFile: "./google-services.json"'
+);
+const prodApk = eas.build?.["production-apk"];
+assert.equal(prodApk?.extends, "production", "eas.json: production-apk.extends !== production");
+assert.equal(prodApk?.android?.buildType, "apk", "eas.json: production-apk.android.buildType !== apk");
+
 // 4. introspect-конфиг production
 let raw;
 try {
@@ -71,4 +79,41 @@ assert.equal(
 const apsEnvironment = cfg.ios?.entitlements?.["aps-environment"];
 assert.ok(apsEnvironment, "introspect: нет ios.entitlements[aps-environment]");
 
-console.log("pushConfig: OK", { projectId, apsEnvironment });
+assert.equal(
+  cfg.android?.package,
+  "com.codetau.terenai",
+  "introspect: android.package != com.codetau.terenai"
+);
+assert.ok(cfg.android?.googleServicesFile, "introspect: нет android.googleServicesFile");
+
+// 5. ключ Admin SDK не должен попадать в git
+try {
+  execFileSync("git", ["check-ignore", "-q", "terenai-firebase-adminsdk-check.json"]);
+} catch {
+  assert.fail(".gitignore: маска *firebase-adminsdk*.json не работает");
+}
+assert.ok(
+  !execFileSync("git", ["ls-files"], { encoding: "utf8" }).includes("firebase-adminsdk"),
+  "git ls-files: в репозитории есть ключ firebase-adminsdk"
+);
+
+// 6. google-services.json (последняя проверка)
+assert.ok(existsSync("google-services.json"), "google-services.json не найден");
+const gs = JSON.parse(read("google-services.json"));
+const firebaseProjectId = gs.project_info?.project_id;
+assert.ok(firebaseProjectId, "google-services.json: пустой project_info.project_id");
+const androidPackages = (gs.client ?? [])
+  .map((c) => c.client_info?.android_client_info?.package_name)
+  .filter(Boolean);
+assert.ok(
+  androidPackages.includes("com.codetau.terenai"),
+  "google-services.json: нет клиента com.codetau.terenai"
+);
+if (!androidPackages.includes("com.codetau.terenai.dev")) {
+  console.error(
+    "FCM_DEV_PACKAGE_MISSING: google-services.json: нет клиента com.codetau.terenai.dev (D-18: добавьте Android-приложение в Firebase и перекачайте файл)"
+  );
+  process.exit(3);
+}
+
+console.log("pushConfig: OK", { projectId, apsEnvironment, firebaseProjectId, androidPackages });

@@ -42,3 +42,6 @@ yarn-error.*
 
 fdc-data/
 data/
+
+# Ключ сервисного аккаунта Firebase Admin SDK, никогда не коммитить (D-19)
+*firebase-adminsdk*.json

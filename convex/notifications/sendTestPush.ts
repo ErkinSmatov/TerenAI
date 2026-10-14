@@ -8,24 +8,39 @@ type SendTestPushResult =
   | { sent: true; platform: "ios" | "android"; tokenSuffix: string; updatedAt: number };
 
 export const getPushTokenForUser = internalQuery({
-  args: { userId: v.id("users") },
-  handler: async (ctx, { userId }) => {
-    return await ctx.db
+  args: {
+    userId: v.id("users"),
+    platform: v.optional(v.union(v.literal("ios"), v.literal("android"))),
+  },
+  handler: async (ctx, { userId, platform }) => {
+    const query = ctx.db
       .query("pushTokens")
-      .withIndex("byUserId", (q) => q.eq("userId", userId))
-      .first();
+      .withIndex("byUserId", (q) => q.eq("userId", userId));
+    if (!platform) return await query.first();
+
+    const tokens = (await query.collect()).filter(
+      (token) => token.platform === platform
+    );
+    if (tokens.length === 0) return null;
+    return tokens.reduce((latest, token) =>
+      token.updatedAt > latest.updatedAt ? token : latest
+    );
   },
 });
 
 // Тестовая отправка push конкретному пользователю (диагностика D-13):
-// npx convex run --prod notifications/sendTestPush:default '{"userId":"..."}'
+// npx convex run --prod notifications/sendTestPush:default '{"userId":"...","platform":"android"}'
+// platform необязателен: без него берётся первый токен пользователя.
 const sendTestPush = internalAction({
-  args: { userId: v.id("users") },
-  handler: async (ctx, { userId }): Promise<SendTestPushResult> => {
+  args: {
+    userId: v.id("users"),
+    platform: v.optional(v.union(v.literal("ios"), v.literal("android"))),
+  },
+  handler: async (ctx, { userId, platform }): Promise<SendTestPushResult> => {
     try {
       const token = await ctx.runQuery(
         internal.notifications.sendTestPush.getPushTokenForUser,
-        { userId }
+        { userId, platform }
       );
       if (!token) return { sent: false, reason: "NO_PUSH_TOKEN" };
 

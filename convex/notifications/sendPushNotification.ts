@@ -8,6 +8,11 @@ const EXPO_PUSH_BATCH_SIZE = 100;
 const EXPO_PUSH_URL = "https://exp.host/--/api/v2/push/send";
 // Задержка перед проверкой receipts (рекомендация Expo: ~15 минут).
 const RECEIPTS_DELAY_MS = 15 * 60 * 1000;
+// Должен совпадать с id канала в components/notifications/NotificationsProvider.tsx
+// (setNotificationChannelAsync("default")). Канал создаётся на Android до регистрации
+// токена, поэтому сообщение с этим channelId не потеряется (Expo не показывает push,
+// если указанного канала на устройстве нет). iOS поле игнорирует.
+const ANDROID_CHANNEL_ID = "default";
 
 type PushMessage = {
   expoPushToken: string;
@@ -51,6 +56,7 @@ const postBatch = async (
         title: message.title,
         body: message.body,
         sound: "default",
+        channelId: ANDROID_CHANNEL_ID,
         data: message.data,
       }))
     ),
