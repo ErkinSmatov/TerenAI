@@ -1,6 +1,7 @@
 # Phase 72: Push в TestFlight, просмотр и смена цели, Telegram и WhatsApp OTP - Context
 
 **Gathered:** 2026-10-09
+**Updated:** 2026-10-14 (после выполнения 72-01…72-04: статус ручных шагов, push на Android)
 **Status:** Ready for planning
 
 <domain>
@@ -12,6 +13,7 @@
 2. **Просмотр и смена цели.** Пользователь видит свою текущую цель (похудеть / держать / набрать) и может её сменить. Нормы пересчитываются.
 3. **Telegram OTP для любых номеров.** Вход по коду через Telegram сейчас работает только для части номеров (по-видимому, только для номера владельца аккаунта Gateway). Нужно, чтобы работали любые номера.
 4. **WhatsApp OTP.** Довести вход через WhatsApp (Twilio Verify, AUTH-07) до рабочего состояния.
+5. **Push на Android** (добавлено 2026-10-14, D-17): дополняет пункт 1. Push должен приходить и в Android-сборке (FCM).
 
 **Вне фазы:** подписка и оплата вынесены в Phase 73 (решение на этом обсуждении).
 
@@ -41,6 +43,16 @@
 ### Push в TestFlight
 - **D-13:** Пользователь отдал диагностику и починку на усмотрение исследователя и планировщика (см. Claude's Discretion). Критерий готовности: push реально приходит на устройство с TestFlight-сборки (prod bundle `com.codetau.terenai`, prod-деплоймент Convex). Проверяет пользователь на устройстве.
 
+### Статус ручных шагов и порядок волн (обновление 2026-10-14)
+- **D-14:** На 2026-10-14 ни один ручной шаг 72-05 не выполнен: APNs-ключ для `com.codetau.terenai` в EAS не добавлен, баланс Telegram Gateway не пополнен, Twilio (апгрейд, WhatsApp Sender, привязка к Verify) не настроен. Все эти шаги остаются чекпоинтами 72-05 с пошаговыми инструкциями.
+- **D-15:** Баланс Telegram Gateway пополняет пользователь сам, **в TON через Fragment**: gateway.telegram.org → «Add Funds on Fragment» → оплата с TON-кошелька (@wallet в Telegram или Tonkeeper). Пользователь не знает, как это делается, поэтому чекпоинт должен быть пошаговым: как завести кошелёк, купить TON, пополнить, где увидеть баланс и историю. Указать примерную стартовую сумму ($10–20 при ~$0.01 за доставленный код). После пополнения проверяется вход на номере, отличном от номера владельца Gateway.
+- **D-16:** WhatsApp **не блокирует** остальную фазу (уточнение D-02). 72-05 делится: push (iOS + Android) и Telegram закрываются сразу, WhatsApp становится отдельным неблокирующим чекпоинтом в конце фазы. 72-06/72-07 (смена цели) стартуют после push и Telegram, не дожидаясь WhatsApp. Кто выполняет шаги Twilio (оплата картой для выхода из trial, Meta Business / WABA, отдельный номер отправителя), пользователь пока не знает. В чекпоинте перечислить всё, что понадобится, а решение принять на самом чекпоинте. Если к концу фазы WhatsApp не заработал, это фиксируется как открытый пункт AUTH-07, фаза из-за него не держится.
+
+### Push на Android (добавлено 2026-10-14)
+- **D-17:** Рабочий push на Android входит в фазу 72, в тот же план 72-05 (ручные шаги + проверка на устройстве). Код клиента уже готов: канал `default` в `NotificationsProvider.tsx`, `platform: "android"` при регистрации токена. Не хватает конфига и ключей. Критерий готовности: push реально приходит на Android-устройство с prod-сборки (prod-деплоймент Convex), проверяет пользователь.
+- **D-18:** В Firebase-проект добавляется второе Android-приложение `com.codetau.terenai.dev`, и `google-services.json` перекачивается так, чтобы в нём были оба пакета. Один файл на оба варианта, push работает и в dev. Это ручной шаг пользователя. Сейчас в файле только `com.codetau.terenai`, и без этого шага dev/preview-сборки Android, скорее всего, упадут на Gradle-плагине google-services («No matching client found»).
+- **D-19:** `google-services.json` **коммитится** в репозиторий: там только клиентский ключ, который всё равно попадает в APK. `googleServicesFile: "./google-services.json"` в `app.config.ts` остаётся для обоих вариантов. Ключ сервисного аккаунта Firebase Admin SDK (`terenai-firebase-adminsdk-*.json`, уже в `.gitignore`) **никогда** не коммитится. Он загружается в EAS credentials как FCM V1 key (`eas credentials -p android`), это ручной шаг пользователя.
+
 ### Claude's Discretion
 - **Push в TestFlight:** вся диагностика. Основные гипотезы, которые стоит проверить:
   - для prod bundle id `com.codetau.terenai` в EAS credentials нет APNs-ключа (локальная dev-сборка использует `com.codetau.terenai.dev`);
@@ -53,6 +65,11 @@
 - **Telegram OTP:** подтвердить или опровергнуть гипотезу, что без пополненного баланса Telegram Gateway отправляет код только на номер владельца аккаунта. При необходимости использовать `checkSendAbility`.
 - **WhatsApp OTP:** диагностика причины (AUTH-07). Кандидаты из STATE.md: переменные `TWILIO_*` отсутствуют или неверны, канал WhatsApp не подключён к Verify Service, trial-ограничения Twilio. Отдельно проверить совместимость параметра `CustomCode` с Verify: эта функция по умолчанию может быть выключена на аккаунте.
 - Внешний вид карточки цели и экрана смены цели оформляется в стиле существующих экранов настроек.
+- **Android push:** как именно проверить FCM-конфиг (расширить `scripts/checks/pushConfig.check.mjs` проверкой `googleServicesFile` и наличия обоих пакетов в `google-services.json`), нужно ли указывать `channelId` в сообщениях `sendPushNotification`, как прогнать тестовую отправку через `sendTestPush` на Android-токен.
+- Как разбить 72-05 на чекпоинты (один план с неблокирующим WhatsApp-чекпоинтом в конце или отдельный план для WhatsApp), решает планировщик в рамках D-16.
+
+### Вне фазы 72 (незакоммиченная работа в рабочем дереве)
+- **D-20:** Вход для ревьюера App Store (провайдер `phone-review` в `convex/auth.ts`, `convex/testing/getOrCreateReviewerPhoneUser.ts`, `testingConfig.reviewerPhone`, ветки в `phone-sign-in.tsx`/`confirm-phone.tsx`) и страницы `docs/privacy-policy.html`, `docs/terms-of-use.html` относятся к подготовке к App Store, а **не к фазе 72**. Планы фазы 72 их не трогают, не откатывают и не включают в свои коммиты. При правках `phone-sign-in.tsx`/`confirm-phone.tsx` ветку `phone-review` сохранять.
 
 </decisions>
 
@@ -75,6 +92,13 @@
 - Telegram Gateway API: https://core.telegram.org/gateway/api (`sendVerificationMessage`, `checkSendAbility`, баланс, ограничения)
 - Twilio Verify, канал WhatsApp: https://www.twilio.com/docs/verify/whatsapp
 - Expo push notifications и EAS credentials (APNs key): https://docs.expo.dev/push-notifications/push-notifications-setup/
+- Expo FCM V1 credentials для Android: https://docs.expo.dev/push-notifications/fcm-credentials/
+- Telegram Gateway, пополнение баланса через Fragment: https://core.telegram.org/gateway/verification-tutorial
+
+### Файлы конфигурации (добавлено 2026-10-14)
+- `google-services.json`: Firebase-конфиг Android (сейчас только `com.codetau.terenai`)
+- `app.config.ts`: `android.googleServicesFile`
+- `.planning/phases/72-push-testflight-telegram-whatsapp-otp/72-0[1-4]-SUMMARY.md`: что уже сделано в волнах 1–2
 
 </canonical_refs>
 
@@ -122,10 +146,13 @@
 - Смена трека (вес/глюкометр) из настроек.
 - Блок цели и прогресса к целевому весу на Главной.
 - Схема «основной канал + кнопка "не пришёл код?"» вместо ручного выбора канала.
+- **Вход для ревьюера App Store** (`phone-review`, D-20): пока сделан без защиты, любой, кто введёт `+77630000000`, попадает в общий аккаунт на prod без кода. Отдельно решить: включать провайдер только на время ревью (env-флаг в Convex), проверить, что номер не принадлежит реальному абоненту (префикс 763 в KZ), и нужны ли демо-данные в аккаунте.
+- **Privacy Policy / Terms of Use** (`docs/*.html`): хостинг (GitHub Pages или сайт), ссылки в App Store Connect и в приложении (Настройки, экран входа).
+- **WhatsApp OTP**, если не заработает к концу фазы (D-16): перенос AUTH-07 в следующую фазу.
 
 </deferred>
 
 ---
 
 *Phase: 72-push-testflight-telegram-whatsapp-otp*
-*Context gathered: 2026-10-09*
+*Context gathered: 2026-10-09, updated: 2026-10-14*
