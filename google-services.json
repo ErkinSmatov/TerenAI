@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1014689728104",
+    "project_id": "terenai",
+    "storage_bucket": "terenai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014689728104:android:5dba5e819daa7d80a75ddd",
+        "android_client_info": {
+          "package_name": "com.codetau.terenai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNYaPNujUZNErECoUiGJPRj59uG5W82tc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014689728104:android:ce0ba3d935f44b38a75ddd",
+        "android_client_info": {
+          "package_name": "com.codetau.terenai.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNYaPNujUZNErECoUiGJPRj59uG5W82tc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
