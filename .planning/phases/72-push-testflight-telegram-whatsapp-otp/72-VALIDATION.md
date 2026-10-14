@@ -49,13 +49,21 @@ created: 2026-10-09
 | 72-03-02 | 03 | 1 | D-09, D-12 | T-72-11 | E.164 до signIn | typecheck | `npx tsc --noEmit && npx eslint app/auth/phone-sign-in.tsx` | ✅ | ⬜ pending |
 | 72-04-01 | 04 | 2 | D-10 | T-72-14, T-72-15 | фиксированный словарь текстов | script | `node --experimental-strip-types --no-warnings scripts/checks/otpErrorMessage.check.mjs` | ❌ W0 (создаётся в задаче) | ⬜ pending |
 | 72-04-02 | 04 | 2 | D-09, D-10 | T-72-14 | error.message не показывается | typecheck + grep | `npx tsc --noEmit && npx eslint app/auth` | ✅ | ⬜ pending |
-| 72-05-01 | 05 | 3 | D-11, D-13, AUTH-07 | T-72-17 | секреты только в консолях/env; custom_code_enabled проверен | manual | `npx convex env list --prod && node scripts/checks/pushConfig.check.mjs` | — | ⬜ pending |
-| 72-05-02 | 05 | 3 | D-13 | T-72-20 | деплой после tsc/eslint/checks; aps-environment=production в подписанной сборке | manual | `npx convex deploy`; `codesign -d --entitlements - Payload/*.app` | — | ⬜ pending |
-| 72-05-03 | 05 | 3 | D-09..D-13 | — | — | manual (device) | `npx convex run --prod notifications/sendTestPush:default` | — | ⬜ pending |
-| 72-06-01 | 06 | 4 | D-04, D-06 | — | — | script | `node --experimental-strip-types --no-warnings scripts/checks/goal.check.mjs` | ❌ W0 (создаётся в задаче) | ⬜ pending |
-| 72-06-02 | 06 | 4 | D-05..D-08 | T-72-21, T-72-23 | спред profile.data при сохранении; Save заблокирован при needsGoalDetails | typecheck + grep | `npx tsc --noEmit && npx eslint "app/app/(settings)/changeGoal.tsx"` | ✅ | ⬜ pending |
-| 72-07-01 | 07 | 5 | D-04 | T-72-24 | — | typecheck | `npx tsc --noEmit && npx eslint "app/app/(tabs)/settings.tsx"` | ✅ | ⬜ pending |
-| 72-07-02 | 07 | 5 | D-04..D-07 | — | — | manual (simulator) | — | — | ⬜ pending |
+| 72-05-01 | 05 | 3 | D-17, D-19 | T-72-26, T-72-28 | маска *firebase-adminsdk*.json, коммит только своих файлов | typecheck + script | `npx tsc --noEmit && npx eslint convex/notifications && node scripts/checks/pushConfig.check.mjs` (до D-18 падает только на com.codetau.terenai.dev) | ✅ | ⬜ pending |
+| 72-05-02 | 05 | 3 | D-13, D-14, D-18, D-19 | T-72-17, T-72-26 | ключи только в EAS credentials | manual + script | `node scripts/checks/pushConfig.check.mjs` | — | ⬜ pending |
+| 72-05-03 | 05 | 3 | D-18, D-19, D-20 | T-72-27, T-72-28 | нет private_key в google-services.json | script | `node scripts/checks/pushConfig.check.mjs && git ls-files --error-unmatch google-services.json` | — | ⬜ pending |
+| 72-06-01 | 06 | 3 | D-11, D-15 | T-72-29, T-72-30 | сид/токен не в чат | manual | `npx convex env list --prod \| grep -c TELEGRAM_GATEWAY_TOKEN` | — | ⬜ pending |
+| 72-06-02 | 06 | 3 | D-09, D-15 | T-72-19 | — | manual (dev) | `npx convex logs` | — | ⬜ pending |
+| 72-07-01 | 07 | 4 | D-20 | T-72-31 | явный выбор источника деплоя | manual (decision) | `git status --short` | — | ⬜ pending |
+| 72-07-02 | 07 | 4 | D-13, D-17 | T-72-20 | деплой после tsc/eslint/checks; aps-environment=production | manual | `npx convex deploy`; `codesign -d --entitlements - Payload/*.app` | — | ⬜ pending |
+| 72-07-03 | 07 | 4 | D-09, D-10, D-13, D-15, D-17 | — | — | manual (device) | `npx convex run --prod notifications/sendTestPush:default` (platform ios/android) | — | ⬜ pending |
+| 72-08-01 | 08 | 5 | D-04, D-06 | — | — | script | `node --experimental-strip-types --no-warnings scripts/checks/goal.check.mjs` | ❌ W0 (создаётся в задаче) | ⬜ pending |
+| 72-08-02 | 08 | 5 | D-05..D-08 | T-72-21, T-72-23 | спред profile.data при сохранении; Save заблокирован при needsGoalDetails | typecheck + grep | `npx tsc --noEmit && npx eslint "app/app/(settings)/changeGoal.tsx"` | ✅ | ⬜ pending |
+| 72-09-01 | 09 | 6 | D-04 | T-72-24 | — | typecheck | `npx tsc --noEmit && npx eslint "app/app/(tabs)/settings.tsx"` | ✅ | ⬜ pending |
+| 72-09-02 | 09 | 6 | D-04..D-07 | — | — | manual (simulator) | — | — | ⬜ pending |
+| 72-10-01 | 10 | 7 | D-11, D-16, AUTH-07 | T-72-33 | custom_code_enabled проверен; секреты не в чат | manual | `npx convex env list --prod` | — | ⬜ pending |
+| 72-10-02 | 10 | 7 | D-09, D-12, AUTH-07 | T-72-19 | — | manual (device) | `npx convex logs --prod` | — | ⬜ pending |
+| 72-10-03 | 10 | 7 | D-16, AUTH-07 | — | — | grep | `grep "AUTH-07" .planning/REQUIREMENTS.md` | ✅ | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 

@@ -437,7 +437,7 @@ Plans:
 **Goal:** Четыре задачи перед запуском (подписка вынесена в Phase 73). (1) Push-уведомления не приходят в сборке из TestFlight, хотя работают в локальной сборке — найти причину (вероятно, APNs production vs sandbox / entitlements / ключи) и починить. (2) Пользователь может посмотреть свою текущую цель и сменить её. (3) Вход по коду через Telegram не работает для других номеров — починить. (4) Настроить OTP через WhatsApp для авторизации. Одна фаза, несколько планов волнами: сначала починки (push, Telegram, WhatsApp), потом цель
 **Requirements**: TBD
 **Depends on:** Phase 71
-**Plans:** 4/7 plans executed
+**Plans:** 4/10 plans executed
 
 Plans:
 **Wave 1**
@@ -452,15 +452,24 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 72-05-PLAN.md — Ручные шаги: APNs/EAS, Telegram баланс, Twilio WhatsApp Sender, env, deploy, TestFlight, проверка на устройстве (wave 3, checkpoints)
+- [ ] 72-05-PLAN.md — Push iOS + Android: channelId, sendTestPush с платформой, профиль production-apk, проверка FCM-конфига; APNs, второе Android-приложение в Firebase, FCM V1 key в EAS, коммит google-services.json (wave 3, checkpoint)
+- [ ] 72-06-PLAN.md — Telegram Gateway: пошаговое пополнение баланса в TON через Fragment, токен в Convex, вход на чужом номере (wave 3, checkpoints)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 72-06-PLAN.md — Экран смены цели: доспрос, превью «было → станет», сохранение (wave 4, после 72-05)
+- [ ] 72-07-PLAN.md — Источник деплоя (D-20), Convex prod deploy, TestFlight + production-apk, проверка push iOS/Android и Telegram на prod (wave 4, checkpoints)
 
-**Wave 5** *(blocked on Wave 4 completion)*
+**Wave 5** *(blocked on Wave 4 completion; WhatsApp не ждёт, D-16)*
 
-- [ ] 72-07-PLAN.md — Карточка цели в Настройках + ручная проверка сценария (wave 5)
+- [ ] 72-08-PLAN.md — Экран смены цели: доспрос, превью «было → станет», сохранение (wave 5)
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [ ] 72-09-PLAN.md — Карточка цели в Настройках + ручная проверка сценария (wave 6, checkpoint)
+
+**Wave 7** *(неблокирующий, D-16)*
+
+- [ ] 72-10-PLAN.md — WhatsApp OTP (AUTH-07): что нужно для Twilio, решение, настройка, проверка; при неудаче AUTH-07 переносится, фаза не держится (wave 7, checkpoints)
 
 ### Phase 73: Подписка: инфраструктура RevenueCat, вебхук и включение монетизации
 
