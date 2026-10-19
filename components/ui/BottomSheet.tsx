@@ -53,7 +53,7 @@ export default function BottomSheet({ Trigger, children, ref }: Props) {
             <View style={styles.handle}></View>
           </View>
         )}
-        backgroundStyle={{ borderRadius: 30 }}
+        backgroundStyle={styles.background}
         style={styles.bottomSheet}
       >
         <BottomSheetView>
@@ -80,6 +80,12 @@ const createStyles = (theme: ThemeName) => ({
     width: 40,
     height: 3,
     borderRadius: 999,
+  },
+  // Без явного фона BottomSheetModal рисует белую подложку: в тёмной теме она
+  // видна белой полоской над ручкой.
+  background: {
+    borderRadius: 30,
+    backgroundColor: getColor("base", undefined, theme),
   },
   bottomSheet: {
     borderRadius: 25,

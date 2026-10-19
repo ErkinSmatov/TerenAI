@@ -67,6 +67,22 @@ export default function ConfirmPhoneScreen() {
 
   const channelName = channelNames[provider] ?? "мессенджер";
 
+  // Ревьюер App Store: входим сразу, без ввода кода.
+  const hasStartedReviewerSignInRef = useRef(false);
+  useEffect(() => {
+    if (provider !== "phone-review" || !phone) return;
+    if (hasStartedReviewerSignInRef.current) return;
+    hasStartedReviewerSignInRef.current = true;
+    void (async () => {
+      const { error } = await tryCatch(signIn(provider, { phone }));
+      if (error) {
+        Toast.show({ text: "Не удалось войти", variant: "error" });
+        return;
+      }
+      setIsSignedIn(true);
+    })();
+  }, [provider, phone, signIn]);
+
   const handleSubmit = async (code: string) => {
     if (code.length !== 4) {
       inputRef.current?.flashError();

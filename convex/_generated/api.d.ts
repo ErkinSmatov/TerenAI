@@ -81,8 +81,8 @@ import type * as movement_getMonthMovement from "../movement/getMonthMovement.js
 import type * as movement_getWeekMovement from "../movement/getWeekMovement.js";
 import type * as movement_syncDays from "../movement/syncDays.js";
 import type * as notifications_checkMealReminders from "../notifications/checkMealReminders.js";
-import type * as notifications_checkWeighInReminders from "../notifications/checkWeighInReminders.js";
 import type * as notifications_checkPushReceipts from "../notifications/checkPushReceipts.js";
+import type * as notifications_checkWeighInReminders from "../notifications/checkWeighInReminders.js";
 import type * as notifications_recordPushToken from "../notifications/recordPushToken.js";
 import type * as notifications_sendPushNotification from "../notifications/sendPushNotification.js";
 import type * as notifications_sendTestPush from "../notifications/sendTestPush.js";
@@ -115,6 +115,7 @@ import type * as tables_movementData from "../tables/movementData.js";
 import type * as tables_observerLinks from "../tables/observerLinks.js";
 import type * as tables_profiles from "../tables/profiles.js";
 import type * as tables_pushTokens from "../tables/pushTokens.js";
+import type * as testing_getOrCreateReviewerPhoneUser from "../testing/getOrCreateReviewerPhoneUser.js";
 import type * as testing_getOrCreateTestUser from "../testing/getOrCreateTestUser.js";
 import type * as users_deleteUser from "../users/deleteUser.js";
 import type * as users_updateUserName from "../users/updateUserName.js";
@@ -125,6 +126,7 @@ import type * as utils_localMonthBounds from "../utils/localMonthBounds.js";
 import type * as utils_localWeekBounds from "../utils/localWeekBounds.js";
 import type * as utils_observerAuth from "../utils/observerAuth.js";
 import type * as utils_otp from "../utils/otp.js";
+import type * as utils_otpErrors from "../utils/otpErrors.js";
 import type * as utils_resolveEatenAt from "../utils/resolveEatenAt.js";
 import type * as utils_streakDays from "../utils/streakDays.js";
 
@@ -216,8 +218,8 @@ declare const fullApi: ApiFromModules<{
   "movement/getWeekMovement": typeof movement_getWeekMovement;
   "movement/syncDays": typeof movement_syncDays;
   "notifications/checkMealReminders": typeof notifications_checkMealReminders;
-  "notifications/checkWeighInReminders": typeof notifications_checkWeighInReminders;
   "notifications/checkPushReceipts": typeof notifications_checkPushReceipts;
+  "notifications/checkWeighInReminders": typeof notifications_checkWeighInReminders;
   "notifications/recordPushToken": typeof notifications_recordPushToken;
   "notifications/sendPushNotification": typeof notifications_sendPushNotification;
   "notifications/sendTestPush": typeof notifications_sendTestPush;
@@ -250,6 +252,7 @@ declare const fullApi: ApiFromModules<{
   "tables/observerLinks": typeof tables_observerLinks;
   "tables/profiles": typeof tables_profiles;
   "tables/pushTokens": typeof tables_pushTokens;
+  "testing/getOrCreateReviewerPhoneUser": typeof testing_getOrCreateReviewerPhoneUser;
   "testing/getOrCreateTestUser": typeof testing_getOrCreateTestUser;
   "users/deleteUser": typeof users_deleteUser;
   "users/updateUserName": typeof users_updateUserName;
@@ -260,6 +263,7 @@ declare const fullApi: ApiFromModules<{
   "utils/localWeekBounds": typeof utils_localWeekBounds;
   "utils/observerAuth": typeof utils_observerAuth;
   "utils/otp": typeof utils_otp;
+  "utils/otpErrors": typeof utils_otpErrors;
   "utils/resolveEatenAt": typeof utils_resolveEatenAt;
   "utils/streakDays": typeof utils_streakDays;
 }>;

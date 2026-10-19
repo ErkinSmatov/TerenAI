@@ -7,7 +7,7 @@ import { ResendOTP } from "./ResendOTP";
 import { WhatsAppOTP } from "./WhatsAppOTP";
 import { TelegramOTP } from "./TelegramOTP";
 import { MutationCtx } from "./_generated/server";
-import { api } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { profilesConfig } from "../config/profilesConfig";
 import testingConfig from "../config/testingConfig";
 
@@ -58,6 +58,19 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           return { userId };
         }
         return null;
+      },
+    }),
+    // Вход для ревьюера App Store по тестовому номеру: без отправки и проверки
+    // кода. Принимает только testingConfig.reviewerPhone.
+    ConvexCredentials({
+      id: "phone-review",
+      authorize: async (credentials, ctx) => {
+        if (credentials.phone !== testingConfig.reviewerPhone) return null;
+        const userId = await ctx.runMutation(
+          internal.testing.getOrCreateReviewerPhoneUser.default,
+          { phone: testingConfig.reviewerPhone }
+        );
+        return { userId };
       },
     }),
   ],

@@ -38,6 +38,7 @@ import {
   isCompleteNationalNumber,
   toE164,
 } from "@/lib/auth/phoneCountries";
+import testingConfig from "@/config/testingConfig";
 
 
 export default function PhoneSignInScreen() {
@@ -73,6 +74,15 @@ export default function PhoneSignInScreen() {
     const result = PhoneForm.safeParse({ phone });
     if (!result.success) {
       inputRef.current?.flashError();
+      return;
+    }
+
+    if (phone === testingConfig.reviewerPhone) {
+      // Ревьюер App Store: код не отправляем, вход выполнит confirm-phone.
+      router.push({
+        pathname: "/auth/confirm-phone",
+        params: { phone, provider: "phone-review" },
+      });
       return;
     }
 
@@ -141,6 +151,7 @@ export default function PhoneSignInScreen() {
             </BottomSheetScrollView>
           </BottomSheet>
           <TextInput
+            containerStyle={{ marginTop: 16 }}
             label="Номер телефона"
             placeholder={formatNationalNumber(
               country,

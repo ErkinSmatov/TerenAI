@@ -1,7 +1,15 @@
 import CircularProgress from "@/components/ui/CircularProgress";
 import Description from "@/components/ui/Description";
+import Text from "@/components/ui/Text";
 import Title from "@/components/ui/Title";
-import getColor, { getActiveTheme } from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
+import getColor from "@/lib/ui/getColor";
+import getNutrientGlow from "@/lib/ui/getNutrientGlow";
+import {
+  MACRO_TILE_DARK_BACKGROUND,
+  MACRO_TILE_STYLES,
+  type MacroTileStyle,
+} from "@/lib/ui/macroTileStyles";
 import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import AnimateableText from "react-native-animateable-text";
@@ -14,21 +22,24 @@ import { useOnboardingContext } from "@/context/OnboardingContext";
 import PlanInfoSheet from "./PlanInfoSheet";
 import useProgress from "@/lib/hooks/reanimated/useProgress";
 
-type MacroCardProps = {
+type MacroCardProps = MacroTileStyle & {
   name: string;
   amount: number;
   ratio: number;
   formatAmount: (amount: number) => string;
-  color: string;
 };
 
+// Плитка в том же виде, что на экране «Настроить цели» (adjustMacroTargets):
+// плоский фон, цветное свечение, кольцо с градиентом, число и название внутри.
 function MacroCard({
   name,
   amount,
   ratio,
   formatAmount,
-  color,
+  ringColors,
+  glow,
 }: MacroCardProps) {
+  const { theme } = useThemeContext();
   const progress = useProgress();
   const progressRatio = useDerivedValue(() => ratio * progress.value);
 
@@ -39,16 +50,37 @@ function MacroCard({
   };
 
   return (
-    <View style={styles.macroCard}>
-      <Title size="16" style={styles.macroName}>
-        {name}
-      </Title>
-      <View style={styles.macroAmountContainer}>
+    <View
+      style={[
+        styles.macroCard,
+        {
+          backgroundColor:
+            theme === "dark"
+              ? MACRO_TILE_DARK_BACKGROUND
+              : getColor("base", undefined, theme),
+        },
+        getNutrientGlow(theme, glow.dark, glow.light),
+      ]}
+    >
+      <View style={styles.ring}>
+        <CircularProgress
+          progress={progressRatio}
+          gradientColors={ringColors[theme]}
+          trackColor={getColor("foreground", 0.12, theme)}
+          strokeWidth={8}
+        />
+      </View>
+      <View style={styles.center} pointerEvents="none">
         <AnimateableText
           animatedProps={animatedProps.weightText}
-          style={styles.macroAmountText}
+          style={[
+            styles.macroAmountText,
+            { color: getColor("foreground", undefined, theme) },
+          ]}
         />
-        <CircularProgress progress={progressRatio} color={color} />
+        <Text size="12" color={getColor("foreground", 0.6, theme)}>
+          {name}
+        </Text>
       </View>
     </View>
   );
@@ -64,7 +96,7 @@ export default function OnboardingPlan() {
         name: "Калории",
         amount: calories,
         ratio: 1,
-        color: getColor("calorie"),
+        ...MACRO_TILE_STYLES.calories,
         formatAmount: (amount: number) => {
           "worklet";
           return `${Math.round(amount)}`;
@@ -74,7 +106,7 @@ export default function OnboardingPlan() {
         name: "Углеводы",
         amount: carbs,
         ratio: calcRatio(macrosToKcal({ carbs }), calories),
-        color: getColor("carb"),
+        ...MACRO_TILE_STYLES.carbs,
         formatAmount: (amount: number) => {
           "worklet";
           return `${Math.round(amount)}g`;
@@ -84,7 +116,7 @@ export default function OnboardingPlan() {
         name: "Белки",
         amount: protein,
         ratio: calcRatio(macrosToKcal({ protein }), calories),
-        color: getColor("protein"),
+        ...MACRO_TILE_STYLES.protein,
         formatAmount: (amount: number) => {
           "worklet";
           return `${Math.round(amount)}g`;
@@ -94,7 +126,7 @@ export default function OnboardingPlan() {
         name: "Жиры",
         amount: fat,
         ratio: calcRatio(macrosToKcal({ fat }), calories),
-        color: getColor("fat"),
+        ...MACRO_TILE_STYLES.fat,
         formatAmount: (amount: number) => {
           "worklet";
           return `${Math.round(amount)}g`;
@@ -144,10 +176,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   recommendationsContainer: {
-    backgroundColor: getColor("muted"),
     width: "100%",
-    padding: 20,
-    borderRadius: 16,
   },
   header: {
     gap: 2,
@@ -161,32 +190,25 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   macroCard: {
-    backgroundColor: getColor("background"),
     flex: 1,
-    padding: 12,
-    borderRadius: 12,
-    gap: 6,
-    borderWidth: StyleSheet.hairlineWidth,
-    // Та же конвенция, что и в Card.tsx: "secondary" при пониженной
-    // непрозрачности — сплошной secondary в тёмной теме дал бы кричаще-белую
-    // рамку (secondary задуман только для низкой прозрачности).
-    borderColor: getColor("secondary", getActiveTheme() === "dark" ? 0.08 : undefined),
-  },
-  macroName: {
-    textAlign: "center",
-    paddingBottom: 8,
-  },
-  macroAmountContainer: {
-    width: "100%",
     aspectRatio: 1,
+    borderRadius: 24,
+    padding: 14,
+  },
+  ring: {
+    ...StyleSheet.absoluteFillObject,
+    margin: 14,
+  },
+  center: {
+    ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
   },
   macroAmountText: {
-    fontSize: 20,
-    position: "absolute",
-    fontFamily: resolveFontFamily({ weight: 700 }),
-    color: getColor("foreground"),
+    fontSize: 36,
+    lineHeight: 42,
+    textAlign: "center",
+    fontFamily: resolveFontFamily({ family: "outfit" }),
     includeFontPadding: false,
   },
 });

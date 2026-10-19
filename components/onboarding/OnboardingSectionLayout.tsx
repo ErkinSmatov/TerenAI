@@ -3,6 +3,8 @@ import Button from "../ui/Button";
 import { ArrowLeftIcon } from "lucide-react-native";
 import { ScreenFooter } from "../ui/screen/ScreenFooter";
 import SafeArea from "../ui/SafeArea";
+import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 
 type Props = {
   children: React.ReactNode;
@@ -19,6 +21,8 @@ export default function OnboardingSectionLayout({
   isNextDisabled = false,
   nextButtonText = "Далее",
 }: Props) {
+  const { theme } = useThemeContext();
+
   return (
     <View style={styles.container}>
       <SafeArea edges={[]}>{children}</SafeArea>
@@ -29,7 +33,7 @@ export default function OnboardingSectionLayout({
           style={styles.backButton}
           onPress={onBack}
         >
-          <ArrowLeftIcon />
+          <ArrowLeftIcon color={getColor("foreground", undefined, theme)} />
         </Button>
         <Button
           variant="primary"

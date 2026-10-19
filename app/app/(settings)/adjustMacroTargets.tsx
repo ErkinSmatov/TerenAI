@@ -18,6 +18,11 @@ import { useThemeContext } from "@/context/ThemeContext";
 import getColor from "@/lib/ui/getColor";
 import getNutrientGlow from "@/lib/ui/getNutrientGlow";
 import resolveFontFamily from "@/lib/ui/resolveFontFamily";
+import {
+  MACRO_TILE_DARK_BACKGROUND,
+  MACRO_TILE_STYLES,
+  type MacroTileStyle,
+} from "@/lib/ui/macroTileStyles";
 import macrosToKcal from "@/lib/utils/macrosToKcal";
 import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "expo-router";
@@ -30,18 +35,11 @@ import {
   withTiming,
 } from "react-native-reanimated";
 
-// Figma node 1333:795 — плитки 2×2: плоский фон #15181F, цветное внутреннее
-// свечение и кольцо с градиентом. Цвета фиксированные (литеральные hex из
-// макета), как у hero-карточек Главной; светлая тема — мягкое амбиентное
-// свечение того же оттенка (см. getNutrientGlow).
-const TILE_DARK_BACKGROUND = "#15181F";
 const GRID_GAP = 12;
 const GRID_PADDING = 16;
 
-type Macro = {
+type Macro = MacroTileStyle & {
   name: string;
-  ringColors: { dark: [string, string]; light: [string, string] };
-  glow: { dark: string; light: string };
   value: number | undefined;
   setValue: React.Dispatch<React.SetStateAction<number | undefined>>;
   ratio: SharedValue<number>;
@@ -70,44 +68,28 @@ export default function AdjustMacroTargetsScreen() {
   const macros: Macro[] = [
     {
       name: "Калории",
-      ringColors: {
-        dark: ["#EE6A22", "#FEE8D9"],
-        light: ["#EE6A22", "#F8C7A6"],
-      },
-      glow: { dark: "#a78154", light: "rgba(167, 129, 84, 0.3)" },
+      ...MACRO_TILE_STYLES.calories,
       value: calories,
       setValue: setCalories,
       ratio: caloriesRatio,
     },
     {
       name: "Белки",
-      ringColors: {
-        dark: ["#FFFFFF", "#C9CCD2"],
-        light: ["#4B5563", "#C9CCD2"],
-      },
-      glow: { dark: "#FFFFFF", light: "rgba(75, 85, 99, 0.2)" },
+      ...MACRO_TILE_STYLES.protein,
       value: protein,
       setValue: setProtein,
       ratio: proteinRatio,
     },
     {
       name: "Углеводы",
-      ringColors: {
-        dark: ["#F47F6E", "#F7F1E3"],
-        light: ["#F47F6E", "#F9CFC8"],
-      },
-      glow: { dark: "#b84244", light: "rgba(184, 66, 68, 0.25)" },
+      ...MACRO_TILE_STYLES.carbs,
       value: carbs,
       setValue: setCarbs,
       ratio: carbsRatio,
     },
     {
       name: "Жиры",
-      ringColors: {
-        dark: ["#8489DA", "#F7F1E3"],
-        light: ["#8489DA", "#D3D5F1"],
-      },
-      glow: { dark: "#4772eb", light: "rgba(71, 114, 235, 0.25)" },
+      ...MACRO_TILE_STYLES.fat,
       value: fat,
       setValue: setFat,
       ratio: fatRatio,
@@ -186,7 +168,7 @@ export default function AdjustMacroTargetsScreen() {
                 {
                   backgroundColor:
                     theme === "dark"
-                      ? TILE_DARK_BACKGROUND
+                      ? MACRO_TILE_DARK_BACKGROUND
                       : getColor("base", undefined, theme),
                 },
                 getNutrientGlow(theme, macro.glow.dark, macro.glow.light),
