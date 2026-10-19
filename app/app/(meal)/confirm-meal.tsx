@@ -284,7 +284,7 @@ export default function ConfirmMealScreen() {
         {
           text: "Уйти",
           style: "destructive",
-          onPress: () => navigation.dispatch(data.action),
+          onPress: () => { navigation.dispatch(data.action); },
         },
       ]
     );
@@ -323,23 +323,23 @@ export default function ConfirmMealScreen() {
           items={items}
           loading={isDetecting || isPrefilling}
           onChangeName={(id, name) =>
-            setItems((prev) =>
+            { setItems((prev) =>
               prev.map((i) =>
                 i.id === id ? { ...i, name, searchName: undefined } : i
               )
-            )
+            ); }
           }
           onChangeGrams={(id, grams) =>
-            setItems((prev) =>
+            { setItems((prev) =>
               prev.map((i) => (i.id === id ? { ...i, grams } : i))
-            )
+            ); }
           }
-          onRemove={(id) => setItems((prev) => prev.filter((i) => i.id !== id))}
+          onRemove={(id) => { setItems((prev) => prev.filter((i) => i.id !== id)); }}
           onAdd={() =>
-            setItems((prev) => [
+            { setItems((prev) => [
               ...prev,
               { id: uuidv4(), name: "", grams: 100 },
-            ])
+            ]); }
           }
         />
       </ScreenMainScrollView>
