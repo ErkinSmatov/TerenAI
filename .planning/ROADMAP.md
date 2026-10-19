@@ -437,7 +437,7 @@ Plans:
 **Goal:** Четыре задачи перед запуском (подписка вынесена в Phase 73). (1) Push-уведомления не приходят в сборке из TestFlight, хотя работают в локальной сборке — найти причину (вероятно, APNs production vs sandbox / entitlements / ключи) и починить. (2) Пользователь может посмотреть свою текущую цель и сменить её. (3) Вход по коду через Telegram не работает для других номеров — починить. (4) Настроить OTP через WhatsApp для авторизации. Одна фаза, несколько планов волнами: сначала починки (push, Telegram, WhatsApp), потом цель
 **Requirements**: TBD
 **Depends on:** Phase 71
-**Plans:** 5/10 plans executed
+**Plans:** 6/10 plans executed
 
 Plans:
 **Wave 1**
@@ -457,7 +457,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 72-07-PLAN.md — Источник деплоя (D-20), Convex prod deploy, TestFlight + production-apk, проверка push iOS/Android и Telegram на prod (wave 4, checkpoints)
+- [x] 72-07-PLAN.md — Источник деплоя (D-20), Convex prod deploy, TestFlight + production-apk, проверка push iOS/Android и Telegram на prod (wave 4, checkpoints)
 
 **Wave 5** *(blocked on Wave 4 completion; WhatsApp не ждёт, D-16)*
 
