@@ -15,7 +15,6 @@ import {
   useAnimatedProps,
   useDerivedValue,
   useSharedValue,
-  useAnimatedStyle,
 } from "react-native-reanimated";
 import OnboardingStep from "../../OnboardingStep";
 import resolveFontFamily from "@/lib/ui/resolveFontFamily";
@@ -75,19 +74,6 @@ export default function OnboardingWeightChangeRate() {
     })),
   };
 
-  // "muted", не "secondary": в тёмной палитре secondary — сплошной белый,
-  // задуман только для низкой прозрачности (см. lib/ui/palettes.ts). Тема
-  // передаётся явно — worklet-контекст useAnimatedStyle.
-  const animatedStyles = {
-    tooltip: useAnimatedStyle(() => ({
-      backgroundColor:
-        changeRate.value >= displayBounds.rec[0] &&
-        changeRate.value <= displayBounds.rec[1]
-          ? getColor("primaryLight", undefined, theme)
-          : getColor("muted", undefined, theme),
-    })),
-  };
-
   const handleSlidingComplete = (value: number) => {
     const roundedValue = Math.round(value * 10) / 10;
     syncWeightChangeRate(roundedValue, isMetric, setData);
@@ -99,7 +85,13 @@ export default function OnboardingWeightChangeRate() {
         <View style={styles.tooltipContainer}>
           <AnimateableText
             animatedProps={animatedProps.tooltip}
-            style={[styles.tooltip, animatedStyles.tooltip]}
+            style={[
+              styles.tooltip,
+              // "muted", не "secondary": в тёмной палитре secondary — сплошной
+              // белый, задуман только для низкой прозрачности (palettes.ts).
+              // Зелёный primaryLight прятал белый текст в тёмной теме.
+              { backgroundColor: getColor("muted", undefined, theme) },
+            ]}
           />
         </View>
         <Slider
