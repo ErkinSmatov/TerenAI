@@ -1,3 +1,4 @@
+import Card from "@/components/ui/Card";
 import CircularProgress from "@/components/ui/CircularProgress";
 import {
   ScreenFooter,
@@ -25,9 +26,17 @@ import {
 } from "@/lib/ui/macroTileStyles";
 import macrosToKcal from "@/lib/utils/macrosToKcal";
 import { useMutation, useQuery } from "convex/react";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
+import { ChevronRightIcon, TargetIcon } from "lucide-react-native";
+import { formatGoalSummary } from "@/lib/goal/goalDetails";
 import { useEffect, useState } from "react";
-import { StyleSheet, TextInput, useWindowDimensions, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  TextInput,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import {
   cancelAnimation,
   SharedValue,
@@ -48,7 +57,8 @@ type Macro = MacroTileStyle & {
 export default function AdjustMacroTargetsScreen() {
   const { theme } = useThemeContext();
   const { width: windowWidth } = useWindowDimensions();
-  const targets = useQuery(api.profiles.getProfile.default)?.targets;
+  const profile = useQuery(api.profiles.getProfile.default);
+  const targets = profile?.targets;
   const updateProfile = useMutation(api.profiles.updateProfile.default);
 
   const router = useRouter();
@@ -158,6 +168,30 @@ export default function AdjustMacroTargetsScreen() {
       </ScreenHeader>
 
       <ScreenMainScrollView safeAreaProps={{ edges: [] }}>
+        <View style={styles.goalContainer}>
+          <Link href="/app/(settings)/changeGoal" asChild>
+            <Pressable>
+              <Card style={styles.goalCard}>
+                <TargetIcon
+                  size={22}
+                  color={getColor("foreground", undefined, theme)}
+                />
+                <View style={styles.goalText}>
+                  <Text size="12" color={getColor("foreground", 0.6, theme)}>
+                    Моя цель
+                  </Text>
+                  <Text size="16" weight="600">
+                    {profile?.data ? formatGoalSummary(profile.data) : "Цель"}
+                  </Text>
+                </View>
+                <ChevronRightIcon
+                  size={20}
+                  color={getColor("foreground", 0.6, theme)}
+                />
+              </Card>
+            </Pressable>
+          </Link>
+        </View>
         <View style={styles.grid}>
           {macros.map((macro) => (
             <View
@@ -236,6 +270,20 @@ export default function AdjustMacroTargetsScreen() {
 }
 
 const styles = StyleSheet.create({
+  goalContainer: {
+    paddingHorizontal: GRID_PADDING,
+    paddingBottom: GRID_GAP,
+  },
+  goalCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    padding: 16,
+  },
+  goalText: {
+    flex: 1,
+    gap: 2,
+  },
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
