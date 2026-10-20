@@ -13,8 +13,7 @@ import { useSubscriptionContext } from "@/context/SubscriptionContext";
 import { api } from "@/convex/_generated/api";
 import buildMonthlyReportHtml from "@/lib/reports/buildMonthlyReportHtml";
 import tryCatch from "@/lib/utils/tryCatch";
-import { formatGoalSummary } from "@/lib/goal/goalDetails";
-import { useConvex, useMutation, useQuery } from "convex/react";
+import { useConvex, useMutation } from "convex/react";
 import { Link, useRouter } from "expo-router";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
@@ -31,7 +30,6 @@ import {
   BellIcon,
   TrophyIcon,
   MoonIcon,
-  TargetIcon,
 } from "lucide-react-native";
 import { useState } from "react";
 import { Alert, Platform, ScrollView, StyleSheet } from "react-native";
@@ -51,8 +49,6 @@ export default function SettingsScreen() {
   } = useSubscriptionContext();
   const deleteUser = useMutation(api.users.deleteUser.default);
   const convex = useConvex();
-  const profile = useQuery(api.profiles.getProfile.default);
-  const goalText = profile?.data ? formatGoalSummary(profile.data) : "Цель";
   const router = useRouter();
   const [isExportingReport, setIsExportingReport] = useState(false);
 
@@ -124,9 +120,6 @@ export default function SettingsScreen() {
       >
         <ProfileHeader />
         <SettingsGroup>
-          <Link href="/app/(settings)/changeGoal" asChild>
-            <SettingsItem text={goalText} Icon={TargetIcon} />
-          </Link>
           <Link href="/app/(settings)/adjustMacroTargets" asChild>
             <SettingsItem text="Настроить БЖУ" Icon={PieChartIcon} />
           </Link>
