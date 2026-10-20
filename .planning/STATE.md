@@ -28,7 +28,7 @@ Phase: 73
 Plan: Not started
 Status: Ready to plan
 
-Next step: /gsd:plan-phase 07.1
+Next step: /gsd:discuss-phase 73
 
 Progress: [█████████░] 93%
 
