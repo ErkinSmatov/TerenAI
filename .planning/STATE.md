@@ -25,7 +25,7 @@ See: .planning/PROJECT.md (updated 2026-08-05)
 ## Current Position
 
 Phase: 72 (push-testflight-telegram-whatsapp-otp) — EXECUTING
-Plan: 8 of 10 выполнено (72-06 Telegram отложен пользователем)
+Plan: 7 of 10 выполнено (72-06 Telegram отложен пользователем)
 Status: Ready to execute 72-09
 
 Next step: /gsd:plan-phase 07.1
