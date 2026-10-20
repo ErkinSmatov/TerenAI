@@ -48,7 +48,7 @@ export default function ConfirmPhoneScreen() {
   const insets = useSafeArea();
   const { data, targets } = useOnboardingContext();
   const completeOnboarding = useMutation(
-    api.profiles.completeOnboarding.default
+    api.profiles.completeOnboarding.default,
   );
 
   const inputRef = useRef<OTPInputHandle>(null);
@@ -64,6 +64,10 @@ export default function ConfirmPhoneScreen() {
   // нет, поэтому ждём isAuthenticated явно.
   const [isSignedIn, setIsSignedIn] = useState(false);
   const hasStartedCompletionRef = useRef(false);
+  // Вход уже выполнен, но завершить онбординг не удалось (сеть, валидация):
+  // показываем «Повторить», код повторно вводить не нужно (он одноразовый).
+  const [completionFailed, setCompletionFailed] = useState(false);
+  const [completionAttempt, setCompletionAttempt] = useState(0);
 
   const channelName = channelNames[provider] ?? "мессенджер";
 
@@ -110,12 +114,30 @@ export default function ConfirmPhoneScreen() {
 
     void (async () => {
       if (isOnboardingDataComplete(data)) {
-        await completeOnboarding({ data, targets });
+        const { error } = await tryCatch(completeOnboarding({ data, targets }));
+        if (error) {
+          Toast.show({
+            text: "Не удалось завершить вход. Проверьте соединение и повторите",
+            variant: "error",
+          });
+          hasStartedCompletionRef.current = false;
+          setCompletionFailed(true);
+          return;
+        }
       }
       if (router.canDismiss()) router.dismissAll();
       router.replace("/app");
     })();
-  }, [isSignedIn, isAuthenticated, data, targets, completeOnboarding, router]);
+    // completionAttempt запускает эффект заново после «Повторить».
+  }, [
+    isSignedIn,
+    isAuthenticated,
+    data,
+    targets,
+    completeOnboarding,
+    router,
+    completionAttempt,
+  ]);
 
   const startResendCountdown = () => {
     if (resendIn > 0) return;
@@ -146,7 +168,7 @@ export default function ConfirmPhoneScreen() {
     } else {
       const { text } = getOtpErrorMessage(
         error instanceof ConvexError ? error.data : undefined,
-        provider as PhoneOtpProvider
+        provider as PhoneOtpProvider,
       );
       Toast.show({ text, variant: "error" });
     }
@@ -182,6 +204,18 @@ export default function ConfirmPhoneScreen() {
             autoFocus
           />
 
+          {completionFailed ? (
+            <Button
+              size="md"
+              onPress={() => {
+                setCompletionFailed(false);
+                setCompletionAttempt((n) => n + 1);
+              }}
+            >
+              Повторить
+            </Button>
+          ) : null}
+
           <View style={styles.footerText}>
             <Text size="14" color={getColor("mutedForeground")}>
               Не получили код?
@@ -200,7 +234,9 @@ export default function ConfirmPhoneScreen() {
                 },
               }}
             >
-              {resendIn > 0 ? `Отправить снова (${resendIn})` : "Отправить снова"}
+              {resendIn > 0
+                ? `Отправить снова (${resendIn})`
+                : "Отправить снова"}
             </Button>
           </View>
         </SafeArea>
