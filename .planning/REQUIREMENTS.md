@@ -34,7 +34,7 @@
 ### Вход по номеру телефона (AUTH) — добавлено 2026-08-20, реализовано вне GSD-цикла в рамках Phase 3
 
 - [x] **AUTH-06**: Пользователь входит по номеру телефона через Telegram OTP (Telegram Gateway API, `convex/TelegramOTP.ts`)
-- [ ] **AUTH-07**: Пользователь входит по номеру телефона через WhatsApp OTP (Twilio Verify, `convex/WhatsAppOTP.ts`) — код реализован, интеграция подтверждённо не работает, требует отладки (см. STATE.md Pending Todos)
+- [ ] **AUTH-07**: Пользователь входит по номеру телефона через WhatsApp OTP (Twilio Verify, `convex/WhatsAppOTP.ts`) — не работает: у Twilio нет WhatsApp Sender (номер + WABA в Meta), аккаунт не готов; перенесено из Phase 72 в следующую фазу (D-16)
 
 ### Экспорт отчёта (REPORT) — добавлено 2026-08-20, реализовано вне GSD-цикла
 
@@ -160,7 +160,7 @@
 | GUEST-07 | Phase 3 — Гостевой доступ без регистрации | Done |
 | AUTH-02 | Phase 3 — Гостевой доступ без регистрации | Done (перенесено из v2, подтверждено 2026-08-05) |
 | AUTH-06 | Phase 3 — Гостевой доступ без регистрации | Done |
-| AUTH-07 | Phase 3 — Гостевой доступ без регистрации | Pending (Twilio Verify не работает, требует отладки) |
+| AUTH-07 | Phase 3 — Гостевой доступ без регистрации | Pending (перенесено из Phase 72: нужен WhatsApp Sender в Twilio/Meta) |
 | REPORT-01 | Phase 3.1 — Экспорт месячного отчёта (INSERTED) | Done |
 | FLOW-01 | Phase 4 — Сквозной сценарий тестера | Complete |
 | FLOW-02 | Phase 4 — Сквозной сценарий тестера | Complete |
