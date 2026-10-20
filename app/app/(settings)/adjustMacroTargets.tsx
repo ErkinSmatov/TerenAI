@@ -25,11 +25,13 @@ import {
   type MacroTileStyle,
 } from "@/lib/ui/macroTileStyles";
 import macrosToKcal from "@/lib/utils/macrosToKcal";
+import tryCatch from "@/lib/utils/tryCatch";
+import { Toast } from "@/components/ui/Toast";
 import { useMutation, useQuery } from "convex/react";
 import { Link, useRouter } from "expo-router";
 import { ChevronRightIcon, TargetIcon } from "lucide-react-native";
 import { formatGoalSummary } from "@/lib/goal/goalDetails";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Pressable,
   StyleSheet,
@@ -67,6 +69,18 @@ export default function AdjustMacroTargetsScreen() {
   const [carbs, setCarbs] = useState(targets?.carbs);
   const [protein, setProtein] = useState(targets?.protein);
   const [fat, setFat] = useState(targets?.fat);
+
+  // Профиль может прийти после первого рендера (холодный старт, глубокая
+  // ссылка): без этого поля остались бы пустыми, а «Готово» записало нули.
+  const hasHydratedRef = useRef(targets !== undefined);
+  useEffect(() => {
+    if (!targets || hasHydratedRef.current) return;
+    hasHydratedRef.current = true;
+    setCalories(targets.calories);
+    setCarbs(targets.carbs);
+    setProtein(targets.protein);
+    setFat(targets.fat);
+  }, [targets]);
 
   const macrosCalories = macrosToKcal({ carbs, protein, fat });
 
@@ -107,16 +121,24 @@ export default function AdjustMacroTargetsScreen() {
   ];
 
   const handleDone = async () => {
-    await updateProfile({
-      profile: {
-        targets: {
-          calories: calories ?? 0,
-          carbs: carbs ?? 0,
-          protein: protein ?? 0,
-          fat: fat ?? 0,
+    if (!targets) return;
+
+    const { error } = await tryCatch(
+      updateProfile({
+        profile: {
+          targets: {
+            calories: calories ?? 0,
+            carbs: carbs ?? 0,
+            protein: protein ?? 0,
+            fat: fat ?? 0,
+          },
         },
-      },
-    });
+      }),
+    );
+    if (error) {
+      Toast.show({ text: "Не удалось сохранить цели", variant: "error" });
+      return;
+    }
     router.dismissTo("/app");
   };
 
@@ -130,7 +152,7 @@ export default function AdjustMacroTargetsScreen() {
 
     const nextCaloriesRatio = Math.min(
       1,
-      macrosCalories ? (calories ?? 0) / macrosCalories : 0
+      macrosCalories ? (calories ?? 0) / macrosCalories : 0,
     );
 
     const duration = 1000;
@@ -228,7 +250,7 @@ export default function AdjustMacroTargetsScreen() {
                   onChangeText={(text) => {
                     const numberText = text.replace(/[^0-9]/g, "");
                     macro.setValue(
-                      numberText === "" ? undefined : Number(numberText)
+                      numberText === "" ? undefined : Number(numberText),
                     );
                   }}
                   style={[
@@ -260,6 +282,7 @@ export default function AdjustMacroTargetsScreen() {
         </ScreenFooterButton>
         <ScreenFooterButton
           style={{ flex: 0 }}
+          disabled={!targets}
           onPress={() => void handleDone()}
         >
           Готово
