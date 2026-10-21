@@ -5,7 +5,7 @@ type MonthlyReport = FunctionReturnType<typeof api.reports.getMonthlyReport.defa
 
 const goalTrackNames: Record<string, string> = {
   biohacking: "Биохакинг",
-  glucometer: "Контроль глюкозы",
+  glucometer: "Диабет",
   weightControl: "Контроль веса",
 };
 

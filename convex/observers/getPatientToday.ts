@@ -3,6 +3,7 @@ import { v } from "convex/values";
 import { getMealTime } from "@/lib/meals/getMealTime";
 import logError from "@/lib/utils/logError";
 import { assertObserverAccess } from "../utils/observerAuth";
+import { hasHealthBlocks } from "@/lib/profile/hasHealthBlocks";
 import { localDayBoundaries } from "../utils/localDayBoundaries";
 import { computeStreakFromMealTimes } from "../utils/streakDays";
 
@@ -113,7 +114,7 @@ const getPatientToday = query({
         glucoseReadings,
         bloodPressureReadings,
         targets: patientProfile?.targets ?? null,
-        isGlucometerTrack: patientProfile?.data?.goalTrack === "glucometer",
+        isGlucometerTrack: hasHealthBlocks(patientProfile?.data?.goalTrack),
         displayName,
       };
     } catch (error) {

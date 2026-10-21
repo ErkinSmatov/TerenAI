@@ -3,6 +3,7 @@ import { query } from "../_generated/server";
 import { v } from "convex/values";
 import { getMealTime } from "@/lib/meals/getMealTime";
 import logError from "@/lib/utils/logError";
+import { hasHealthBlocks } from "@/lib/profile/hasHealthBlocks";
 import { isGlucoseOutOfRange } from "../observers/utils/thresholds";
 import { Doc } from "../_generated/dataModel";
 
@@ -132,6 +133,7 @@ const getMonthlyReport = query({
         .withIndex("byUserId", (q) => q.eq("userId", userId))
         .first();
       if (!profile) throw new Error("Profile not found");
+      const showHealthBlocks = hasHealthBlocks(profile.data?.goalTrack);
 
       const offsetMs = timezoneOffsetMinutes * 60_000;
       const now = Date.now();
@@ -341,7 +343,7 @@ const getMonthlyReport = query({
         days: dailyEntries,
         nutrientTotals,
         glucose:
-          glucoseReadings.length === 0
+          !showHealthBlocks || glucoseReadings.length === 0
             ? null
             : {
                 readingsCount: glucoseReadings.length,
@@ -349,7 +351,7 @@ const getMonthlyReport = query({
                 outOfRangeCount: glucoseOutOfRangeCount,
               },
         bloodPressure:
-          bloodPressureReadings.length === 0
+          !showHealthBlocks || bloodPressureReadings.length === 0
             ? null
             : {
                 readingsCount: bloodPressureReadings.length,

@@ -3,6 +3,7 @@ import { query } from "../_generated/server";
 import { Id } from "../_generated/dataModel";
 import { v } from "convex/values";
 import logError from "@/lib/utils/logError";
+import { hasHealthBlocks } from "@/lib/profile/hasHealthBlocks";
 import { localDayBoundaries } from "../utils/localDayBoundaries";
 import { isGlucoseOutOfRange, isCaloriesExceeded } from "./utils/thresholds";
 
@@ -138,7 +139,7 @@ const getObservedPatients = query({
           isGlucoseOutOfRange: glucoseOutOfRange,
           steps: movementRow?.steps ?? null,
           distanceMeters: movementRow?.distanceMeters ?? null,
-          isGlucometerTrack: patientProfile?.data?.goalTrack === "glucometer",
+          isGlucometerTrack: hasHealthBlocks(patientProfile?.data?.goalTrack),
           _creationTime: link._creationTime,
         });
       }
