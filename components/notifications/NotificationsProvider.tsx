@@ -6,6 +6,7 @@ import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import { api } from "@/convex/_generated/api";
 import logError from "@/lib/utils/logError";
+import tryCatch from "@/lib/utils/tryCatch";
 import { useAuthContext } from "@/context/AuthContext";
 
 // Не чаще раза в 6 часов: держит `timezoneOffsetMinutes` актуальным при
@@ -29,9 +30,19 @@ Notifications.setNotificationHandler({
 // `string | undefined`.
 type ExpoExtra = { eas?: { projectId?: string } };
 
+type MealPoint = "breakfast" | "lunch" | "dinner";
+
+const toMealPoint = (value: unknown): MealPoint | null =>
+  value === "breakfast" || value === "lunch" || value === "dinner"
+    ? value
+    : null;
+
 export default function NotificationsProvider() {
   const router = useRouter();
   const recordPushToken = useMutation(api.notifications.recordPushToken.default);
+  const skipMealReminder = useMutation(
+    api.notifications.skipMealReminder.default
+  );
   const lastRegistrationRef = useRef<number>(0);
   const { isAuthenticated } = useAuthContext();
 
@@ -52,6 +63,20 @@ export default function NotificationsProvider() {
             importance: Notifications.AndroidImportance.DEFAULT,
           });
         }
+
+        // Идентификатор совпадает с categoryId из checkScheduledPushes (FOOD-01).
+        await Notifications.setNotificationCategoryAsync("food-reminder", [
+          {
+            identifier: "add-photo",
+            buttonTitle: "Добавить фото",
+            options: { opensAppToForeground: true },
+          },
+          {
+            identifier: "skip-meal",
+            buttonTitle: "Пропускаю",
+            options: { opensAppToForeground: false },
+          },
+        ]);
 
         const currentPermissions = await Notifications.getPermissionsAsync();
         let finalStatus = currentPermissions.status;
@@ -116,20 +141,31 @@ export default function NotificationsProvider() {
       }
     };
 
+    const handleResponse = (response: Notifications.NotificationResponse) => {
+      const data = response.notification.request.content.data;
+      if (response.actionIdentifier === "add-photo") {
+        router.push("/app/(add)/camera");
+        return;
+      }
+      if (response.actionIdentifier === "skip-meal") {
+        const pointId = toMealPoint(data.mealPoint);
+        if (!pointId) return;
+        void tryCatch(skipMealReminder({ pointId })).then(({ error }) => {
+          if (error) logError("NotificationsProvider skipMeal error", error);
+        });
+        return;
+      }
+      navigateFromNotificationUrl(data.url);
+    };
+
     const responseSubscription =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        navigateFromNotificationUrl(
-          response.notification.request.content.data.url
-        );
-      });
+      Notifications.addNotificationResponseReceivedListener(handleResponse);
 
     // eslint-disable-next-line @typescript-eslint/no-deprecated -- getLastNotificationResponse() (sync) не покрывает холодный старт до готовности нативного модуля так же надёжно, как задокументировано в expo-notifications; используем async-вариант умышленно.
     Notifications.getLastNotificationResponseAsync()
       .then((response) => {
         if (!response) return;
-        navigateFromNotificationUrl(
-          response.notification.request.content.data.url
-        );
+        handleResponse(response);
       })
       .catch((error: unknown) => {
         logError("NotificationsProvider cold start response error", error);
@@ -138,7 +174,7 @@ export default function NotificationsProvider() {
     return () => {
       responseSubscription.remove();
     };
-  }, [router]);
+  }, [router, skipMealReminder]);
 
   return null;
 }
