@@ -18,7 +18,9 @@ type PushMessage = {
   expoPushToken: string;
   title: string;
   body: string;
-  data?: { url: string };
+  data?: { url: string; mealPoint?: "breakfast" | "lunch" | "dinner" };
+  // Категория кнопок быстрых действий (Expo Push API: categoryId).
+  categoryId?: string;
 };
 
 type ExpoPushTicket = {
@@ -58,6 +60,7 @@ const postBatch = async (
         sound: "default",
         channelId: ANDROID_CHANNEL_ID,
         data: message.data,
+        categoryId: message.categoryId,
       }))
     ),
   });
@@ -92,7 +95,19 @@ const sendPushNotification = internalAction({
         expoPushToken: v.string(),
         title: v.string(),
         body: v.string(),
-        data: v.optional(v.object({ url: v.string() })),
+        data: v.optional(
+          v.object({
+            url: v.string(),
+            mealPoint: v.optional(
+              v.union(
+                v.literal("breakfast"),
+                v.literal("lunch"),
+                v.literal("dinner")
+              )
+            ),
+          })
+        ),
+        categoryId: v.optional(v.string()),
       })
     ),
     receiptsDelayMs: v.optional(v.number()),

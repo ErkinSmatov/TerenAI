@@ -22,6 +22,33 @@ export const profilesFields = {
   mealRemindersEnabled: v.optional(v.boolean()),
   lastWeighInReminderSentAt: v.optional(v.number()),
   lastMealReminderSentAt: v.optional(v.number()),
+  // Фаза 74: undefined = включено / не отправлялось, миграции нет.
+  // Тумблер возвратных push RET-01..03.
+  retentionRemindersEnabled: v.optional(v.boolean()),
+  lastRetentionReminderStage: v.optional(v.number()),
+  lastRetentionReminderSentAt: v.optional(v.number()),
+  // FOOD-01: не более 2 в локальные сутки.
+  foodReminderCounter: v.optional(
+    v.object({ dayStartUtcMs: v.number(), count: v.number() })
+  ),
+  // Классы C и D вместе: не более 3 в локальные сутки.
+  limitedPushCounter: v.optional(
+    v.object({ dayStartUtcMs: v.number(), count: v.number() })
+  ),
+  // Индексы последних текстов для ротации без повтора подряд.
+  lastFoodReminderTextIndex: v.optional(v.number()),
+  lastWeighInReminderTextIndex: v.optional(v.number()),
+  // Кнопка «Пропускаю» у FOOD-01.
+  lastMealSkip: v.optional(
+    v.object({
+      pointId: v.union(
+        v.literal("breakfast"),
+        v.literal("lunch"),
+        v.literal("dinner")
+      ),
+      dayStartUtcMs: v.number(),
+    })
+  ),
   data: v.optional(
     v.object({
       measurementSystem: v.union(v.literal("metric"), v.literal("imperial")),

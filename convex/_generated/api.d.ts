@@ -88,6 +88,7 @@ import type * as notifications_recordPushToken from "../notifications/recordPush
 import type * as notifications_removePushToken from "../notifications/removePushToken.js";
 import type * as notifications_sendPushNotification from "../notifications/sendPushNotification.js";
 import type * as notifications_sendTestPush from "../notifications/sendTestPush.js";
+import type * as notifications_skipMealReminder from "../notifications/skipMealReminder.js";
 import type * as nutrition_computeNutritionTargets from "../nutrition/computeNutritionTargets.js";
 import type * as observers_generateCode from "../observers/generateCode.js";
 import type * as observers_getMyObservers from "../observers/getMyObservers.js";
@@ -228,6 +229,7 @@ declare const fullApi: ApiFromModules<{
   "notifications/removePushToken": typeof notifications_removePushToken;
   "notifications/sendPushNotification": typeof notifications_sendPushNotification;
   "notifications/sendTestPush": typeof notifications_sendTestPush;
+  "notifications/skipMealReminder": typeof notifications_skipMealReminder;
   "nutrition/computeNutritionTargets": typeof nutrition_computeNutritionTargets;
   "observers/generateCode": typeof observers_generateCode;
   "observers/getMyObservers": typeof observers_getMyObservers;
