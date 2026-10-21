@@ -51,6 +51,9 @@ export function classifyTwilioError(
     return "CHANNEL_UNREACHABLE";
   }
   if (code === 60203 || httpStatus === 429) return "RATE_LIMITED";
+  // 60242: у WhatsApp-отправителя нет одобренного шаблона на нужном языке —
+  // проблема конфигурации Twilio/Meta, не номера пользователя.
+  if (code === 60242) return "SERVICE_UNAVAILABLE";
   if (code === 60200) {
     // Отказ по CustomCode — проблема конфигурации сервиса, не номера.
     return message.includes("To") ? "INVALID_PHONE" : "SERVICE_UNAVAILABLE";

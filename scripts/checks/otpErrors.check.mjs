@@ -26,6 +26,7 @@ assert.equal(
 );
 assert.equal(tw(401, 20003, ""), "SERVICE_UNAVAILABLE");
 assert.equal(tw(404, 20404, ""), "SERVICE_UNAVAILABLE");
+assert.equal(tw(400, 60242, "template not found"), "SERVICE_UNAVAILABLE");
 assert.equal(tw(500, undefined, ""), "UNKNOWN");
 
 assert.equal(maskPhone("+77011234567"), "+7******4567");
