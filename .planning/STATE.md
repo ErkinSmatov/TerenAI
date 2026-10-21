@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: milestone
-status: ready_to_plan
-stopped_at: Phases 71 and 07.1 closed by user (2026-10-20); ready to discuss Phase 73 (67 also pending)
-last_updated: 2026-10-20T07:22:37.602Z
+status: planning
+stopped_at: Phase 74 context gathered
+last_updated: "2026-10-21T06:20:20.941Z"
 progress:
-  total_phases: 15
-  completed_phases: 7
+  total_phases: 16
+  completed_phases: 9
   total_plans: 74
   completed_plans: 73
-  percent: 47
+  percent: 56
 ---
 
 # Project State
@@ -110,6 +110,7 @@ Recent decisions affecting current work:
 - Phase 07.1 inserted after Phase 7: UI/UX редизайн по Figma: привести интерфейс приложения к новому дизайну — визуальная система, компоненты, экраны (URGENT)
 
 - Phase 74 added (2026-10-21): онбординг (цель, программа Биохакинг/Диабет/Контроль веса, имя пользователя) и push-уведомления (исправить дубли, настраиваемые уведомления)
+
 ### Pending Todos
 
 - ✓ **Закрыто 2026-08-05:** сборка 1.2.1 (2) установлена из TestFlight, приложение открывается и показывает онбординг. Гипотеза о пустой EAS-среде подтверждена, BOOT-01 выполнен.
@@ -148,6 +149,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-10-20T05:41:31.975Z
-Stopped at: Phase 72 context updated
-Resume file: None
+Last session: 2026-10-21T06:20:20.923Z
+Stopped at: Phase 74 context gathered
+Resume file: .planning/phases/74-onboarding-push-notifications/74-CONTEXT.md
