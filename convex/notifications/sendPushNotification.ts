@@ -158,14 +158,14 @@ export const deleteInvalidToken = internalMutation({
   args: { expoPushToken: v.string() },
   handler: async (ctx, { expoPushToken }) => {
     try {
-      const existing = await ctx.db
+      const rows = await ctx.db
         .query("pushTokens")
         .withIndex("byExpoPushToken", (q) =>
           q.eq("expoPushToken", expoPushToken)
         )
-        .first();
-      if (existing) {
-        await ctx.db.delete(existing._id);
+        .collect();
+      for (const row of rows) {
+        await ctx.db.delete(row._id);
       }
       return null;
     } catch (error) {

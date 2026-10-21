@@ -31,6 +31,22 @@ const recordPushToken = mutation({
         throw new Error("Invalid timezone offset");
       }
 
+      // Владелец токена — последний вошедший на устройстве пользователь
+      // (фикс дублей фазы 74, WR-05): удаляем строки того же токена у других userId.
+      const sameTokenRows = await ctx.db
+        .query("pushTokens")
+        .withIndex("byExpoPushToken", (q) =>
+          q.eq("expoPushToken", expoPushToken)
+        )
+        .collect();
+      let removedForeignRows = 0;
+      for (const row of sameTokenRows) {
+        if (row.userId !== userId) {
+          await ctx.db.delete(row._id);
+          removedForeignRows += 1;
+        }
+      }
+
       const existing = await ctx.db
         .query("pushTokens")
         .withIndex("byUserId", (q) => q.eq("userId", userId))
@@ -65,6 +81,7 @@ const recordPushToken = mutation({
           platform,
           tokenSuffix: expoPushToken.slice(-7),
           action,
+          removedForeignRows,
         })
       );
 

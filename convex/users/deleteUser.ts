@@ -119,6 +119,14 @@ const deleteUser = mutation({
       await ctx.db.delete(link._id);
     }
 
+    const pushTokens = await ctx.db
+      .query("pushTokens")
+      .withIndex("byUserId", (q) => q.eq("userId", userId))
+      .collect();
+    for (const token of pushTokens) {
+      await ctx.db.delete(token._id);
+    }
+
     await ctx.db.delete(userId);
   },
 });
