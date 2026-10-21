@@ -10,8 +10,8 @@ import OnboardingSex from "@/components/onboarding/steps/basics/OnboardingSex";
 import OnboardingWeeklyWorkouts from "@/components/onboarding/steps/basics/OnboardingWeeklyWorkouts";
 import OnboardingWeight from "@/components/onboarding/steps/basics/OnboardingWeight";
 import OnboardingCreatingPlan from "@/components/onboarding/steps/end/OnboardingCreatingPlan";
-import OnboardingGoalTrack from "@/components/onboarding/steps/goal/OnboardingGoalTrack";
-import OnboardingGlucometerType from "@/components/onboarding/steps/goal/OnboardingGlucometerType";
+import OnboardingGoalTrack from "@/components/onboarding/steps/program/OnboardingGoalTrack";
+import OnboardingGlucometerType from "@/components/onboarding/steps/program/OnboardingGlucometerType";
 import OnboardingGoal from "@/components/onboarding/steps/goal/OnboardingGoal";
 import OnboardingTargetWeight from "@/components/onboarding/steps/goal/OnboardingTargetWeight";
 import OnboardingWeightChangeRate from "@/components/onboarding/steps/goal/OnboardingWeightChangeRate";
@@ -92,6 +92,27 @@ const steps: OnboardingSectionType["steps"] = [
     scrollView: true,
   },
   {
+    screen: <OnboardingGoal key="goal" />,
+    completed: ({ data }) => data.goal !== undefined,
+    skip: () => false,
+    showHeader: true,
+    scrollView: true,
+  },
+  {
+    screen: <OnboardingTargetWeight key="target-weight" />,
+    completed: () => true,
+    skip: ({ data }) => data.goal === "maintain",
+    showHeader: true,
+    scrollView: false,
+  },
+  {
+    screen: <OnboardingWeightChangeRate key="weight-change-rate" />,
+    completed: () => true,
+    skip: ({ data }) => data.goal === "maintain",
+    showHeader: true,
+    scrollView: false,
+  },
+  {
     screen: <OnboardingGoalTrack key="goal-track" />,
     completed: ({ data }) => data.goalTrack !== undefined,
     skip: () => false,
@@ -104,29 +125,6 @@ const steps: OnboardingSectionType["steps"] = [
     skip: ({ data }) => data.goalTrack !== "glucometer",
     showHeader: true,
     scrollView: true,
-  },
-  {
-    screen: <OnboardingGoal key="goal" />,
-    completed: ({ data }) => data.goal !== undefined,
-    skip: ({ data }) => data.goalTrack !== "weightControl",
-    showHeader: true,
-    scrollView: true,
-  },
-  {
-    screen: <OnboardingTargetWeight key="target-weight" />,
-    completed: () => true,
-    skip: ({ data }) =>
-      data.goalTrack !== "weightControl" || data.goal === "maintain",
-    showHeader: true,
-    scrollView: false,
-  },
-  {
-    screen: <OnboardingWeightChangeRate key="weight-change-rate" />,
-    completed: () => true,
-    skip: ({ data }) =>
-      data.goalTrack !== "weightControl" || data.goal === "maintain",
-    showHeader: true,
-    scrollView: false,
   },
   {
     screen: <OnboardingTraining key="training" />,

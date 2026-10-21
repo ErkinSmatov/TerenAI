@@ -13,8 +13,8 @@ import OnboardingActivityLevel from "./steps/basics/OnboardingActivityLevel";
 import OnboardingLiftingExperience from "./steps/basics/OnboardingLiftingExperience";
 import OnboardingCardioExperience from "./steps/basics/OnboardingCardioExperience";
 import OnboardingGoalSection from "./steps/goal/OnboardingGoalSection";
-import OnboardingGoalTrack from "./steps/goal/OnboardingGoalTrack";
-import OnboardingGlucometerType from "./steps/goal/OnboardingGlucometerType";
+import OnboardingGoalTrack from "./steps/program/OnboardingGoalTrack";
+import OnboardingGlucometerType from "./steps/program/OnboardingGlucometerType";
 import OnboardingGoal from "./steps/goal/OnboardingGoal";
 import OnboardingTargetWeight from "./steps/goal/OnboardingTargetWeight";
 import OnboardingWeightChangeRate from "./steps/goal/OnboardingWeightChangeRate";
@@ -132,39 +132,23 @@ const sections: OnboardingSectionType[] = [
         scrollView: true,
       },
       {
-        screen: <OnboardingGoalTrack key="goal-track" />,
-        completed: ({ data }) => data.goalTrack !== undefined,
-        skip: () => false,
-        showHeader: true,
-        scrollView: true,
-      },
-      {
-        screen: <OnboardingGlucometerType key="glucometer-type" />,
-        completed: ({ data }) => data.glucometerType !== undefined,
-        skip: ({ data }) => data.goalTrack !== "glucometer",
-        showHeader: true,
-        scrollView: true,
-      },
-      {
         screen: <OnboardingGoal key="goal" />,
         completed: ({ data }) => data.goal !== undefined,
-        skip: ({ data }) => data.goalTrack !== "weightControl",
+        skip: () => false,
         showHeader: true,
         scrollView: true,
       },
       {
         screen: <OnboardingTargetWeight key="target-weight" />,
         completed: () => true,
-        skip: ({ data }) =>
-          data.goalTrack !== "weightControl" || data.goal === "maintain",
+        skip: ({ data }) => data.goal === "maintain",
         showHeader: true,
         scrollView: false,
       },
       {
         screen: <OnboardingWeightChangeRate key="weight-change-rate" />,
         completed: () => true,
-        skip: ({ data }) =>
-          data.goalTrack !== "weightControl" || data.goal === "maintain",
+        skip: ({ data }) => data.goal === "maintain",
         showHeader: true,
         scrollView: false,
       },
@@ -177,6 +161,20 @@ const sections: OnboardingSectionType[] = [
         screen: <OnboardingProgramSection key="program-section" />,
         completed: () => true,
         skip: () => false,
+        showHeader: true,
+        scrollView: true,
+      },
+      {
+        screen: <OnboardingGoalTrack key="goal-track" />,
+        completed: ({ data }) => data.goalTrack !== undefined,
+        skip: () => false,
+        showHeader: true,
+        scrollView: true,
+      },
+      {
+        screen: <OnboardingGlucometerType key="glucometer-type" />,
+        completed: ({ data }) => data.glucometerType !== undefined,
+        skip: ({ data }) => data.goalTrack !== "glucometer",
         showHeader: true,
         scrollView: true,
       },
