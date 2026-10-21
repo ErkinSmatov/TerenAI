@@ -39,10 +39,15 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import OnboardingPaywall from "./steps/end/OnboardingPaywall";
 import { subscriptionConfig } from "@/config/subscriptionConfig";
+import OnboardingName from "./steps/end/OnboardingName";
+import tryCatch from "@/lib/utils/tryCatch";
+import logError from "@/lib/utils/logError";
+import { Toast } from "@/components/ui/Toast";
 
 export type OnboardingSectionType = {
   name: string;
   steps: {
+    id?: string;
     screen: React.ReactElement;
     completed: (context: OnboardingContextValue) => boolean;
     skip: (context: OnboardingContextValue) => boolean;
@@ -205,6 +210,17 @@ const sections: OnboardingSectionType[] = [
         scrollView: true,
       },
       {
+        id: "name",
+        screen: <OnboardingName key="name" />,
+        completed: ({ hasUserName }) => hasUserName !== undefined,
+        // Имя спрашиваем только у вошедших без имени (телефон, гость);
+        // Google/Apple с именем от провайдера шаг не видят.
+        skip: ({ isAuthenticated, hasUserName, isNameStepSkipped }) =>
+          !isAuthenticated || hasUserName === true || isNameStepSkipped,
+        showHeader: false,
+        scrollView: true,
+      },
+      {
         screen: <OnboardingPaywall key="paywall" />,
         completed: () => false,
         // При выключенной монетизации шаг пропускается. Онбординг при этом
@@ -230,6 +246,7 @@ export default function Onboarding() {
   const [step, setStep] = useState(0);
 
   const [isCompletingOnboarding, setIsCompletingOnboarding] = useState(false);
+  const updateUserName = useMutation(api.users.updateUserName.default);
   const completeOnboarding = useMutation(
     api.profiles.completeOnboarding.default
   );
@@ -270,6 +287,19 @@ export default function Onboarding() {
   const handleNext = useCallback(async () => {
     if (isNextDisabled) return;
 
+    if (currentStep?.id === "name" && context.nameDraft.trim().length > 0) {
+      const { error } = await tryCatch(
+        updateUserName({ name: context.nameDraft.trim() })
+      );
+      if (error) {
+        logError("Onboarding name save error", error);
+        Toast.show({
+          text: "Не удалось сохранить имя. Его можно задать позже в Профиле",
+          variant: "error",
+        });
+      }
+    }
+
     transitionDirection.value = 1;
 
     let nextStep = step;
@@ -301,6 +331,8 @@ export default function Onboarding() {
     step,
     section,
     context,
+    currentStep,
+    updateUserName,
     transitionDirection,
     handleCompleteOnboarding,
   ]);

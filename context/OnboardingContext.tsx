@@ -29,6 +29,11 @@ export type OnboardingContextValue = {
   targets: Targets;
   setTargets: React.Dispatch<React.SetStateAction<Targets>>;
   isAuthenticated: boolean;
+  hasUserName: boolean | undefined;
+  nameDraft: string;
+  setNameDraft: React.Dispatch<React.SetStateAction<string>>;
+  isNameStepSkipped: boolean;
+  setIsNameStepSkipped: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const OnboardingContext = createContext<OnboardingContextValue | undefined>(
@@ -49,6 +54,16 @@ export default function OnboardingContextProvider({ children }: Props) {
     profilesConfig.defaultValues.targets
   );
   const { isAuthenticated } = useAuthContext();
+  // Имя не хранится в data: data перезаписывается profile.data.
+  const nameStatus = useQuery(api.users.getNameStatus.default);
+  // undefined, пока ответ не пришёл или относится к ещё не аутентифицированной
+  // сессии (иначе «нет имени» ложно срабатывает сразу после входа).
+  const hasUserName: boolean | undefined =
+    nameStatus === undefined || (isAuthenticated && !nameStatus.isAuthenticated)
+      ? undefined
+      : nameStatus.hasName;
+  const [nameDraft, setNameDraft] = useState("");
+  const [isNameStepSkipped, setIsNameStepSkipped] = useState(false);
 
   useEffect(() => {
     setHasCreatedPlan(false);
@@ -70,6 +85,11 @@ export default function OnboardingContextProvider({ children }: Props) {
         targets,
         setTargets,
         isAuthenticated,
+        hasUserName,
+        nameDraft,
+        setNameDraft,
+        isNameStepSkipped,
+        setIsNameStepSkipped,
       }}
     >
       {children}
