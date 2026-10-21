@@ -4,12 +4,12 @@ milestone: v1.3
 milestone_name: milestone
 status: executing
 stopped_at: Phase 74 context gathered
-last_updated: "2026-10-21T07:46:52.271Z"
+last_updated: "2026-10-21T08:06:54.203Z"
 progress:
   total_phases: 16
   completed_phases: 9
   total_plans: 83
-  completed_plans: 78
+  completed_plans: 79
   percent: 56
 ---
 
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-08-05)
 ## Current Position
 
 Phase: 74 (onboarding-push-notifications) — EXECUTING
-Plan: 6 of 9
+Plan: 7 of 9
 Status: Ready to execute
 
 Next step: /gsd:discuss-phase 73
 
-Progress: [█████████░] 94%
+Progress: [██████████] 95%
 
 ## Performance Metrics
 
@@ -71,6 +71,7 @@ Progress: [█████████░] 94%
 | Phase 71 P04 | 12min | 3 tasks | 14 files |
 | Phase 71 P07 | 12min | 2 tasks | 9 files |
 | Phase 74 P01 | 10min | 2 tasks | 4 files |
+| Phase 74 P06 | 15min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -90,6 +91,7 @@ Recent decisions affecting current work:
 - [Phase 69]: checkAndAwardBadges использует pushTokens.timezoneOffsetMinutes как единственный источник часового пояса в фоновом пайплайне (0 по умолчанию)
 - [Phase 69]: markBadgeSeen копирует проверку владения дословно из updateMealInternal.ts (два отдельных if вместо ||) для соответствия eslint prefer-optional-chain
 - [Phase 69]: BadgeCelebrationModal использует @rn-primitives/portal напрямую (Portal/PortalHost без Root-обёртки) вместо AlertDialogPrimitive — у модалки нет триггер-элемента, видимость целиком выводится из реактивного getUnseenBadge
+- [Phase 74]: 74-06: последний вход = pushTokens.updatedAt; одно push на устройство за тик
 
 ### Roadmap Evolution
 
@@ -150,6 +152,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-10-21T07:46:52.261Z
+Last session: 2026-10-21T08:06:48.804Z
 Stopped at: Phase 74 context gathered
 Resume file: None
