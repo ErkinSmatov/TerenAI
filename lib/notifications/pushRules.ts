@@ -51,7 +51,7 @@ export function canSendWithDailyLimit(
   localDayStartUtcMs: number,
   max: number
 ): boolean {
-  if (!counter || counter.dayStartUtcMs !== localDayStartUtcMs) {
+  if (counter?.dayStartUtcMs !== localDayStartUtcMs) {
     return true;
   }
   return counter.count < max;
@@ -61,7 +61,7 @@ export function incrementDailyCounter(
   counter: DailyCounter | undefined,
   localDayStartUtcMs: number
 ): DailyCounter {
-  if (!counter || counter.dayStartUtcMs !== localDayStartUtcMs) {
+  if (counter?.dayStartUtcMs !== localDayStartUtcMs) {
     return { dayStartUtcMs: localDayStartUtcMs, count: 1 };
   }
   return { dayStartUtcMs: localDayStartUtcMs, count: counter.count + 1 };
@@ -77,9 +77,7 @@ export function pickRotatedTextIndex(
     return first;
   }
   let next = allowedIndexes.find((index) => index > lastIndex);
-  if (next === undefined) {
-    next = first;
-  }
+  next ??= first;
   if (next === lastIndex && allowedIndexes.length > 1) {
     const position = allowedIndexes.indexOf(next);
     next = allowedIndexes[(position + 1) % allowedIndexes.length];
