@@ -12,7 +12,7 @@ import SettingsToggleItem from "@/components/settings/SettingsToggleItem";
 import { api } from "@/convex/_generated/api";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
 import { useMutation, useQuery } from "convex/react";
-import { ScaleIcon, UtensilsIcon } from "lucide-react-native";
+import { HeartIcon, ScaleIcon, UtensilsIcon } from "lucide-react-native";
 
 export default function NotificationSettingsScreen() {
   const { scrollY, onScroll } = useScrollY();
@@ -33,8 +33,8 @@ export default function NotificationSettingsScreen() {
       >
         <SettingsGroup>
           <SettingsToggleItem
-            text="Напоминание о взвешивании"
-            caption="Раз в 7 дней, если вес давно не обновлялся"
+            text="Еженедельное взвешивание"
+            caption="По воскресеньям утром, если вес не вносили 7 дней"
             Icon={ScaleIcon}
             value={profile?.weighInRemindersEnabled ?? true}
             onValueChange={(value) => {
@@ -45,12 +45,23 @@ export default function NotificationSettingsScreen() {
           />
           <SettingsToggleItem
             text="Напоминания о приёмах пищи"
-            caption="Завтрак, обед и ужин — если приём пищи ещё не записан"
+            caption="Если приём пищи не записан к 9:00, 14:00 или 20:00 — не чаще 2 раз в день"
             Icon={UtensilsIcon}
             value={profile?.mealRemindersEnabled ?? true}
             onValueChange={(value) => {
               void updateProfile({
                 profile: { mealRemindersEnabled: value },
+              });
+            }}
+          />
+          <SettingsToggleItem
+            text="Если давно не заходили"
+            caption="Короткое сообщение после 3, 7 и 14 дней без входа"
+            Icon={HeartIcon}
+            value={profile?.retentionRemindersEnabled ?? true}
+            onValueChange={(value) => {
+              void updateProfile({
+                profile: { retentionRemindersEnabled: value },
               });
             }}
           />
