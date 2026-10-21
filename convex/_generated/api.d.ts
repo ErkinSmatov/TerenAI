@@ -120,6 +120,7 @@ import type * as tables_pushTokens from "../tables/pushTokens.js";
 import type * as testing_getOrCreateReviewerPhoneUser from "../testing/getOrCreateReviewerPhoneUser.js";
 import type * as testing_getOrCreateTestUser from "../testing/getOrCreateTestUser.js";
 import type * as users_deleteUser from "../users/deleteUser.js";
+import type * as users_getNameStatus from "../users/getNameStatus.js";
 import type * as users_updateUserName from "../users/updateUserName.js";
 import type * as utils_backfillFoodEmbeddings from "../utils/backfillFoodEmbeddings.js";
 import type * as utils_countFoodEmbeddings from "../utils/countFoodEmbeddings.js";
@@ -259,6 +260,7 @@ declare const fullApi: ApiFromModules<{
   "testing/getOrCreateReviewerPhoneUser": typeof testing_getOrCreateReviewerPhoneUser;
   "testing/getOrCreateTestUser": typeof testing_getOrCreateTestUser;
   "users/deleteUser": typeof users_deleteUser;
+  "users/getNameStatus": typeof users_getNameStatus;
   "users/updateUserName": typeof users_updateUserName;
   "utils/backfillFoodEmbeddings": typeof utils_backfillFoodEmbeddings;
   "utils/countFoodEmbeddings": typeof utils_countFoodEmbeddings;

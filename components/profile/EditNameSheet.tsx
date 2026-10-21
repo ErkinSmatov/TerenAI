@@ -59,6 +59,7 @@ export default function EditNameSheet({ currentName }: Props) {
           value={value}
           onChangeText={setValue}
           autoFocus
+          maxLength={100}
           autoCapitalize="words"
         />
         <Button

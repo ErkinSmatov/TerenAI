@@ -3,6 +3,8 @@ import { mutation } from "../_generated/server";
 import { v } from "convex/values";
 import logError from "@/lib/utils/logError";
 
+export const USER_NAME_MAX_LENGTH = 100;
+
 // Пользователи, вошедшие по телефону (WhatsApp/Telegram OTP), не получают
 // `name` ни от одного провайдера — в отличие от Google/Apple, которые его
 // присылают сами. Эта мутация даёт им (и всем остальным) возможность
@@ -19,6 +21,9 @@ const updateUserName = mutation({
       const trimmed = name.trim();
       if (trimmed.length === 0) {
         throw new Error("Имя не может быть пустым");
+      }
+      if (Array.from(trimmed).length > USER_NAME_MAX_LENGTH) {
+        throw new Error("Имя слишком длинное");
       }
 
       await ctx.db.patch(userId, { name: trimmed });
