@@ -10,15 +10,9 @@ const crons = cronJobs();
 // Ежечасный интервал недостаточен: есть часовые пояса со смещением в 30 и
 // 45 минут, для них локальные 9:00 никогда не попали бы в границу часа.
 crons.interval(
-  "check weigh-in reminders",
+  "check scheduled pushes",
   { minutes: 30 },
-  internal.notifications.checkWeighInReminders.default
-);
-
-crons.interval(
-  "check meal reminders",
-  { minutes: 30 },
-  internal.notifications.checkMealReminders.default
+  internal.notifications.checkScheduledPushes.default
 );
 
 export default crons;
