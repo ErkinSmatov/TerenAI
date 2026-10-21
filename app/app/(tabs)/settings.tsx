@@ -12,6 +12,7 @@ import { useThemeContext } from "@/context/ThemeContext";
 import { useSubscriptionContext } from "@/context/SubscriptionContext";
 import { api } from "@/convex/_generated/api";
 import buildMonthlyReportHtml from "@/lib/reports/buildMonthlyReportHtml";
+import logError from "@/lib/utils/logError";
 import tryCatch from "@/lib/utils/tryCatch";
 import { useConvex, useMutation } from "convex/react";
 import { Link, useRouter } from "expo-router";
@@ -48,6 +49,7 @@ export default function SettingsScreen() {
     restorePurchases,
   } = useSubscriptionContext();
   const deleteUser = useMutation(api.users.deleteUser.default);
+  const removePushToken = useMutation(api.notifications.removePushToken.default);
   const convex = useConvex();
   const router = useRouter();
   const [isExportingReport, setIsExportingReport] = useState(false);
@@ -69,6 +71,10 @@ export default function SettingsScreen() {
   };
 
   const handleSignOut = async () => {
+    const { error: pushCleanupError } = await tryCatch(removePushToken());
+    if (pushCleanupError) {
+      logError("Sign out push token cleanup error", pushCleanupError);
+    }
     await signOut();
     if (router.canDismiss()) router.dismissAll();
     router.replace("/auth");
