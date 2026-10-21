@@ -31,7 +31,7 @@ export default function OnboardingTraining() {
   };
 
   return (
-    <OnboardingStep title="Какой тип тренировок вы будете выполнять по этой программе?">
+    <OnboardingStep title="Какой тип тренировок вы предпочитаете?">
       <Select
         options={options}
         selectedOptions={selectedOptions}

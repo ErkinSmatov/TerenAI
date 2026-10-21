@@ -5,7 +5,7 @@ import OnboardingStep from "../../OnboardingStep";
 
 const options: SelectOption[] = [
   { name: "biohacking", label: "Биохакинг", Icon: FlaskConicalIcon },
-  { name: "glucometer", label: "Глюкометр", Icon: DropletIcon },
+  { name: "glucometer", label: "Диабет", Icon: DropletIcon },
   { name: "weightControl", label: "Контроль веса", Icon: ScaleIcon },
 ];
 
@@ -18,24 +18,15 @@ export default function OnboardingGoalTrack() {
       return;
     }
 
-    setData((prev) => {
-      if (name === "weightControl") {
-        return { ...prev, goalTrack: name, glucometerType: undefined };
-      }
-
-      return {
-        ...prev,
-        goalTrack: name,
-        glucometerType: name === "glucometer" ? prev.glucometerType : undefined,
-        goal: "maintain",
-        targetWeight: prev.weight,
-        weightChangeRate: 0,
-      };
-    });
+    setData((prev) => ({
+      ...prev,
+      goalTrack: name,
+      glucometerType: name === "glucometer" ? prev.glucometerType : undefined,
+    }));
   };
 
   return (
-    <OnboardingStep title="Что вас интересует больше всего?">
+    <OnboardingStep title="Какую программу вы выбираете?">
       <Select
         options={options}
         selectedOptions={selectedOptions}
