@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { FlameIcon, UtensilsIcon } from "lucide-react-native";
+import { FlameIcon, PencilIcon, UtensilsIcon } from "lucide-react-native";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Text from "../ui/Text";
@@ -9,7 +9,8 @@ import { findBadgeDefinition } from "@/lib/badges/badgeDefinitions";
 import { useThemeContext } from "@/context/ThemeContext";
 import type { ThemeName } from "@/lib/ui/palettes";
 import useThemedStyles from "@/lib/ui/useThemedStyles";
-import EditNameSheet from "./EditNameSheet";
+import { Link } from "expo-router";
+import Button from "../ui/Button";
 
 // Figma node 858:5164 ("CareAi"). Пользователь явно решил ПРОПУСТИТЬ блок
 // уровня/XP-прогресса из макета — в приложении нет системы уровней/опыта,
@@ -46,7 +47,6 @@ export default function ProfileHeader() {
   const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
   const userName = useQuery(api.home.getCurrentUserName.default);
-  const rawUserName = useQuery(api.home.getCurrentUserRawName.default);
   const badges = useQuery(api.badges.listBadges.default);
 
   const cardGlow = getNutrientGlow(theme, CARD_GLOW.dark, CARD_GLOW.light);
@@ -83,7 +83,14 @@ export default function ProfileHeader() {
         <Text size="16" weight="600" family="manrope" style={{ flexShrink: 1 }}>
           {userName ?? "Гость"}
         </Text>
-        <EditNameSheet currentName={rawUserName ?? null} />
+        <Link href="/app/(settings)/editName" asChild>
+          <Button variant="base" size="base" hitSlop={12}>
+            <PencilIcon
+              size={16}
+              color={getColor("mutedForeground", undefined, theme)}
+            />
+          </Button>
+        </Link>
       </View>
 
       <View style={styles.achievementsRow}>
