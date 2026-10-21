@@ -26,7 +26,10 @@
     "script:verifyMealReminderWindows": "TZ=Europe/Berlin ts-node -r tsconfig-paths/register scripts/verifyMealReminderWindows.ts",
     "script:verifyBadgeThresholds": "ts-node -r tsconfig-paths/register scripts/verifyBadgeThresholds.ts",
     "script:verifyStreakDays": "ts-node -r tsconfig-paths/register scripts/verifyStreakDays.ts",
-    "script:verifyEatenAt": "TZ=Europe/Berlin ts-node -r tsconfig-paths/register scripts/verifyEatenAt.ts"
+    "script:verifyEatenAt": "TZ=Europe/Berlin ts-node -r tsconfig-paths/register scripts/verifyEatenAt.ts",
+    "script:verifyPushRules": "TZ=Europe/Berlin ts-node -r tsconfig-paths/register scripts/verifyPushRules.ts",
+    "script:verifyPushTokenDedupe": "ts-node -r tsconfig-paths/register scripts/verifyPushTokenDedupe.ts",
+    "script:verifyHealthBlocks": "ts-node -r tsconfig-paths/register scripts/verifyHealthBlocks.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^2.0.23",
