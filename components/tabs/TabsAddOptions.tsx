@@ -12,6 +12,7 @@ import Animated, {
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import AddOptionsGrid from "./AddOptionsGrid";
+import { hasHealthBlocks } from "@/lib/profile/hasHealthBlocks";
 import { getTabAddOptions } from "./addMealOptions";
 import { useAddOptionPress } from "./useAddOptionPress";
 
@@ -61,7 +62,7 @@ export default function TabsAddOptions() {
   const press = useAddOptionPress();
   const profile = useQuery(api.profiles.getProfile.default);
 
-  const options = getTabAddOptions(profile?.data?.goalTrack === "glucometer");
+  const options = getTabAddOptions(hasHealthBlocks(profile?.data?.goalTrack));
 
   return (
     <PopoverPrimitive.Root onOpenChange={setIsOpen}>

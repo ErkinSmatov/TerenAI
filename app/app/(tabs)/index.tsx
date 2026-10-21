@@ -28,6 +28,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { hasHealthBlocks } from "@/lib/profile/hasHealthBlocks";
 
 // theme не используется напрямую в стилях — фон зависит только от токена
 // `background`, который вычисляется в компоненте через `getColor` и подставляется
@@ -53,7 +54,7 @@ export default function HomeScreen() {
   const [selectedDay, setSelectedDay] = useState((getDay(new Date()) + 6) % 7);
 
   const profile = useQuery(api.profiles.getProfile.default);
-  const isGlucometerTrack = profile?.data?.goalTrack === "glucometer";
+  const isGlucometerTrack = hasHealthBlocks(profile?.data?.goalTrack);
 
   useHealthKitSync(isGlucometerTrack);
 

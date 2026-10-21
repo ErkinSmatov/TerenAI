@@ -19,6 +19,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import getColor from "@/lib/ui/getColor";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
+import { hasHealthBlocks } from "@/lib/profile/hasHealthBlocks";
 import {
   connectHealthKit,
   fetchRecentGlucoseSamples,
@@ -29,7 +30,7 @@ import {
 export default function HealthScreen() {
   const { scrollY, onScroll } = useScrollY();
   const profile = useQuery(api.profiles.getProfile.default);
-  const isGlucometerTrack = profile?.data?.goalTrack === "glucometer";
+  const isGlucometerTrack = hasHealthBlocks(profile?.data?.goalTrack);
 
   const syncMovementDays = useMutation(api.movement.syncDays.default);
   const importGlucoseReadings = useMutation(

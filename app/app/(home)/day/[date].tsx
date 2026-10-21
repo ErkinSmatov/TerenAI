@@ -33,6 +33,7 @@ import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { Platform, StyleSheet, View } from "react-native";
+import { hasHealthBlocks } from "@/lib/profile/hasHealthBlocks";
 
 function capitalize(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
@@ -77,7 +78,7 @@ export default function DayScreen() {
     dayIndex < bounds.monthDates.length;
 
   const profile = useQuery(api.profiles.getProfile.default);
-  const isGlucometerTrack = profile?.data?.goalTrack === "glucometer";
+  const isGlucometerTrack = hasHealthBlocks(profile?.data?.goalTrack);
 
   const rawMonthMeals = useQuery(
     api.meals.getMonthMeals.default,
