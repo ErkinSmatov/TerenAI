@@ -20,6 +20,9 @@ import { useMutation } from "convex/react";
 import { useRouter } from "expo-router";
 import { ClockIcon, MoonIcon, ShuffleIcon, UtensilsIcon } from "lucide-react-native";
 import { api } from "@/convex/_generated/api";
+import { getGlucoseRangeError } from "@/lib/health/healthRanges";
+import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import { glucoseUnits, type GlucoseContext, type GlucoseUnit } from "@/config/glucoseConfig";
 
 const contextOptions: SelectOption[] = [
@@ -31,6 +34,7 @@ const contextOptions: SelectOption[] = [
 
 export default function GlucoseScreen() {
   const insets = useSafeArea();
+  const { theme } = useThemeContext();
   const router = useRouter();
   const createReading = useMutation(api.glucose.createReading.default);
 
@@ -41,7 +45,9 @@ export default function GlucoseScreen() {
   );
 
   const numericValue = Number(value.replace(",", "."));
-  const isValid = value.trim() !== "" && numericValue > 0;
+  const rangeError =
+    value.trim() === "" ? null : getGlucoseRangeError(numericValue, unit);
+  const isValid = value.trim() !== "" && rangeError === null;
 
   const handleSave = () => {
     if (!isValid) return;
@@ -84,6 +90,15 @@ export default function GlucoseScreen() {
               autoFocus
               suffix={unit}
             />
+            {rangeError !== null && (
+              <Text
+                size="12"
+                color={getColor("red", undefined, theme)}
+                style={styles.errorText}
+              >
+                {rangeError}
+              </Text>
+            )}
 
             <View style={styles.unitContainer}>
               <SegmentedControl
@@ -131,6 +146,10 @@ const styles = StyleSheet.create({
   },
   contextContainer: {
     gap: 12,
+  },
+  errorText: {
+    paddingLeft: 4,
+    marginTop: -16,
   },
   contextLabel: {
     paddingLeft: 4,

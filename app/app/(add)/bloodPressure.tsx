@@ -16,9 +16,14 @@ import { StyleSheet, View } from "react-native";
 import { useMutation } from "convex/react";
 import { useRouter } from "expo-router";
 import { api } from "@/convex/_generated/api";
+import Text from "@/components/ui/Text";
+import { getBloodPressureError } from "@/lib/health/healthRanges";
+import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 
 export default function BloodPressureScreen() {
   const insets = useSafeArea();
+  const { theme } = useThemeContext();
   const router = useRouter();
   const createReading = useMutation(api.bloodPressure.createReading.default);
 
@@ -29,12 +34,15 @@ export default function BloodPressureScreen() {
   const systolicValue = Number(systolic);
   const diastolicValue = Number(diastolic);
   const pulseValue = pulse.trim() === "" ? undefined : Number(pulse);
-  const isValid =
-    systolic.trim() !== "" &&
-    diastolic.trim() !== "" &&
-    systolicValue > 0 &&
-    diastolicValue > 0 &&
-    (pulseValue === undefined || pulseValue > 0);
+  const hasRequired = systolic.trim() !== "" && diastolic.trim() !== "";
+  const bpError = hasRequired
+    ? getBloodPressureError({
+        systolic: systolicValue,
+        diastolic: diastolicValue,
+        pulse: pulseValue,
+      })
+    : null;
+  const isValid = hasRequired && bpError === null;
 
   const handleSave = () => {
     if (!isValid) return;
@@ -93,6 +101,15 @@ export default function BloodPressureScreen() {
             keyboardType="number-pad"
             suffix="уд/мин"
           />
+          {bpError !== null && (
+            <Text
+              size="12"
+              color={getColor("red", undefined, theme)}
+              style={styles.errorText}
+            >
+              {bpError}
+            </Text>
+          )}
         </SafeArea>
 
         <ScreenFooter style={{ boxShadow: [] }}>
@@ -112,6 +129,9 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     gap: 12,
+  },
+  errorText: {
+    paddingLeft: 4,
   },
   rowInput: {
     flex: 1,
