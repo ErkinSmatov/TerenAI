@@ -49,7 +49,7 @@ export default function ShareCodeCard() {
 
   const handleShare = () => {
     if (!code) return;
-    void Share.share({ message: `Мой код в TerenAI: ${code}` });
+    void Share.share({ message: `Мой код в Teren: ${code}` });
   };
 
   const iconColor = getColor("foreground", undefined, theme);

@@ -163,7 +163,7 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
         safeAreaProps={{ edges: ["left", "right"] }}
       >
         <ScreenMainTitle
-          title="TerenAI Pro"
+          title="Teren Pro"
           description="Достигайте своих целей, записывая приёмы пищи за секунды, а не за минуты"
           style={styles.title}
         />

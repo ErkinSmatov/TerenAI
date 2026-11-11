@@ -48,7 +48,7 @@ export default function DiagnosticsSection() {
 
   const handleTestMessage = () => {
     const eventId = Sentry.captureMessage(
-      "TerenAI diagnostics: test message",
+      "Teren diagnostics: test message",
       "info"
     );
     Alert.alert("Отправлено", `Тестовое сообщение\nEvent ID: ${eventId}`);
@@ -56,7 +56,7 @@ export default function DiagnosticsSection() {
 
   const handleTestError = () => {
     const eventId = Sentry.captureException(
-      new Error("TerenAI diagnostics: test error")
+      new Error("Teren diagnostics: test error")
     );
     Alert.alert("Отправлено", `Тестовая ошибка\nEvent ID: ${eventId}`);
   };
@@ -65,8 +65,8 @@ export default function DiagnosticsSection() {
   // logError → реестр репортеров → Sentry (OBS-02), а не прямой вызов SDK.
   const handleTestLogError = () => {
     logError(
-      "TerenAI diagnostics: logError path",
-      new Error("TerenAI diagnostics: logError test error")
+      "Teren diagnostics: logError path",
+      new Error("Teren diagnostics: logError test error")
     );
     Alert.alert(
       "Отправлено",
@@ -78,7 +78,7 @@ export default function DiagnosticsSection() {
     <>
       <SettingsGroup>
         <SettingsItem
-          text={`TerenAI ${version} (${build})`}
+          text={`Teren ${version} (${build})`}
           Icon={InfoIcon}
           onPress={handleVersionPress}
         />

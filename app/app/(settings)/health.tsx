@@ -111,8 +111,8 @@ export default function HealthScreen() {
           title="Apple Health"
           description={
             isGlucometerTrack
-              ? "Подключите Apple Health, чтобы TerenAI забирал шаги, активность и данные о глюкозе."
-              : "Подключите Apple Health, чтобы TerenAI забирал шаги и активность."
+              ? "Подключите Apple Health, чтобы Teren забирал шаги, активность и данные о глюкозе."
+              : "Подключите Apple Health, чтобы Teren забирал шаги и активность."
           }
         />
 

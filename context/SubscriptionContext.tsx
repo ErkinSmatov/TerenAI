@@ -127,7 +127,7 @@ export function SubscriptionProvider({
       await Linking.openURL("https://apps.apple.com/account/subscriptions");
     } else {
       const packageName =
-        Constants.expoConfig?.android?.package ?? "com.codetau.terenai";
+        Constants.expoConfig?.android?.package ?? "com.codetau.Teren";
 
       await Linking.openURL(
         `https://play.google.com/store/account/subscriptions?package=${packageName}`
