@@ -2,8 +2,9 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation } from "../_generated/server";
 import { v } from "convex/values";
 import logError from "@/lib/utils/logError";
-import { isGlucoseValueValid } from "@/lib/health/healthRanges";
+import { insertImportedGlucoseReadings } from "../utils/importGlucoseBatch";
 
+// Устаревший путь для уже установленных iOS-сборок; новый клиент использует importGlucoseReadings
 const importHealthKitReadings = mutation({
   args: {
     readings: v.array(
@@ -20,31 +21,17 @@ const importHealthKitReadings = mutation({
       const userId = await getAuthUserId(ctx);
       if (userId === null) throw new Error("Unauthorized");
 
-      let importedCount = 0;
-      for (const reading of readings) {
-        // Нереальные образцы HealthKit молча пропускаем, чтобы не валить весь батч
-        if (!isGlucoseValueValid(reading.value, reading.unit)) continue;
-
-        const existing = await ctx.db
-          .query("glucoseReadings")
-          .withIndex("byUserIdAndHealthKitUuid", (idx) =>
-            idx.eq("userId", userId).eq("healthKitUuid", reading.healthKitUuid)
-          )
-          .first();
-        if (existing) continue;
-
-        await ctx.db.insert("glucoseReadings", {
-          userId,
-          value: reading.value,
-          unit: reading.unit,
-          recordedAt: reading.recordedAt,
-          source: "healthkit",
-          healthKitUuid: reading.healthKitUuid,
-        });
-        importedCount++;
-      }
-
-      return importedCount;
+      return await insertImportedGlucoseReadings(
+        ctx,
+        userId,
+        "healthkit",
+        readings.map((r) => ({
+          value: r.value,
+          unit: r.unit,
+          recordedAt: r.recordedAt,
+          externalId: r.healthKitUuid,
+        }))
+      );
     } catch (error) {
       logError("importHealthKitReadings error", error);
       throw error;

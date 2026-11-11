@@ -14,11 +14,17 @@ export const glucoseReadingsFields = {
     )
   ),
   recordedAt: v.number(),
-  source: v.union(v.literal("manual"), v.literal("healthkit")),
+  source: v.union(
+    v.literal("manual"),
+    v.literal("healthkit"),
+    v.literal("healthconnect")
+  ),
+  // Внешний id показания: UUID HealthKit как есть, для Health Connect "hc:" + metadata.id
   healthKitUuid: v.optional(v.string()),
 };
 
 export const glucoseReadings = defineTable(glucoseReadingsFields)
   .index("byUserId", ["userId"])
   .index("byUserIdAndRecordedAt", ["userId", "recordedAt"])
-  .index("byUserIdAndHealthKitUuid", ["userId", "healthKitUuid"]);
+  .index("byUserIdAndHealthKitUuid", ["userId", "healthKitUuid"])
+  .index("byUserIdAndSourceAndRecordedAt", ["userId", "source", "recordedAt"]);
