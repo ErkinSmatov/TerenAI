@@ -33,7 +33,8 @@ import {
   MoonIcon,
 } from "lucide-react-native";
 import { useState } from "react";
-import { Alert, Platform, ScrollView, StyleSheet } from "react-native";
+import { Alert, ScrollView, StyleSheet } from "react-native";
+import { isHealthPlatformSupported } from "@/lib/health/healthProvider";
 
 const exportReportErrorText =
   "Не удалось собрать отчёт. Попробуйте ещё раз";
@@ -132,7 +133,7 @@ export default function SettingsScreen() {
           <Link href="/app/(settings)/weeklyWeighIn" asChild>
             <SettingsItem text="Обновить вес" Icon={ScaleIcon} />
           </Link>
-          {Platform.OS === "ios" && (
+          {isHealthPlatformSupported && (
             <Link href="/app/(settings)/health" asChild>
               <SettingsItem text="Здоровье" Icon={HeartPulseIcon} />
             </Link>
