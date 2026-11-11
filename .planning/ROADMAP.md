@@ -556,7 +556,7 @@ Plans:
 **Goal:** На Android приложение подключается к данным здоровья через Health Connect (шаги, активная энергия, дистанция и глюкоза, как на iOS), а доступ к данным здоровья предлагается и в настройках, и сразу после онбординга на обеих платформах. СРОЧНАЯ фаза: приоритет выше остальных, не зависит от Phase 76 (зависимость только по порядку номеров).
 **Requirements**: 77-SC-1, 77-SC-2, 77-SC-3, 77-SC-4 (ссылки на Success Criteria фазы)
 **Depends on:** Nothing (не блокируется Phase 76)
-**Plans:** 2/7 plans executed
+**Plans:** 3/7 plans executed
 
 **Замечание (2026-11-11):** при входе через Android приложение не спросило синхронизацию с Google Fit или другим приложением здоровья. Причина (найдена чтением кода): интеграции здоровья для Android не существует. `lib/health/healthKit.ts` и `lib/hooks/useHealthKitSync.ts` работают только на iOS (`Platform.OS !== "ios"`), экран «Здоровье» на Android пишет «доступна только на iOS», в `app.config.ts` и `AndroidManifest.xml` нет плагинов и разрешений для здоровья. На iOS запрос доступа тоже появляется только после ручного нажатия «Подключить Apple Health» в Настройки → Здоровье, автоматического предложения нет.
 
@@ -572,7 +572,7 @@ Plans:
 Plans:
 - [x] 77-01-PLAN.md — Wave 1: чистые функции (маппинг, батчи 200, computeSince), syncHealthData, MMKV-состояние, verify-скрипт verifyHealthSync
 - [x] 77-02-PLAN.md — Wave 1: сервер: source healthconnect, мутация importGlucoseReadings с source и лимитом пачки, обёртка старой мутации, getLastManualUnit, деплой dev
-- [ ] 77-03-PLAN.md — Wave 1: нативная конфигурация: проверка пакета, react-native-health-connect 4.1.3, разрешения READ_*, minSdk 26, первая dev-сборка Android (checkpoint)
+- [x] 77-03-PLAN.md — Wave 1: нативная конфигурация: проверка пакета, react-native-health-connect 4.1.3, разрешения READ_*, minSdk 26, первая dev-сборка Android (checkpoint)
 - [ ] 77-04-PLAN.md — Wave 2: реализация Health Connect, фасад lib/health/healthProvider.ts, хук useHealthSyncRunner
 - [ ] 77-05-PLAN.md — Wave 3: хук useHealthSync, снятие iOS-гейтов на главной и в экране дня, подпись Health Connect в журнале
 - [ ] 77-06-PLAN.md — Wave 3: экран «Здоровье» для Android и iOS, пункт меню, HealthAccessPrompt после онбординга
