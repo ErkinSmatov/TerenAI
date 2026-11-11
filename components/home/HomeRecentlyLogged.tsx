@@ -60,21 +60,19 @@ function MealThumbnail({ meal, targetCalories }: ThumbnailProps) {
 
   const carbsRatio = calcRatio(
     macrosToKcal({ carbs: meal.totalMacros?.carbs }),
-    targetCalories
+    targetCalories,
   );
   const proteinRatio = calcRatio(
     macrosToKcal({ protein: meal.totalMacros?.protein }),
-    targetCalories
+    targetCalories,
   );
   const fatRatio = calcRatio(
     macrosToKcal({ fat: meal.totalMacros?.fat }),
-    targetCalories
+    targetCalories,
   );
 
   const progressCarbs = useDerivedValue(() => carbsRatio * progress.value);
-  const progressProtein = useDerivedValue(
-    () => proteinRatio * progress.value
-  );
+  const progressProtein = useDerivedValue(() => proteinRatio * progress.value);
   const progressFat = useDerivedValue(() => fatRatio * progress.value);
 
   return (
@@ -199,18 +197,27 @@ type Props = {
   // Экран дня: кнопка «+» рядом с заголовком и пустое состояние, открывающее
   // выбор способа добавления за этот день. Без пропа разметка не меняется.
   onAddPress?: () => void;
+  // Цель калорий владельца данных. В readOnly собственный профиль не
+  // запрашивается (наблюдатель не должен видеть свои цели вместо пациента).
+  targetCalories?: number;
 };
 
 export default function HomeRecentlyLogged({
   meals,
   readOnly = false,
   onAddPress,
+  targetCalories: targetCaloriesProp,
 }: Props) {
   const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
 
+  const profileTargetCalories = useQuery(
+    api.profiles.getProfile.default,
+    readOnly ? "skip" : {},
+  )?.targets.calories;
   const targetCalories =
-    useQuery(api.profiles.getProfile.default)?.targets.calories ??
+    targetCaloriesProp ??
+    (readOnly ? undefined : profileTargetCalories) ??
     profilesConfig.defaultValues.targets.calories;
 
   return (
@@ -244,6 +251,8 @@ export default function HomeRecentlyLogged({
             text="Добавьте блюда за этот день…"
             onPress={onAddPress}
           />
+        ) : readOnly ? (
+          <HomeEmptyState text="Пока нет блюд" />
         ) : (
           <HomeEmptyState
             text="Добавьте блюда, чтобы увидеть их здесь…"

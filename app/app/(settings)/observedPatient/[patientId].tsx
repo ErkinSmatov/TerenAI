@@ -145,7 +145,7 @@ export default function ObservedPatientScreen() {
             <ScreenMainTitle
               title={data.displayName}
               description={capitalize(
-                format(new Date(), "d MMMM, EEEE", { locale: ru })
+                format(new Date(), "d MMMM, EEEE", { locale: ru }),
               )}
               style={{ paddingBottom: 0 }}
             />
@@ -182,7 +182,11 @@ export default function ObservedPatientScreen() {
           </View>
         </View>
 
-        <HomeRecentlyLogged meals={data.meals} readOnly />
+        <HomeRecentlyLogged
+          meals={data.meals}
+          readOnly
+          targetCalories={data.targets?.calories}
+        />
         <View style={styles.summaryStack}>
           <HomeMacroSummary
             totalMacros={dayTotals.macros}

@@ -20,10 +20,7 @@ import getLocalMonthBounds, {
   LocalMonthBounds,
 } from "@/lib/utils/getLocalMonthBounds";
 import DayAddMealSheet from "@/components/home/DayAddMealSheet";
-import {
-  isFutureLocalDay,
-  parseLocalDate,
-} from "@/lib/utils/parseLocalDate";
+import { isFutureLocalDay, parseLocalDate } from "@/lib/utils/parseLocalDate";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
 import getColor from "@/lib/ui/getColor";
 import { useQuery } from "convex/react";
@@ -66,7 +63,8 @@ export default function DayScreen() {
     ? getLocalMonthBounds(parsed.target)
     : null;
   // D-07: для будущей даты добавления нет (маршрут можно открыть вручную).
-  const canAdd = parsed !== null && !isFutureLocalDay(parsed.target, Date.now());
+  const canAdd =
+    parsed !== null && !isFutureLocalDay(parsed.target, Date.now());
   const openAddSheet = () => {
     sheetRef.current?.present();
   };
@@ -82,26 +80,26 @@ export default function DayScreen() {
 
   const rawMonthMeals = useQuery(
     api.meals.getMonthMeals.default,
-    isValidRoute ? { dayStartsUtc: bounds.dayStartsUtc } : "skip"
+    isValidRoute ? { dayStartsUtc: bounds.dayStartsUtc } : "skip",
   );
   const rawMonthReadings = useQuery(
     api.glucose.getMonthReadings.default,
     isValidRoute && isGlucometerTrack
       ? { dayStartsUtc: bounds.dayStartsUtc }
-      : "skip"
+      : "skip",
   );
   const rawMonthBloodPressure = useQuery(
     api.bloodPressure.getMonthReadings.default,
     isValidRoute && isGlucometerTrack
       ? { dayStartsUtc: bounds.dayStartsUtc }
-      : "skip"
+      : "skip",
   );
 
   const rawMonthMovement = useQuery(
     api.movement.getMonthMovement.default,
     isValidRoute && Platform.OS === "ios"
       ? { monthDates: bounds.monthDates }
-      : "skip"
+      : "skip",
   );
 
   if (parsed === null || bounds === null || !isValidRoute) {
@@ -124,7 +122,8 @@ export default function DayScreen() {
   const stillLoading =
     rawMonthMeals === undefined ||
     (isGlucometerTrack &&
-      (rawMonthReadings === undefined || rawMonthBloodPressure === undefined)) ||
+      (rawMonthReadings === undefined ||
+        rawMonthBloodPressure === undefined)) ||
     (Platform.OS === "ios" && rawMonthMovement === undefined);
 
   if (stillLoading) {
@@ -164,9 +163,7 @@ export default function DayScreen() {
     dayMovement !== null;
 
   const dayTotals = calculateDayTotals(dayMeals);
-  const title = capitalize(
-    format(parsed.target, "d MMMM", { locale: ru })
-  );
+  const title = capitalize(format(parsed.target, "d MMMM", { locale: ru }));
 
   return (
     <ScreenMain edges={[]}>
@@ -185,6 +182,7 @@ export default function DayScreen() {
               meals={dayMeals}
               readOnly
               onAddPress={canAdd ? openAddSheet : undefined}
+              targetCalories={profile?.targets.calories}
             />
             <View style={styles.summaryStack}>
               <HomeMacroSummary
@@ -206,15 +204,17 @@ export default function DayScreen() {
               <HomeGlucoseSummary readings={dayReadings} readOnly />
             )}
             {isGlucometerTrack && (
-              <HomeBloodPressureSummary
-                readings={dayBloodPressure}
-                readOnly
-              />
+              <HomeBloodPressureSummary readings={dayBloodPressure} readOnly />
             )}
           </>
         ) : canAdd ? (
           <>
-            <HomeRecentlyLogged meals={[]} readOnly onAddPress={openAddSheet} />
+            <HomeRecentlyLogged
+              meals={[]}
+              readOnly
+              onAddPress={openAddSheet}
+              targetCalories={profile?.targets.calories}
+            />
             <EmptyState body="Записи о питании и показателях за эту дату отсутствуют." />
           </>
         ) : (
