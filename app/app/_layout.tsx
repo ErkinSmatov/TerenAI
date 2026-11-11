@@ -2,6 +2,7 @@ import { useAuthContext } from "@/context/AuthContext";
 import useProfileStatus from "@/lib/hooks/useProfileStatus";
 import { Redirect, Stack } from "expo-router";
 import MealCompletionWatcher from "@/components/meal/MealCompletionWatcher";
+import HealthAccessPrompt from "@/components/health/HealthAccessPrompt";
 
 export default function AppLayout() {
   const { isAuthenticated, isLoading } = useAuthContext();
@@ -22,6 +23,7 @@ export default function AppLayout() {
   return (
     <>
       <MealCompletionWatcher />
+      <HealthAccessPrompt />
       <Stack screenOptions={{ headerShown: false }} />
     </>
   );
