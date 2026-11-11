@@ -2,6 +2,7 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation } from "../_generated/server";
 import { v } from "convex/values";
 import logError from "@/lib/utils/logError";
+import { isGlucoseValueValid } from "@/lib/health/healthRanges";
 
 const importHealthKitReadings = mutation({
   args: {
@@ -21,6 +22,9 @@ const importHealthKitReadings = mutation({
 
       let importedCount = 0;
       for (const reading of readings) {
+        // Нереальные образцы HealthKit молча пропускаем, чтобы не валить весь батч
+        if (!isGlucoseValueValid(reading.value, reading.unit)) continue;
+
         const existing = await ctx.db
           .query("glucoseReadings")
           .withIndex("byUserIdAndHealthKitUuid", (idx) =>

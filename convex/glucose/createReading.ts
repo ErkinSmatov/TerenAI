@@ -3,6 +3,7 @@ import { mutation } from "../_generated/server";
 import { Id } from "../_generated/dataModel";
 import { v } from "convex/values";
 import logError from "@/lib/utils/logError";
+import { isGlucoseValueValid } from "@/lib/health/healthRanges";
 
 const createReading = mutation({
   args: {
@@ -21,6 +22,9 @@ const createReading = mutation({
     try {
       const userId = await getAuthUserId(ctx);
       if (userId === null) throw new Error("Unauthorized");
+      if (!isGlucoseValueValid(args.value, args.unit)) {
+        throw new Error("Invalid glucose value");
+      }
 
       return await ctx.db.insert("glucoseReadings", {
         userId,
@@ -29,7 +33,7 @@ const createReading = mutation({
         source: "manual",
       });
     } catch (error) {
-      logError("createReading error", error);
+      logError("glucose createReading error", error);
       throw error;
     }
   },
