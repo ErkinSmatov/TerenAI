@@ -47,6 +47,14 @@ const config: ExpoConfig = {
       backgroundColor: "#F9FAFB",
     },
     edgeToEdgeEnabled: true,
+    // Плагин react-native-health-connect разрешения не добавляет — объявляем
+    // вручную. Только чтение, без записи и без фонового доступа.
+    permissions: [
+      "android.permission.health.READ_STEPS",
+      "android.permission.health.READ_ACTIVE_CALORIES_BURNED",
+      "android.permission.health.READ_DISTANCE",
+      "android.permission.health.READ_BLOOD_GLUCOSE",
+    ],
   },
   plugins: [
     "expo-secure-store",
@@ -93,6 +101,8 @@ const config: ExpoConfig = {
         background: false,
       },
     ],
+    // Добавляет rationale intent-filter и activity-alias для Health Connect.
+    "react-native-health-connect",
     [
       "expo-build-properties",
       {
@@ -101,6 +111,12 @@ const config: ExpoConfig = {
         // deployment target iOS 16.0 — ниже этого сборка падает на этапе EmitSwiftModule.
         ios: {
           deploymentTarget: "16.0",
+        },
+        // Health Connect SDK требует minSdk 26, connect-client 1.1.0 — compileSdk 36.
+        android: {
+          minSdkVersion: 26,
+          compileSdkVersion: 36,
+          targetSdkVersion: 36,
         },
       },
     ],
