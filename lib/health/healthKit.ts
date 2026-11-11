@@ -7,6 +7,13 @@ import {
   queryStatisticsCollectionForQuantity,
   getPreferredUnit,
 } from "@kingstinct/react-native-healthkit";
+import type { HealthAvailability } from "./healthTypes";
+
+export function getHealthKitAvailability(): HealthAvailability {
+  return Platform.OS === "ios" && isHealthDataAvailable()
+    ? "available"
+    : "unsupported";
+}
 
 const HEALTHKIT_CONNECTED_KEY = "healthkit_connected";
 
