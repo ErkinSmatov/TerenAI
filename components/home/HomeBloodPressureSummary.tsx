@@ -33,7 +33,11 @@ function ReadingRow({ reading }: ReadingRowProps) {
         {reading.pulse !== undefined && (
           <Text size="12" color={getColor("mutedForeground", undefined, theme)}>
             Пульс{" "}
-            <Text size="12" family="outfit" color={getColor("mutedForeground", undefined, theme)}>
+            <Text
+              size="12"
+              family="outfit"
+              color={getColor("mutedForeground", undefined, theme)}
+            >
               {reading.pulse}
             </Text>
           </Text>
@@ -69,8 +73,12 @@ export default function HomeBloodPressureSummary({
         </>
       ) : (
         <HomeEmptyState
-          text="Добавьте показание, чтобы увидеть его здесь…"
-          href="/app/(add)/bloodPressure"
+          text={
+            readOnly
+              ? "Пока нет показаний"
+              : "Добавьте показание, чтобы увидеть его здесь…"
+          }
+          href={readOnly ? undefined : "/app/(add)/bloodPressure"}
         />
       )}
     </Card>

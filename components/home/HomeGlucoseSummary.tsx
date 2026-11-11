@@ -51,7 +51,7 @@ export default function HomeGlucoseSummary({
   const isOutOfRange =
     readings.length > 0
       ? readings.some((reading) =>
-          isGlucoseOutOfRange(reading.value, reading.unit, reading.context)
+          isGlucoseOutOfRange(reading.value, reading.unit, reading.context),
         )
       : estimate
         ? isGlucoseOutOfRange(estimate.value, estimate.unit, "afterMeal")
@@ -87,8 +87,12 @@ export default function HomeGlucoseSummary({
           />
         ) : (
           <HomeEmptyState
-            text="Добавьте показание, чтобы увидеть его здесь…"
-            href="/app/(add)/glucose"
+            text={
+              readOnly
+                ? "Пока нет показаний"
+                : "Добавьте показание, чтобы увидеть его здесь…"
+            }
+            href={readOnly ? undefined : "/app/(add)/glucose"}
           />
         )}
         {isOutOfRange && <WarningBadge text="Глюкоза вне нормы" color="red" />}

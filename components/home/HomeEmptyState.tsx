@@ -1,3 +1,4 @@
+import { View } from "react-native";
 import { CircleFadingPlusIcon } from "lucide-react-native";
 import { Href, Link } from "expo-router";
 import Button from "../ui/Button";
@@ -17,10 +18,25 @@ type Props = {
 
 // Общее пустое состояние для блоков Главной без данных (Сахар/Давление/
 // Рацион) — иконка-кнопка "добавить показание" ведёт сразу на нужный экран
-// добавления вместо нейтрального текста без действия.
+// добавления. Без href и onPress — нейтральное неинтерактивное состояние
+// (только текст, без иконки) для режима только чтения.
 export default function HomeEmptyState({ text, href, onPress }: Props) {
   const { theme } = useThemeContext();
   const styles = useThemedStyles(createStyles);
+
+  if (!href && !onPress) {
+    return (
+      <View style={styles.container}>
+        <Text
+          size="14"
+          color={getColor("mutedForeground", 0.8, theme)}
+          style={styles.text}
+        >
+          {text}
+        </Text>
+      </View>
+    );
+  }
 
   const content = (
     <Button
