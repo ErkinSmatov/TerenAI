@@ -3,7 +3,7 @@ phase: 77
 slug: health-connect-android
 status: draft
 nyquist_compliant: false
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-11-11
 ---
 
@@ -40,11 +40,11 @@ created: 2026-11-11
 
 | SC | Behavior | Test Type | Automated Command | File Exists | Status |
 |----|----------|-----------|-------------------|-------------|--------|
-| SC3 | `chunk` (200), `computeSince`, дедуп внутри пачки, ключ даты, фильтр диапазонов | unit-скрипт | `TZ=Europe/Berlin ts-node -r tsconfig-paths/register scripts/verifyHealthSync.ts` | ❌ W0 | ⬜ pending |
-| SC3 | Сервер: мутация с `source`, дедуп, батч ≤ 200 | ручной (dev Convex) + типы | `npx convex dev --once` и вызов из приложения | — | ⬜ pending |
-| SC1 | Android: подключение, разрешения, данные на главной | manual device | dev-сборка, `adb logcat` с фильтром healthconnect | — | ⬜ pending |
-| SC2 | Предложение после онбординга (iOS и Android), «Не сейчас», повтор из настроек | manual device | сценарий на чистом аккаунте | — | ⬜ pending |
-| SC4 | Сборка, tsc, eslint | build | `npx tsc --noEmit`, `npx eslint .`, затем dev-сборка Android | — | ⬜ pending |
+| SC3 (77-01-T3) | `chunk` (200), `computeSince`, дедуп внутри пачки, ключ даты, фильтр диапазонов | unit-скрипт | `TZ=Europe/Berlin ts-node -r tsconfig-paths/register scripts/verifyHealthSync.ts` | ✅ | ✅ green (verifyHealthSync и verifyHealthRanges: OK) |
+| SC3 (77-02-T2) | Сервер: мутация с `source`, дедуп, батч ≤ 200 | ручной (dev Convex) + типы | `npx convex dev --once` и вызов из приложения | — | ✅ convex dev --once OK; вызов из приложения проверяется в 77-07-T2 |
+| SC1 (77-04/05/06, 77-07-T2) | Android: подключение, разрешения, данные на главной | manual device | dev-сборка, `adb logcat` с фильтром healthconnect | — | ⬜ pending (ждёт устройство, Task 2) |
+| SC2 (77-05/06, 77-07-T2) | Предложение после онбординга (iOS и Android), «Не сейчас», повтор из настроек | manual device | сценарий на чистом аккаунте | — | ⬜ pending (ждёт устройство, Task 2) |
+| SC4 (77-07-T1) | Сборка, tsc, eslint | build | `npx tsc --noEmit`, `npx eslint .`, затем dev-сборка Android | — | ✅ tsc, eslint, prebuild, `assembleDebug` BUILD SUCCESSFUL; merged manifest: 4 READ_* без WRITE_*, minSdk 26. Запуск на устройстве — Task 2 |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -52,7 +52,7 @@ created: 2026-11-11
 
 ## Wave 0 Requirements
 
-- [ ] `lib/health/healthMapping.ts` (чистые функции) и `scripts/verifyHealthSync.ts` с записью в `package.json` (`script:verifyHealthSync`, `TZ=Europe/Berlin`)
+- [x] `lib/health/healthMapping.ts` (чистые функции) и `scripts/verifyHealthSync.ts` с записью в `package.json` (`script:verifyHealthSync`, `TZ=Europe/Berlin`)
 - [ ] Ручной чек-лист устройства Android: Android ≤13 без Health Connect (установка), Android 14+, отзыв прав, двойной отказ, пустые данные, объём CGM (≥ 8 000 показаний → 40+ пачек без ошибки), повторный запуск (0 новых записей)
 
 ---
@@ -70,11 +70,11 @@ created: 2026-11-11
 
 ## Validation Sign-Off
 
-- [ ] У всех задач есть `<automated>` проверка или зависимость от Wave 0
-- [ ] Выборка непрерывна: нет 3 подряд задач без автоматической проверки
-- [ ] Wave 0 покрывает все отсутствующие ссылки
-- [ ] Нет флагов watch-режима
-- [ ] Задержка обратной связи меньше 60 секунд
+- [x] У всех задач есть `<automated>` проверка или зависимость от Wave 0
+- [x] Выборка непрерывна: нет 3 подряд задач без автоматической проверки
+- [x] Wave 0 покрывает все отсутствующие ссылки
+- [x] Нет флагов watch-режима
+- [x] Задержка обратной связи меньше 60 секунд
 - [ ] В frontmatter установлено `nyquist_compliant: true`
 
 **Approval:** pending
