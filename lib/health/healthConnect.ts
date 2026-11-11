@@ -141,7 +141,12 @@ export async function fetchHealthConnectMovement(
           timeRangeFilter,
           timeRangeSlicer,
         })
-      ).map((g) => ({ startTime: g.startTime, value: g.result.COUNT_TOTAL }))
+      ).map((g) => {
+        // Для дней без записей Health Connect может вернуть группу без поля,
+        // хотя в типах оно обязательное: читаем как необязательное
+        const result: Partial<typeof g.result> = g.result;
+        return { startTime: g.startTime, value: result.COUNT_TOTAL ?? 0 };
+      })
     : [];
   const energy: AggregatePoint[] = granted.has("ActiveCaloriesBurned")
     ? (
@@ -150,10 +155,13 @@ export async function fetchHealthConnectMovement(
           timeRangeFilter,
           timeRangeSlicer,
         })
-      ).map((g) => ({
-        startTime: g.startTime,
-        value: g.result.ACTIVE_CALORIES_TOTAL.inKilocalories,
-      }))
+      ).map((g) => {
+        const result: Partial<typeof g.result> = g.result;
+        return {
+          startTime: g.startTime,
+          value: result.ACTIVE_CALORIES_TOTAL?.inKilocalories ?? 0,
+        };
+      })
     : [];
   const distance: AggregatePoint[] = granted.has("Distance")
     ? (
@@ -162,10 +170,13 @@ export async function fetchHealthConnectMovement(
           timeRangeFilter,
           timeRangeSlicer,
         })
-      ).map((g) => ({
-        startTime: g.startTime,
-        value: g.result.DISTANCE.inMeters,
-      }))
+      ).map((g) => {
+        const result: Partial<typeof g.result> = g.result;
+        return {
+          startTime: g.startTime,
+          value: result.DISTANCE?.inMeters ?? 0,
+        };
+      })
     : [];
 
   return mergeMovementAggregates(steps, energy, distance);
