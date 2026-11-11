@@ -48,6 +48,10 @@ requirements: [AUTH-07]
 - Без CustomCode код доходит: причина в `CustomCode`. Нужен отдельный план по запасному дизайну из 72-RESEARCH (Open Question 4): провайдер `ConvexCredentials` с id `whatsapp-otp`, отправка через Twilio без `CustomCode`, проверка через Twilio `VerificationCheck`.
 - Снова 63005: причина в настройке Sender/шаблона Twilio и Meta (внешняя работа пользователя, код не меняется).
 
+## Результат проверки без CustomCode (2026-11-11)
+
+На сервисе Verify включено «Enable Custom Verification Code: Yes», шаблоны Default Templates, длина кода 4, язык English. Verification, отправленный напрямую через API без `CustomCode`, вернул status `pending`, сообщение не пришло, в Verify-логе снова Error code **63005**. Гипотеза про `CustomCode` отвергнута. Причина лежит в настройке WhatsApp Sender/шаблона/WABA на стороне Twilio и Meta. Запасной вариант через `VerificationCheck` не нужен, код приложения менять не требуется.
+
 ## Реализация (Task 3)
 
 Вариант A: файлы `app/auth/phone-sign-in.tsx` и `config/authConfig.ts` не создавались и не менялись. В `.planning/STATE.md` к записи AUTH-07 добавлено обновление от 2026-11-11 (Phase 75).
