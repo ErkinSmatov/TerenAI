@@ -41,7 +41,11 @@ function ReadingRow({ reading }: ReadingRowProps) {
         <Text size="12" color={getColor("mutedForeground")}>
           {format(reading.recordedAt, "d MMMM, HH:mm", { locale: ru })}
           {reading.context ? ` · ${glucoseContextLabels[reading.context]}` : ""}
-          {reading.source === "healthkit" ? " · Apple Health" : ""}
+          {reading.source === "healthkit"
+            ? " · Apple Health"
+            : reading.source === "healthconnect"
+              ? " · Health Connect"
+              : ""}
         </Text>
       </View>
       <AlertDialog

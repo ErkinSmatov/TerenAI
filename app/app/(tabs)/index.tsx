@@ -9,7 +9,8 @@ import HomeRecentlyLogged from "@/components/home/HomeRecentlyLogged";
 import SafeArea from "@/components/ui/SafeArea";
 import { api } from "@/convex/_generated/api";
 import { useThemeContext } from "@/context/ThemeContext";
-import useHealthKitSync from "@/lib/hooks/useHealthKitSync";
+import useHealthSync from "@/lib/hooks/useHealthSync";
+import { isHealthPlatformSupported } from "@/lib/health/healthProvider";
 import { calculateDayTotals } from "@/lib/nutrition/calculateDayTotals";
 import estimateGlucoseFromMeals from "@/lib/nutrition/estimateGlucoseFromMeals";
 import getColor from "@/lib/ui/getColor";
@@ -21,7 +22,6 @@ import { getDay } from "date-fns";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import {
-  Platform,
   ScrollView,
   StyleSheet,
   View,
@@ -56,7 +56,7 @@ export default function HomeScreen() {
   const profile = useQuery(api.profiles.getProfile.default);
   const isGlucometerTrack = hasHealthBlocks(profile?.data?.goalTrack);
 
-  useHealthKitSync(isGlucometerTrack);
+  useHealthSync(isGlucometerTrack);
 
   const weekBounds = getLocalWeekBounds();
 
@@ -83,7 +83,7 @@ export default function HomeScreen() {
 
   const rawWeekMovement = useQuery(
     api.movement.getWeekMovement.default,
-    Platform.OS === "ios" ? { weekDates: weekBounds.weekDates } : "skip"
+    isHealthPlatformSupported ? { weekDates: weekBounds.weekDates } : "skip"
   );
   const weekMovement = rawWeekMovement ?? Array.from({ length: 7 }, () => null);
   const dayMovement = weekMovement.at(selectedDay) ?? null;

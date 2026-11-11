@@ -29,7 +29,8 @@ import { useRef } from "react";
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { Platform, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { isHealthPlatformSupported } from "@/lib/health/healthProvider";
 import { hasHealthBlocks } from "@/lib/profile/hasHealthBlocks";
 
 function capitalize(text: string): string {
@@ -97,7 +98,7 @@ export default function DayScreen() {
 
   const rawMonthMovement = useQuery(
     api.movement.getMonthMovement.default,
-    isValidRoute && Platform.OS === "ios"
+    isValidRoute && isHealthPlatformSupported
       ? { monthDates: bounds.monthDates }
       : "skip",
   );
@@ -124,7 +125,7 @@ export default function DayScreen() {
     (isGlucometerTrack &&
       (rawMonthReadings === undefined ||
         rawMonthBloodPressure === undefined)) ||
-    (Platform.OS === "ios" && rawMonthMovement === undefined);
+    (isHealthPlatformSupported && rawMonthMovement === undefined);
 
   if (stillLoading) {
     return (
