@@ -24,6 +24,9 @@ import {
   TextAlign,
 } from "@shopify/react-native-skia";
 import getColor from "@/lib/ui/getColor";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
 import { LinearGradient } from "expo-linear-gradient";
 import resolveFontFamily from "@/lib/ui/resolveFontFamily";
 
@@ -46,6 +49,8 @@ export default function WeightPicker({
   formatWeight,
   onChange,
 }: Props) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const dimensions = useWindowDimensions();
 
   const height = 75;
@@ -162,14 +167,14 @@ export default function WeightPicker({
           />
         )}
         <LinearGradient
-          colors={[getColor("background"), getColor("background", 0)]}
+          colors={[getColor("background", undefined, theme), getColor("background", 0, theme)]}
           style={[styles.leftGradient, { width: width / 8, height: height }]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           pointerEvents="none"
         />
         <LinearGradient
-          colors={[getColor("background"), getColor("background", 0)]}
+          colors={[getColor("background", undefined, theme), getColor("background", 0, theme)]}
           style={[styles.rightGradient, { width: width / 8, height: height }]}
           start={{ x: 1, y: 0 }}
           end={{ x: 0, y: 0 }}
@@ -185,19 +190,19 @@ export default function WeightPicker({
           <Group transform={transform}>
             <Path
               path={primaryLinesPath}
-              color={getColor("mutedForeground")}
+              color={getColor("mutedForeground", undefined, theme)}
               style="stroke"
               strokeWidth={1}
             />
             <Path
               path={secondaryLinesPath}
-              color={getColor("mutedForeground", 0.5)}
+              color={getColor("mutedForeground", 0.5, theme)}
               style="stroke"
               strokeWidth={1}
             />
             <Path
               path={highlightedLinePath}
-              color={getColor("primary")}
+              color={getColor("accentText", undefined, theme)}
               style="stroke"
               strokeWidth={2}
             />
@@ -215,7 +220,7 @@ export default function WeightPicker({
 
                 // TODO: Check
                 const textStyle: SkTextStyle = {
-                  color: Skia.Color(getColor("mutedForeground")),
+                  color: Skia.Color(getColor("mutedForeground", undefined, theme)),
                   fontFamilies: ["Inter"],
                   fontSize: 12,
                 };
@@ -252,7 +257,8 @@ export default function WeightPicker({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) =>
+  StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
@@ -269,11 +275,11 @@ const styles = StyleSheet.create({
   },
   highlightSide: {
     position: "absolute",
-    backgroundColor: getColor("primary", 0.5),
+    backgroundColor: getColor("accentText", 0.5, theme),
     bottom: 0,
   },
   indicator: {
-    backgroundColor: getColor("primary"),
+    backgroundColor: getColor("accentText", undefined, theme),
     width: 2,
     position: "absolute",
     zIndex: 2,
@@ -282,7 +288,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     position: "absolute",
     fontFamily: resolveFontFamily({ weight: 700 }),
-    color: getColor("foreground"),
+    color: getColor("foreground", undefined, theme),
     includeFontPadding: false,
   },
   leftGradient: {

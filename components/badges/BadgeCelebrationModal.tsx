@@ -4,6 +4,9 @@ import Text from "@/components/ui/Text";
 import { api } from "@/convex/_generated/api";
 import { findBadgeDefinition } from "@/lib/badges/badgeDefinitions";
 import getColor from "@/lib/ui/getColor";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
 import { Portal } from "@rn-primitives/portal";
 import { useMutation, useQuery } from "convex/react";
 import { TrophyIcon } from "lucide-react-native";
@@ -56,6 +59,8 @@ const ZoomOut = new Keyframe({
  * мутации подтверждения.
  */
 export default function BadgeCelebrationModal() {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const dimensions = useWindowDimensions();
   const unseenBadge = useQuery(api.badges.getUnseenBadge.default);
   const markBadgeSeen = useMutation(api.badges.markBadgeSeen.default);
@@ -105,14 +110,14 @@ export default function BadgeCelebrationModal() {
         <Animated.View entering={ZoomIn} exiting={ZoomOut}>
           <Card style={[styles.card, { width: dimensions.width - 32 }]}>
             <Animated.View style={[styles.iconCircle, iconAnimatedStyle]}>
-              <TrophyIcon size={48} color={getColor("base")} />
+              <TrophyIcon size={48} color={getColor("base", undefined, theme)} />
             </Animated.View>
             <Text size="20" weight="600" style={styles.title}>
               Новое достижение!
             </Text>
             <Text
               size="16"
-              color={getColor("mutedForeground")}
+              color={getColor("mutedForeground", undefined, theme)}
               style={styles.description}
             >
               {`${definition.name} — ${definition.description}`}
@@ -127,7 +132,8 @@ export default function BadgeCelebrationModal() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) =>
+  StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
@@ -144,7 +150,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: getColor("orange"),
+    backgroundColor: getColor("orange", undefined, theme),
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 32,

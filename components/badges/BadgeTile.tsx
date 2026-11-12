@@ -2,6 +2,9 @@ import Card from "@/components/ui/Card";
 import Text from "@/components/ui/Text";
 import { BadgeDefinition } from "@/lib/badges/badgeDefinitions";
 import getColor from "@/lib/ui/getColor";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { TrophyIcon, UtensilsIcon } from "lucide-react-native";
@@ -13,8 +16,10 @@ type Props = {
 };
 
 export default function BadgeTile({ definition, earnedAt }: Props) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const earned = earnedAt !== undefined;
-  const iconColor = earned ? getColor("orange") : getColor("mutedForeground");
+  const iconColor = earned ? getColor("orange", undefined, theme) : getColor("mutedForeground", undefined, theme);
   const Icon = definition.type === "streak" ? TrophyIcon : UtensilsIcon;
 
   return (
@@ -28,15 +33,15 @@ export default function BadgeTile({ definition, earnedAt }: Props) {
       <Text
         size="16"
         weight="500"
-        color={earned ? getColor("foreground") : getColor("mutedForeground")}
+        color={earned ? getColor("foreground", undefined, theme) : getColor("mutedForeground", undefined, theme)}
       >
         {definition.name}
       </Text>
-      <Text size="14" color={getColor("mutedForeground")} style={styles.caption}>
+      <Text size="14" color={getColor("mutedForeground", undefined, theme)} style={styles.caption}>
         {definition.description}
       </Text>
       {earned && (
-        <Text size="14" color={getColor("mutedForeground")}>
+        <Text size="14" color={getColor("mutedForeground", undefined, theme)}>
           {format(new Date(earnedAt), "d MMMM yyyy", { locale: ru })}
         </Text>
       )}
@@ -44,12 +49,13 @@ export default function BadgeTile({ definition, earnedAt }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) =>
+  StyleSheet.create({
   card: {
     width: "48%",
   },
   cardLocked: {
-    backgroundColor: getColor("muted"),
+    backgroundColor: getColor("muted", undefined, theme),
   },
   iconRow: {
     marginBottom: 8,
