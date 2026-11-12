@@ -1,4 +1,4 @@
-import { Platform, StyleSheet, View } from "react-native";
+import { Platform, View } from "react-native";
 import Button from "@/components/ui/Button";
 import { useAuthContext } from "@/context/AuthContext";
 import { useRouter } from "expo-router";
@@ -8,7 +8,10 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { Phone as PhoneIcon } from "lucide-react-native";
 import Text from "@/components/ui/Text";
 import GoogleLogo from "@/assets/svg/google-logo.svg";
+import { useThemeContext } from "@/context/ThemeContext";
 import getColor from "@/lib/ui/getColor";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 import { useState } from "react";
 import logError from "@/lib/utils/logError";
 import { Toast } from "@/components/ui/Toast";
@@ -31,6 +34,8 @@ export default function SignInButtons({
   shouldRedirect = true,
 }: Props) {
   const { signIn } = useAuthContext();
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const router = useRouter();
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
@@ -89,11 +94,11 @@ export default function SignInButtons({
           onPress={() => void handleLogin("apple")}
           disabled={disabled || isAuthenticating}
         >
-          <FontAwesome5 name="apple" size={28} color={getColor("background")} />
+          <FontAwesome5 name="apple" size={28} color={getColor("background", undefined, theme)} />
           <Text
             size="16"
             weight="500"
-            color={getColor("background")}
+            color={getColor("background", undefined, theme)}
             style={styles.buttonPrimaryText}
           >
             Продолжить с Apple
@@ -111,7 +116,7 @@ export default function SignInButtons({
         <Text
           size="16"
           weight={Platform.OS === "android" ? undefined : "500"}
-          color={Platform.OS === "android" ? getColor("background") : undefined}
+          color={Platform.OS === "android" ? getColor("background", undefined, theme) : undefined}
         >
           Продолжить с Google
         </Text>
@@ -123,7 +128,7 @@ export default function SignInButtons({
         onPress={handlePhoneLogin}
         disabled={disabled || isAuthenticating}
       >
-        <PhoneIcon size={24} color={getColor("foreground")} />
+        <PhoneIcon size={24} color={getColor("foreground", undefined, theme)} />
         <Text size="16" weight="500">
           Войти по номеру телефона
         </Text>
@@ -132,21 +137,21 @@ export default function SignInButtons({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   container: {
     gap: 20,
   },
   button: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "center" as const,
+    alignItems: "center" as const,
     gap: 12,
-    flexDirection: "row",
+    flexDirection: "row" as const,
   },
   buttonPrimaryText: {
-    color: getColor("background"),
+    color: getColor("background", undefined, theme),
   },
   buttonOutlineText: {
-    color: getColor("foreground"),
-    fontWeight: 500,
+    color: getColor("foreground", undefined, theme),
+    fontWeight: 500 as const,
   },
 });

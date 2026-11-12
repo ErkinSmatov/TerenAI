@@ -12,33 +12,38 @@ import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import AlertDialog from "@/components/ui/AlertDialog";
 import { HeartPulseIcon, TrashIcon } from "lucide-react-native";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Doc } from "@/convex/_generated/dataModel";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
+import { useThemeContext } from "@/context/ThemeContext";
 import getColor from "@/lib/ui/getColor";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 
 type ReadingRowProps = {
   reading: Doc<"bloodPressureReadings">;
 };
 
 function ReadingRow({ reading }: ReadingRowProps) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const deleteReading = useMutation(api.bloodPressure.deleteReading.default);
 
   return (
     <Card style={styles.card}>
       <View style={styles.rowIcon}>
-        <HeartPulseIcon size={18} color={getColor("red")} />
+        <HeartPulseIcon size={18} color={getColor("red", undefined, theme)} />
       </View>
       <View style={styles.rowTextContainer}>
         <Text size="16" weight="600">
           {reading.systolic}/{reading.diastolic}
           {reading.pulse !== undefined ? ` · ${reading.pulse} уд/мин` : ""}
         </Text>
-        <Text size="12" color={getColor("mutedForeground")}>
+        <Text size="12" color={getColor("mutedForeground", undefined, theme)}>
           {format(reading._creationTime, "d MMMM, HH:mm", { locale: ru })}
         </Text>
       </View>
@@ -50,7 +55,7 @@ function ReadingRow({ reading }: ReadingRowProps) {
             style={styles.deleteButton}
             hitSlop={10}
           >
-            <TrashIcon size={18} color={getColor("mutedForeground")} />
+            <TrashIcon size={18} color={getColor("mutedForeground", undefined, theme)} />
           </Button>
         }
         destructive
@@ -63,6 +68,8 @@ function ReadingRow({ reading }: ReadingRowProps) {
 }
 
 export default function BloodPressureLogScreen() {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const { scrollY, onScroll } = useScrollY();
   const readings = useQuery(api.bloodPressure.getAllReadings.default);
 
@@ -81,7 +88,7 @@ export default function BloodPressureLogScreen() {
           {readings === undefined ? null : readings.length === 0 ? (
             <Text
               size="14"
-              color={getColor("mutedForeground", 0.5)}
+              color={getColor("mutedForeground", 0.5, theme)}
               style={styles.empty}
             >
               Пока нет ни одного показания&hellip;
@@ -97,26 +104,26 @@ export default function BloodPressureLogScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   container: {
     gap: 12,
   },
   empty: {
-    textAlign: "center",
+    textAlign: "center" as const,
     paddingTop: 40,
   },
   card: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
     gap: 12,
   },
   rowIcon: {
     height: 36,
     width: 36,
     borderRadius: 999,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: getColor("muted"),
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    backgroundColor: getColor("muted", undefined, theme),
   },
   rowTextContainer: {
     flex: 1,
@@ -126,7 +133,7 @@ const styles = StyleSheet.create({
     height: 36,
     width: 36,
     borderRadius: 999,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
   },
 });

@@ -4,7 +4,6 @@ import Text from "@/components/ui/Text";
 import Title from "@/components/ui/Title";
 import {
   Image,
-  StyleSheet,
   View,
   type ImageSourcePropType,
 } from "react-native";
@@ -16,6 +15,8 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import getShadow from "@/lib/ui/getShadow";
 import Carousel from "@/components/ui/Carousel";
 import getColor from "@/lib/ui/getColor";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 
 const carouselImages: readonly ImageSourcePropType[] = [
   require("@/assets/images/screenshot-1.png") as ImageSourcePropType,
@@ -24,6 +25,7 @@ const carouselImages: readonly ImageSourcePropType[] = [
 ];
 
 export default function AuthScreen() {
+  const styles = useThemedStyles(createStyles);
   const router = useRouter();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
@@ -76,24 +78,24 @@ export default function AuthScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   carouselContainer: {
     flex: 1,
     paddingVertical: 24,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
   },
   imageContainer: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "center" as const,
+    alignItems: "center" as const,
     flex: 1,
   },
   image: {
-    height: "100%",
+    height: "100%" as const,
     aspectRatio: 9 / 19.5,
-    maxWidth: "100%",
+    maxWidth: "100%" as const,
     borderRadius: 20,
-    borderColor: getColor("secondary"),
+    borderColor: getColor("secondary", theme === "dark" ? 0.08 : undefined, theme),
     borderWidth: 1,
     ...getShadow("lg"),
   },
@@ -102,9 +104,9 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   footerText: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: "row" as const,
+    justifyContent: "center" as const,
+    alignItems: "center" as const,
     gap: 4,
   },
 });

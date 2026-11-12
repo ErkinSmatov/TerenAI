@@ -15,6 +15,8 @@ import Button from "@/components/ui/Button";
 import SafeArea from "@/components/ui/SafeArea";
 import { Toast } from "@/components/ui/Toast";
 import getColor from "@/lib/ui/getColor";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
 import logError from "@/lib/utils/logError";
 import { api } from "@/convex/_generated/api";
 
@@ -27,6 +29,7 @@ import { useSubscriptionContext } from "@/context/SubscriptionContext";
 type CameraMode = "photo" | "barcode";
 
 export default function CameraScreen() {
+  const styles = useThemedStyles(createStyles);
   const router = useRouter();
   const { date } = useLocalSearchParams<{ date?: string }>();
   const addDate = resolveAddDate(date, Date.now());
@@ -196,10 +199,10 @@ export default function CameraScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   container: {
     flex: 1,
-    backgroundColor: getColor("background"),
+    backgroundColor: getColor("background", undefined, theme),
   },
   camera: {
     flex: 1,
