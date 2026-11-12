@@ -3,10 +3,12 @@ import BottomSheet from "@/components/ui/BottomSheet";
 import Button from "@/components/ui/Button";
 import { CircleQuestionMarkIcon } from "lucide-react-native";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import Text from "@/components/ui/Text";
 import { View, Linking } from "react-native";
 
 export default function PlanInfoSheet() {
+  const { theme } = useThemeContext();
   return (
     <BottomSheet
       Trigger={
@@ -16,7 +18,7 @@ export default function PlanInfoSheet() {
           style={{ position: "absolute", right: 0 }}
           hitSlop={100}
         >
-          <CircleQuestionMarkIcon size={22} color={getColor("foreground")} />
+          <CircleQuestionMarkIcon size={22} color={getColor("foreground", undefined, theme)} />
         </Button>
       }
     >

@@ -2,6 +2,7 @@ import { StyleSheet, View } from "react-native";
 import { CameraIcon, ScanBarcodeIcon } from "lucide-react-native";
 import Card from "@/components/ui/Card";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import Button from "../ui/Button";
 import ProLabel from "../ProLabel";
 
@@ -21,6 +22,7 @@ export default function CameraModeSelector({
   selectedMode,
   onSelectMode,
 }: Props) {
+  const { theme } = useThemeContext();
   return (
     <View style={styles.optionsContainer}>
       {options.map(({ mode, icon: Icon, isPro }) => (
@@ -37,7 +39,7 @@ export default function CameraModeSelector({
           <Card
             style={[styles.card, selectedMode !== mode && { opacity: 0.6 }]}
           >
-            <Icon color={getColor("foreground")} />
+            <Icon color={getColor("foreground", undefined, theme)} />
           </Card>
         </Button>
       ))}

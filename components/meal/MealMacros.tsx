@@ -1,5 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import { FlameIcon } from "lucide-react-native";
 import CarbIcon from "../icons/macros/CarbIcon";
 import ProteinIcon from "../icons/macros/ProteinIcon";
@@ -14,24 +15,25 @@ type Props = {
 };
 
 export default function MealMacros({ loading, macros }: Props) {
+  const { theme } = useThemeContext();
   const displayMacros = [
     {
       label: "Углеводы",
-      color: getColor("carb"),
+      color: getColor("carb", undefined, theme),
       Icon: CarbIcon,
       value: Math.round(macros?.carbs ?? 0),
       unit: "g",
     },
     {
       label: "Белки",
-      color: getColor("protein"),
+      color: getColor("protein", undefined, theme),
       Icon: ProteinIcon,
       value: Math.round(macros?.protein ?? 0),
       unit: "g",
     },
     {
       label: "Жиры",
-      color: getColor("fat"),
+      color: getColor("fat", undefined, theme),
       Icon: FatIcon,
       value: Math.round(macros?.fat ?? 0),
       unit: "g",
@@ -44,7 +46,7 @@ export default function MealMacros({ loading, macros }: Props) {
         item={{
           label: "Калории",
           Icon: FlameIcon,
-          color: getColor("calorie"),
+          color: getColor("calorie", undefined, theme),
           value: Math.round(macros?.calories ?? 0),
           unit: "kcal",
         }}

@@ -190,12 +190,12 @@ export default function Meal({
         )}
         {isError ? (
           <SafeArea edges={["left", "right"]} style={styles.errorContainer}>
-            <TriangleAlertIcon size={48} color={getColor("red")} />
+            <TriangleAlertIcon size={48} color={getColor("red", undefined, theme)} />
             <View style={styles.errorTextContainer}>
               <Text size="18" weight="600">
                 Не удалось распознать блюдо
               </Text>
-              <Text size="14" color={getColor("mutedForeground")}>
+              <Text size="14" color={getColor("mutedForeground", undefined, theme)}>
                 Что-то пошло не так при обработке. Попробуйте ещё раз.
               </Text>
             </View>
@@ -226,7 +226,7 @@ export default function Meal({
           >
             <ScreenFooterButtonIcon
               Icon={RefreshCwIcon}
-              color={getColor("background")}
+              color={getColor("background", undefined, theme)}
             />
             <ScreenFooterButtonText
               text={isRetrying ? "Повторяем…" : "Повторить"}
@@ -246,7 +246,7 @@ export default function Meal({
               {!hasProAccess && <ProLabel />}
               <ScreenFooterButtonIcon
                 Icon={SparklesIcon}
-                fill={getColor("foreground")}
+                fill={getColor("foreground", undefined, theme)}
               />
               <ScreenFooterButtonText text="Исправить" />
             </ScreenFooterButton>

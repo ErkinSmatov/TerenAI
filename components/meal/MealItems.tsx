@@ -2,6 +2,7 @@ import { DimensionValue, StyleSheet, View } from "react-native";
 import Text from "../ui/Text";
 import Card from "../ui/Card";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import Button from "../ui/Button";
 import WithSkeleton from "../ui/WithSkeleton";
 import { Link } from "expo-router";
@@ -22,6 +23,7 @@ const placeholderRows = 4;
 const nameSkeletonWidths: DimensionValue[] = ["75%", "65%", "75%", "65%"];
 
 export default function MealItems({ items = [], loading }: Props) {
+  const { theme } = useThemeContext();
   const count = loading
     ? Math.max(items.length, placeholderRows)
     : items.length;
@@ -39,9 +41,9 @@ export default function MealItems({ items = [], loading }: Props) {
           <PlusIcon
             size={14}
             strokeWidth={2.25}
-            color={getColor("mutedForeground")}
+            color={getColor("mutedForeground", undefined, theme)}
           />
-          <Text size="14" color={getColor("mutedForeground")}>
+          <Text size="14" color={getColor("mutedForeground", undefined, theme)}>
             Добавить ещё
           </Text>
         </Button> */}
@@ -86,7 +88,7 @@ export default function MealItems({ items = [], loading }: Props) {
                         {item?.name}
                       </Text>
                       <Text size="14">&middot;</Text>
-                      <Text size="14" color={getColor("mutedForeground")}>
+                      <Text size="14" color={getColor("mutedForeground", undefined, theme)}>
                         {Math.round(item?.calories ?? 0)} kcal
                       </Text>
                     </View>

@@ -1,5 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import MealSummaryCard from "./MealSummaryCard";
 import MealSummaryCardBig from "./MealSummaryCardBig";
 import FiberIcon from "../icons/micros/FiberIcon";
@@ -20,24 +21,25 @@ type Props = {
 } & SourceType;
 
 export default function MealMicros({ source, id, loading, micros }: Props) {
+  const { theme } = useThemeContext();
   const displayMicros = [
     {
       label: "Клетчатка",
-      color: getColor("fiber"),
+      color: getColor("fiber", undefined, theme),
       Icon: FiberIcon,
       value: micros?.fiber ?? 0,
       unit: "g",
     },
     {
       label: "Сахар",
-      color: getColor("sugar"),
+      color: getColor("sugar", undefined, theme),
       Icon: SugarIcon,
       value: micros?.sugar ?? 0,
       unit: "g",
     },
     {
       label: "Натрий",
-      color: getColor("sodium"),
+      color: getColor("sodium", undefined, theme),
       Icon: SodiumIcon,
       value: (micros?.sodium ?? 0) * 1000,
       unit: "mg",
@@ -64,7 +66,7 @@ export default function MealMicros({ source, id, loading, micros }: Props) {
           item={{
             label: "Качество",
             Icon: HealthIcon,
-            color: getColor("health"),
+            color: getColor("health", undefined, theme),
             value: Math.round(micros?.score ?? 0),
             unit: "",
           }}
