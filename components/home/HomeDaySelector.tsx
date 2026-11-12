@@ -73,7 +73,7 @@ function DaySelectorItem({
         weight="600"
         style={
           isSelected
-            ? { color: getColor("background", undefined, theme) }
+            ? { color: getColor("primaryForeground", undefined, theme) }
             : undefined
         }
       >
@@ -87,7 +87,7 @@ function DaySelectorItem({
           style={[
             styles.dayNumberText,
             isSelected
-              ? { color: getColor("background", undefined, theme) }
+              ? { color: getColor("primaryForeground", undefined, theme) }
               : undefined,
           ]}
         >

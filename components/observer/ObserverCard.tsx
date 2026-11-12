@@ -39,7 +39,7 @@ export default function ObserverCard({
         <Text
           size="20"
           weight="600"
-          color={getColor("background", undefined, theme)}
+          color={getColor("primaryForeground", undefined, theme)}
         >
           {initial}
         </Text>

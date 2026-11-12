@@ -93,7 +93,7 @@ export default function HomeGlucoseHeroCard({
 
   const textColor = getColor("foreground", undefined, theme);
   const mutedTextColor = getColor("foreground", 0.65, theme);
-  const accentColor = getColor("primary", undefined, theme);
+  const accentColor = getColor("accentText", undefined, theme);
 
   return (
     <LinearGradient

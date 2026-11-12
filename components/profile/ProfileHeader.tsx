@@ -75,7 +75,7 @@ export default function ProfileHeader() {
           <Text
             size="20"
             weight="700"
-            color={getColor("background", undefined, theme)}
+            color={getColor("primaryForeground", undefined, theme)}
           >
             {initial}
           </Text>

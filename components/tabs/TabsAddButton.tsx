@@ -46,7 +46,14 @@ export default function TabsAddButton({
         {...pressableProps}
       >
         <Animated.View style={animatedStyle}>
-          <PlusIcon color={getColor("background", undefined, theme)} size={28} />
+          <PlusIcon
+            color={getColor(
+              variant === "accent" ? "primaryForeground" : "background",
+              undefined,
+              theme,
+            )}
+            size={28}
+          />
         </Animated.View>
       </Button>
     </View>
