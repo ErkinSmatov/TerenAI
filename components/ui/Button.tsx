@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
+import { useThemeContext } from "@/context/ThemeContext";
 import getColor from "@/lib/ui/getColor";
+import type { ThemeName } from "@/lib/ui/palettes";
 import {
   Pressable,
   PressableProps,
@@ -30,7 +32,7 @@ type Size = "sm" | "md" | "lg" | "xl" | "base" | "fab";
 // Мягкая цветная тень FAB — та же объектная форма `boxShadow`, что и
 // `getShadow`, но с фиксированным акцентным цветом вместо чёрного.
 // Реализована локально: `lib/ui/getShadow.ts` менять не требуется.
-function getAccentShadow(): Pick<ViewStyle, "boxShadow"> {
+function getAccentShadow(theme: ThemeName): Pick<ViewStyle, "boxShadow"> {
   return {
     boxShadow: [
       {
@@ -38,7 +40,7 @@ function getAccentShadow(): Pick<ViewStyle, "boxShadow"> {
         offsetY: 8,
         blurRadius: 20,
         spreadDistance: 0,
-        color: getColor("primary", 0.4),
+        color: getColor("primary", 0.4, theme),
       },
     ],
   };
@@ -67,6 +69,7 @@ export default function Button({
   disabled,
   ...restPressable
 }: Props) {
+  const { theme } = useThemeContext();
   const isFunctionChild = typeof children === "function";
   const childArray = isFunctionChild ? [] : React.Children.toArray(children);
   const shouldWrapInText =
@@ -90,10 +93,10 @@ export default function Button({
   > = {
     primary: {
       container: {
-        backgroundColor: getColor("foreground"),
+        backgroundColor: getColor("foreground", undefined, theme),
       },
       text: {
-        color: getColor("background"),
+        color: getColor("background", undefined, theme),
       },
     },
     secondary: {
@@ -102,21 +105,21 @@ export default function Button({
       // (см. lib/ui/palettes.ts) — как сплошной фон давал белую кнопку
       // с белым текстом в тёмной теме.
       container: {
-        backgroundColor: getColor("muted"),
+        backgroundColor: getColor("muted", undefined, theme),
       },
       text: {
-        color: getColor("foreground"),
+        color: getColor("foreground", undefined, theme),
       },
     },
     ghost: {},
     outline: {
       container: {
         borderWidth: 1,
-        borderColor: getColor("foreground"),
-        backgroundColor: getColor("background"),
+        borderColor: getColor("foreground", undefined, theme),
+        backgroundColor: getColor("background", undefined, theme),
       },
       text: {
-        color: getColor("foreground"),
+        color: getColor("foreground", undefined, theme),
       },
     },
     text: {
@@ -125,10 +128,10 @@ export default function Button({
         paddingHorizontal: 0,
       },
       text: {
-        color: getColor("foreground"),
+        color: getColor("foreground", undefined, theme),
         fontWeight: 700,
         borderBottomWidth: 1,
-        borderBottomColor: getColor("foreground"),
+        borderBottomColor: getColor("foreground", undefined, theme),
       },
     },
     base: {
@@ -144,19 +147,19 @@ export default function Button({
     },
     destructive: {
       container: {
-        backgroundColor: getColor("red"),
+        backgroundColor: getColor("red", undefined, theme),
       },
       text: {
-        color: getColor("background"),
+        color: getColor("background", undefined, theme),
       },
     },
     accent: {
       container: {
-        backgroundColor: getColor("primary"),
-        ...getAccentShadow(),
+        backgroundColor: getColor("primary", undefined, theme),
+        ...getAccentShadow(theme),
       },
       text: {
-        color: getColor("background"),
+        color: getColor("primaryForeground", undefined, theme),
       },
     },
   };

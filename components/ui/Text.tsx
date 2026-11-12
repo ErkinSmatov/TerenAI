@@ -1,3 +1,4 @@
+import { useThemeContext } from "@/context/ThemeContext";
 import getColor from "@/lib/ui/getColor";
 import resolveFontFamily, {
   FontFamilyName,
@@ -66,16 +67,18 @@ export type TextProps = {
 export default function Text({
   size = "18",
   weight = "400",
-  color = getColor("foreground"),
+  color,
   family = "manrope",
   ...rest
 }: TextProps) {
+  const { theme } = useThemeContext();
   const fontSize = Number(size);
+  const resolvedColor = color ?? getColor("foreground", undefined, theme);
   return (
     <TextWrapper
       {...rest}
       family={family}
-      style={[{ fontSize, fontWeight: weight, color }, rest.style]}
+      style={[{ fontSize, fontWeight: weight, color: resolvedColor }, rest.style]}
     />
   );
 }

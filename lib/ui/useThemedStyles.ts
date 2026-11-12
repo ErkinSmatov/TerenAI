@@ -10,11 +10,10 @@ const cache = new Map<
   Partial<Record<ThemeName, unknown>>
 >();
 
-// Экраны, редизайн которых входит в скоуп фазы, переносят свои
-// `StyleSheet.create`-блоки с цветами в фабрику `(theme) => ({...})` и
-// получают живое переключение темы. Экраны вне скоупа сохраняют текущий
-// модульный `StyleSheet.create` и меняют тему после перезапуска приложения —
-// это осознанный компромисс.
+// Все компоненты app/ и components/ переносят цветные стили в модульные
+// фабрики `(theme) => ({...})` и передают `theme` третьим аргументом в
+// getColor. Модульный `StyleSheet.create` с getColor запрещён и проверяется
+// scripts/checks/themeColors.check.mjs.
 export default function useThemedStyles<T extends StyleSheet.NamedStyles<T>>(
   factory: (theme: ThemeName) => T
 ): T {
