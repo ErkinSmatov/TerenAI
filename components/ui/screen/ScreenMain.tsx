@@ -11,6 +11,7 @@ import {
 import WithSkeleton from "../WithSkeleton";
 import Text from "../Text";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import {
   ScreenHeaderProvider,
   useClaimScreenHeader,
@@ -62,6 +63,7 @@ export function ScreenMainTitle({
   loading?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
+  const { theme } = useThemeContext();
   return (
     <View style={[styles.titleContainer, style]}>
       <WithSkeleton
@@ -77,7 +79,7 @@ export function ScreenMainTitle({
         </Text>
       </WithSkeleton>
       {description && (
-        <Text size="14" color={getColor("mutedForeground")}>
+        <Text size="14" color={getColor("mutedForeground", undefined, theme)}>
           {description}
         </Text>
       )}

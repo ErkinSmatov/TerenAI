@@ -50,6 +50,7 @@ export default function Carousel({
   autoScroll = false,
   autoScrollIntervalMs = 3000,
 }: Props) {
+  const { theme } = useThemeContext();
   const dimensions = useWindowDimensions();
   const scrollX = useSharedValue(0);
   const scrollViewRef = useRef<Animated.ScrollView>(null);
@@ -278,7 +279,7 @@ export default function Carousel({
                   scrollToPrev();
                 }}
               >
-                <ChevronLeftIcon size={20} color={getColor("foreground")} />
+                <ChevronLeftIcon size={20} color={getColor("foreground", undefined, theme)} />
               </Button>
             </View>
             <View
@@ -296,7 +297,7 @@ export default function Carousel({
                   scrollToNext();
                 }}
               >
-                <ChevronRightIcon size={20} color={getColor("foreground")} />
+                <ChevronRightIcon size={20} color={getColor("foreground", undefined, theme)} />
               </Button>
             </View>
           </View>

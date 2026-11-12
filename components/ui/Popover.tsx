@@ -8,6 +8,7 @@ import { TriggerRef } from "@rn-primitives/popover";
 import Animated, { Easing, Keyframe } from "react-native-reanimated";
 import { LucideIcon } from "lucide-react-native";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import Text from "./Text";
 
 const AnimatedPopoverContent = Animated.createAnimatedComponent(
@@ -52,6 +53,7 @@ type Props = {
 };
 
 export default function Popover({ trigger, options, width = 160 }: Props) {
+  const { theme } = useThemeContext();
   const popoverTriggerRef = useRef<TriggerRef>(null);
 
   return (
@@ -86,8 +88,8 @@ export default function Popover({ trigger, options, width = 160 }: Props) {
                       strokeWidth={2.25}
                       color={
                         option.destructive
-                          ? getColor("red")
-                          : getColor("foreground")
+                          ? getColor("red", undefined, theme)
+                          : getColor("foreground", undefined, theme)
                       }
                     />
                     <Text
@@ -95,8 +97,8 @@ export default function Popover({ trigger, options, width = 160 }: Props) {
                       weight="500"
                       color={
                         option.destructive
-                          ? getColor("red")
-                          : getColor("foreground")
+                          ? getColor("red", undefined, theme)
+                          : getColor("foreground", undefined, theme)
                       }
                     >
                       {option.text}

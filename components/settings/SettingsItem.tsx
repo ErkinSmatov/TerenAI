@@ -1,6 +1,9 @@
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import Button from "../ui/Button";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
+import type { ThemeName } from "@/lib/ui/palettes";
 import { LucideIcon } from "lucide-react-native";
 import Text from "../ui/Text";
 
@@ -19,7 +22,11 @@ export default function SettingsItem({
   isLast,
   destructive = false,
 }: Props) {
-  const color = destructive ? getColor("destructive") : getColor("foreground");
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
+  const color = destructive
+    ? getColor("destructive", undefined, theme)
+    : getColor("foreground", undefined, theme);
 
   return (
     <View style={[styles.container, !isLast && { borderBottomWidth: 1 }]}>
@@ -38,14 +45,14 @@ export default function SettingsItem({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   container: {
-    borderColor: getColor("muted"),
+    borderColor: getColor("muted", undefined, theme),
   },
   button: {
     height: 52,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
     gap: 8,
     paddingHorizontal: 16,
   },

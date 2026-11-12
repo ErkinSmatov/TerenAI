@@ -2,6 +2,7 @@ import { PressableProps, StyleSheet, ViewStyle } from "react-native";
 import Button from "../Button";
 import SafeArea from "../SafeArea";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import getShadow from "@/lib/ui/getShadow";
 import { ComponentProps } from "react";
 import Text from "../Text";
@@ -49,7 +50,8 @@ export function ScreenFooterButtonIcon({
 }: {
   Icon: LucideIcon;
 } & LucideProps) {
-  return <Icon size={16} color={getColor("foreground")} {...props} />;
+  const { theme } = useThemeContext();
+  return <Icon size={16} color={getColor("foreground", undefined, theme)} {...props} />;
 }
 
 const styles = StyleSheet.create({
