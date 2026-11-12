@@ -2,8 +2,11 @@ import Description from "@/components/ui/Description";
 import Text from "@/components/ui/Text";
 import Title from "@/components/ui/Title";
 import getColor from "@/lib/ui/getColor";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
+import { useThemeContext } from "@/context/ThemeContext";
 import { CheckIcon, Loader2Icon } from "lucide-react-native";
-import { LayoutChangeEvent, StyleSheet, View } from "react-native";
+import { LayoutChangeEvent, View } from "react-native";
 import { useEffect, useState } from "react";
 import AnimateableText from "react-native-animateable-text";
 import Animated, {
@@ -95,6 +98,8 @@ function LucideSpinner({ color, size = 18 }: LucideSpinnerProps) {
 }
 
 export default function OnboardingCreatingPlan() {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const { data, setData, setTargets, hasCreatedPlan, setHasCreatedPlan } =
     useOnboardingContext();
   const nutritionArgs =
@@ -257,10 +262,10 @@ export default function OnboardingCreatingPlan() {
                         <CheckIcon
                           size={18}
                           strokeWidth={2.5}
-                          color={getColor("primary")}
+                          color={getColor("accentText", undefined, theme)}
                         />
                       ) : state === "loading" ? (
-                        <LucideSpinner color={getColor("primary")} />
+                        <LucideSpinner color={getColor("accentText", undefined, theme)} />
                       ) : (
                         <View style={styles.recommendationPlaceholder} />
                       )}
@@ -323,82 +328,82 @@ function buildNutritionArgs(
   };
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "center" as const,
+    alignItems: "center" as const,
     gap: 48,
   },
   topContainer: {
-    alignItems: "center",
-    width: "100%",
+    alignItems: "center" as const,
+    width: "100%" as const,
     gap: 16,
   },
   progressText: {
-    alignItems: "center",
+    alignItems: "center" as const,
     fontSize: 48,
     fontFamily: resolveFontFamily({ weight: 600 }),
-    color: getColor("foreground"),
+    color: getColor("foreground", undefined, theme),
     includeFontPadding: false,
   },
   title: {
-    textAlign: "center",
-    fontWeight: 600,
+    textAlign: "center" as const,
+    fontWeight: 600 as const,
   },
   bottomContainer: {
-    width: "100%",
+    width: "100%" as const,
     gap: 12,
   },
   description: {
-    textAlign: "center",
+    textAlign: "center" as const,
   },
   recommendationsContainer: {
-    width: "100%",
-    backgroundColor: getColor("muted"),
+    width: "100%" as const,
+    backgroundColor: getColor("muted", undefined, theme),
     padding: 20,
     borderRadius: 16,
     gap: 10,
-    overflow: "hidden",
+    overflow: "hidden" as const,
   },
   // "muted", не "secondary": в тёмной палитре secondary — сплошной белый,
   // задуман только для низкой прозрачности (см. lib/ui/palettes.ts).
   progressContainer: {
-    position: "absolute",
+    position: "absolute" as const,
     left: 0,
     right: 0,
     height: 6,
-    backgroundColor: getColor("muted"),
+    backgroundColor: getColor("muted", undefined, theme),
   },
   progressIndicator: {
-    height: "100%",
-    backgroundColor: getColor("primary"),
+    height: "100%" as const,
+    backgroundColor: getColor("primary", undefined, theme),
   },
   recommendationsTitle: {
-    fontWeight: 600,
+    fontWeight: 600 as const,
     paddingBottom: 8,
   },
   recommendationContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: "row" as const,
+    justifyContent: "space-between" as const,
+    alignItems: "center" as const,
   },
   recommendationLoading: {
     width: 24,
     height: 24,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
   },
   recommendationAnimatedContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    height: "100%",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    width: "100%" as const,
+    height: "100%" as const,
   },
   recommendationPlaceholder: {
     width: 12,
     height: 12,
     borderRadius: 999,
-    backgroundColor: getColor("muted"),
+    backgroundColor: getColor("muted", undefined, theme),
   },
 });

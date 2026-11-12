@@ -24,7 +24,10 @@ import Button from "../ui/Button";
 import Card from "../ui/Card";
 import { revenueCatConfig } from "@/config/revenueCatConfig";
 import Text from "../ui/Text";
-import getColor, { getActiveTheme } from "../../lib/ui/getColor";
+import getColor from "@/lib/ui/getColor";
+import type { ThemeName } from "@/lib/ui/palettes";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
+import { useThemeContext } from "@/context/ThemeContext";
 import {
   CameraIcon,
   PenLineIcon,
@@ -75,6 +78,8 @@ type Props = (BackProps | CloseProps) & {
 };
 
 export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const router = useRouter();
   const { scrollY, onScroll } = useScrollY();
   const [offering, setOffering] = useState<PurchasesOffering | null>(null);
@@ -185,13 +190,13 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
                     <View
                       style={[
                         styles.badge,
-                        isSelected && { backgroundColor: getColor("primary") },
+                        isSelected && { backgroundColor: getColor("primary", undefined, theme) },
                       ]}
                     >
                       <Text
                         size="10"
                         weight="600"
-                        color={isSelected ? getColor("background") : undefined}
+                        color={isSelected ? getColor("primaryForeground", undefined, theme) : undefined}
                       >
                         {currencyMap[pkg.product.currencyCode] ??
                           pkg.product.currencyCode}
@@ -210,7 +215,7 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
                       pkg.product.currencyCode}
                     {Math.round(pkg.product.price * 100) / 100}
                   </Text>
-                  <Text size="12" color={getColor("mutedForeground", 0.75)}>
+                  <Text size="12" color={getColor("mutedForeground", 0.75, theme)}>
                     Оплата{" "}
                     {pkg.packageType === PACKAGE_TYPE.MONTHLY
                       ? "ежемесячно"
@@ -237,12 +242,12 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
                     size="base"
                     style={styles.featureButton}
                   >
-                    <Icon size={20} color={getColor("foreground")} />
+                    <Icon size={20} color={getColor("foreground", undefined, theme)} />
                     <View style={styles.featureTextContainer}>
                       <Text size="16" weight="600">
                         {title}
                       </Text>
-                      <Text size="12" color={getColor("mutedForeground", 0.75)}>
+                      <Text size="12" color={getColor("mutedForeground", 0.75, theme)}>
                         {description}
                       </Text>
                     </View>
@@ -318,64 +323,57 @@ export default function Paywall({ type = "back", onClose, onSuccess }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeName) => ({
   title: {
     paddingBottom: 20,
   },
   packageContainer: {
-    flexDirection: "row",
+    flexDirection: "row" as const,
     gap: 12,
     paddingBottom: 28,
   },
   center: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "center" as const,
+    alignItems: "center" as const,
   },
   card: {
-    alignItems: "center",
+    alignItems: "center" as const,
     padding: 16,
   },
   selectedCard: {
     padding: 16 - 2 + StyleSheet.hairlineWidth,
     borderWidth: 2,
-    borderColor: getColor("primary"),
+    borderColor: getColor("accentText", undefined, theme),
   },
   // "muted", не "secondary": в тёмной палитре secondary — сплошной белый,
   // задуман только для низкой прозрачности (см. lib/ui/palettes.ts).
   badge: {
-    position: "absolute",
+    position: "absolute" as const,
     top: 0,
-    transform: [{ translateY: "-50%" }],
+    transform: [{ translateY: "-50%" as const }],
     paddingVertical: 3,
     paddingHorizontal: 6,
     borderRadius: 999,
-    backgroundColor: getColor("muted"),
+    backgroundColor: getColor("muted", undefined, theme),
   },
   featuresCard: {
     padding: 20,
     gap: 16,
   },
   featureButton: {
-    flexDirection: "row",
+    flexDirection: "row" as const,
     gap: 16,
-    alignItems: "center",
+    alignItems: "center" as const,
   },
   featureTextContainer: {
     gap: 4,
     flex: 1,
   },
   // Та же конвенция границы, что и в Card.tsx: "secondary" при 0.08
-  // непрозрачности в тёмной теме. Этот экран пока не переведён на
-  // useThemedStyles (вне скоупа фазы), поэтому берём тему один раз при
-  // загрузке модуля через getActiveTheme() — переживёт холодный старт, но
-  // не переключится live без перезапуска (как и остальные нередизайненные
-  // экраны).
+  // непрозрачности в тёмной теме.
   featuresDivider: {
     height: 1,
-    backgroundColor: getColor(
-      "secondary",
-      getActiveTheme() === "dark" ? 0.08 : undefined
-    ),
+    backgroundColor: getColor("secondary", theme === "dark" ? 0.08 : undefined, theme),
   },
 });
