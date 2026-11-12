@@ -1,3 +1,4 @@
+import { useThemeContext } from "@/context/ThemeContext";
 import getColor from "@/lib/ui/getColor";
 import { StyleSheet, View } from "react-native";
 
@@ -8,8 +9,10 @@ type Props = {
 
 export default function Dot1Icon({
   size = 24,
-  color = getColor("foreground"),
+  color: colorProp,
 }: Props) {
+  const { theme } = useThemeContext();
+  const color = colorProp ?? getColor("foreground", undefined, theme);
   return (
     <View
       style={[
