@@ -13,6 +13,7 @@ import { api } from "@/convex/_generated/api";
 import { Doc } from "@/convex/_generated/dataModel";
 import { needsGoalDetails, normalizeGoalDetails } from "@/lib/goal/goalDetails";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import tryCatch from "@/lib/utils/tryCatch";
 import { usePreventRemove } from "@react-navigation/native";
 import { useMutation, useQuery } from "convex/react";
@@ -42,6 +43,7 @@ function GoalChangePreview({
   goalDetailsMissing,
   onFillDetails,
 }: PreviewProps) {
+  const { theme } = useThemeContext();
   const rows: { label: string; key: keyof Targets; unit: string }[] = [
     { label: "Калории", key: "calories", unit: "ккал" },
     { label: "Белки", key: "protein", unit: "г" },
@@ -58,12 +60,12 @@ function GoalChangePreview({
             {after ? Math.round(after[row.key]) : "…"} {row.unit}
           </Text>
         ))}
-        <Text size="16" color={getColor("mutedForeground")}>
+        <Text size="16" color={getColor("mutedForeground", undefined, theme)}>
           Нормы БЖУ, настроенные вручную, будут заменены
         </Text>
         {goalDetailsMissing && (
           <View style={styles.missing}>
-            <Text size="16" color={getColor("destructive")}>
+            <Text size="16" color={getColor("destructive", undefined, theme)}>
               Укажите целевой вес и темп
             </Text>
             <Button variant="secondary" size="md" onPress={onFillDetails}>

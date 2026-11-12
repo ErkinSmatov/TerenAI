@@ -23,6 +23,7 @@ import DayAddMealSheet from "@/components/home/DayAddMealSheet";
 import { isFutureLocalDay, parseLocalDate } from "@/lib/utils/parseLocalDate";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import { useQuery } from "convex/react";
 import { useLocalSearchParams } from "expo-router";
 import { useRef } from "react";
@@ -38,6 +39,7 @@ function capitalize(text: string): string {
 }
 
 function EmptyState({ body }: { body: string }) {
+  const { theme } = useThemeContext();
   return (
     <View style={styles.emptyStateContainer}>
       <Text size="20" weight="600" style={styles.emptyStateHeading}>
@@ -45,7 +47,7 @@ function EmptyState({ body }: { body: string }) {
       </Text>
       <Text
         size="14"
-        color={getColor("mutedForeground", 0.5)}
+        color={getColor("mutedForeground", 0.5, theme)}
         style={styles.emptyStateBody}
       >
         {body}

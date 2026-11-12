@@ -18,6 +18,7 @@ import { api } from "@/convex/_generated/api";
 import { Doc } from "@/convex/_generated/dataModel";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import getLocalWeekBounds from "@/lib/utils/getLocalWeekBounds";
 
 type DayRowProps = {
@@ -26,6 +27,7 @@ type DayRowProps = {
 };
 
 function DayRow({ date, movement }: DayRowProps) {
+  const { theme } = useThemeContext();
   return (
     <Card style={styles.card}>
       <Text size="14" weight="600" style={styles.date}>
@@ -34,22 +36,22 @@ function DayRow({ date, movement }: DayRowProps) {
       {movement ? (
         <View style={styles.statsRow}>
           <View style={styles.stat}>
-            <FootprintsIcon size={16} color={getColor("green")} />
+            <FootprintsIcon size={16} color={getColor("green", undefined, theme)} />
             <Text size="14">{movement.steps.toLocaleString("ru-RU")}</Text>
           </View>
           <View style={styles.stat}>
-            <FlameIcon size={16} color={getColor("green")} />
+            <FlameIcon size={16} color={getColor("green", undefined, theme)} />
             <Text size="14">{movement.activeEnergyKcal} ккал</Text>
           </View>
           <View style={styles.stat}>
-            <RouteIcon size={16} color={getColor("green")} />
+            <RouteIcon size={16} color={getColor("green", undefined, theme)} />
             <Text size="14">
               {(movement.distanceMeters / 1000).toFixed(1)} км
             </Text>
           </View>
         </View>
       ) : (
-        <Text size="14" color={getColor("mutedForeground", 0.5)}>
+        <Text size="14" color={getColor("mutedForeground", 0.5, theme)}>
           Нет данных
         </Text>
       )}

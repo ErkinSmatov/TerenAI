@@ -14,6 +14,7 @@ import { StyleSheet, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import createAccurateInterval from "@/lib/utils/createAccurateInterval";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import tryCatch from "@/lib/utils/tryCatch";
 import { ConvexError } from "convex/values";
 import {
@@ -39,6 +40,7 @@ const channelNames: Record<string, string> = {
 };
 
 export default function ConfirmPhoneScreen() {
+  const { theme } = useThemeContext();
   const router = useRouter();
   const { signIn, isAuthenticated } = useAuthContext();
   const { phone, provider } = useLocalSearchParams<{
@@ -217,7 +219,7 @@ export default function ConfirmPhoneScreen() {
           ) : null}
 
           <View style={styles.footerText}>
-            <Text size="14" color={getColor("mutedForeground")}>
+            <Text size="14" color={getColor("mutedForeground", undefined, theme)}>
               Не получили код?
             </Text>
             <Button
@@ -228,9 +230,9 @@ export default function ConfirmPhoneScreen() {
               hitSlop={16}
               textProps={{
                 style: {
-                  color: resendIn > 0 ? getColor("mutedForeground") : undefined,
+                  color: resendIn > 0 ? getColor("mutedForeground", undefined, theme) : undefined,
                   borderBottomColor:
-                    resendIn > 0 ? getColor("mutedForeground") : undefined,
+                    resendIn > 0 ? getColor("mutedForeground", undefined, theme) : undefined,
                 },
               }}
             >

@@ -14,6 +14,7 @@ import WeightPicker from "@/components/weight/WeightPicker";
 import { api } from "@/convex/_generated/api";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import kgToLbs from "@/lib/units/kgToLbs";
 import lbsToKg from "@/lib/units/lbsToKg";
 import tryCatch from "@/lib/utils/tryCatch";
@@ -23,6 +24,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 export default function WeeklyWeighInScreen() {
+  const { theme } = useThemeContext();
   const { scrollY, onScroll } = useScrollY();
   const router = useRouter();
 
@@ -156,7 +158,7 @@ export default function WeeklyWeighInScreen() {
 
         <Text
           size="16"
-          color={getColor("mutedForeground")}
+          color={getColor("mutedForeground", undefined, theme)}
           style={styles.helperText}
         >
           Цели по калориям и БЖУ пересчитаются автоматически

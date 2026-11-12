@@ -13,10 +13,12 @@ import { api } from "@/convex/_generated/api";
 import { BADGE_DEFINITIONS } from "@/lib/badges/badgeDefinitions";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import { useQuery } from "convex/react";
 import { StyleSheet, View } from "react-native";
 
 export default function BadgesScreen() {
+  const { theme } = useThemeContext();
   const { scrollY, onScroll } = useScrollY();
   const earned = useQuery(api.badges.listBadges.default);
 
@@ -36,7 +38,7 @@ export default function BadgesScreen() {
             <Text size="20" weight="600">
               Пока нет достижений
             </Text>
-            <Text size="16" color={getColor("mutedForeground")}>
+            <Text size="16" color={getColor("mutedForeground", undefined, theme)}>
               Записывайте приёмы пищи и держите серию — первый бейдж не за горами
             </Text>
           </View>

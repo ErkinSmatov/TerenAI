@@ -14,6 +14,7 @@ import { StyleSheet, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import createAccurateInterval from "@/lib/utils/createAccurateInterval";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import tryCatch from "@/lib/utils/tryCatch";
 import { useAuthContext } from "@/context/AuthContext";
 import { ScreenMain, ScreenMainTitle } from "@/components/ui/screen/ScreenMain";
@@ -28,6 +29,7 @@ import {
 } from "@/components/ui/screen/ScreenFooter";
 
 export default function ConfirmEmailScreen() {
+  const { theme } = useThemeContext();
   const router = useRouter();
   const { signIn } = useAuthContext();
   const { email } = useLocalSearchParams<{ email: string }>();
@@ -126,7 +128,7 @@ export default function ConfirmEmailScreen() {
           />
 
           <View style={styles.footerText}>
-            <Text size="14" color={getColor("mutedForeground")}>
+            <Text size="14" color={getColor("mutedForeground", undefined, theme)}>
               Не получили код?
             </Text>
             <Button
@@ -137,9 +139,9 @@ export default function ConfirmEmailScreen() {
               hitSlop={16}
               textProps={{
                 style: {
-                  color: resendIn > 0 ? getColor("mutedForeground") : undefined,
+                  color: resendIn > 0 ? getColor("mutedForeground", undefined, theme) : undefined,
                   borderBottomColor:
-                    resendIn > 0 ? getColor("mutedForeground") : undefined,
+                    resendIn > 0 ? getColor("mutedForeground", undefined, theme) : undefined,
                 },
               }}
             >

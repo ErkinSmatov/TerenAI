@@ -13,6 +13,7 @@ import { api } from "@/convex/_generated/api";
 import getLocalMonthBounds from "@/lib/utils/getLocalMonthBounds";
 import useScrollY from "@/lib/hooks/reanimated/useScrollY";
 import getColor from "@/lib/ui/getColor";
+import { useThemeContext } from "@/context/ThemeContext";
 import { useQuery } from "convex/react";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
@@ -96,6 +97,7 @@ function toLocalDateString(date: Date): string {
 }
 
 export default function StreakScreen() {
+  const { theme } = useThemeContext();
   const router = useRouter();
   const { scrollY, onScroll } = useScrollY();
   const [visibleMonth, setVisibleMonth] = useState(() => new Date());
@@ -121,12 +123,12 @@ export default function StreakScreen() {
       if (dayMeals.length > 0) {
         marks[bounds.monthDates[index]] = {
           marked: true,
-          dotColor: getColor("mutedForeground", 0.4),
+          dotColor: getColor("mutedForeground", 0.4, theme),
         };
       }
     });
     return marks;
-  }, [monthMeals, bounds.monthDates]);
+  }, [monthMeals, bounds.monthDates, theme]);
 
   const maxDate = toLocalDateString(new Date());
 
@@ -147,7 +149,7 @@ export default function StreakScreen() {
               <Text size="20" weight="600">
                 Серия ещё не началась
               </Text>
-              <Text size="16" color={getColor("mutedForeground")}>
+              <Text size="16" color={getColor("mutedForeground", undefined, theme)}>
                 Запишите приём пищи сегодня, чтобы начать отсчёт
               </Text>
             </>
@@ -155,13 +157,13 @@ export default function StreakScreen() {
             <>
               <FlameIcon
                 size={32}
-                color={getColor("orange")}
-                fill={getColor("orange")}
+                color={getColor("orange", undefined, theme)}
+                fill={getColor("orange", undefined, theme)}
               />
-              <Text size="40" weight="600" color={getColor("orange")}>
+              <Text size="40" weight="600" color={getColor("orange", undefined, theme)}>
                 {streak}
               </Text>
-              <Text size="14" color={getColor("mutedForeground")}>
+              <Text size="14" color={getColor("mutedForeground", undefined, theme)}>
                 дней подряд
               </Text>
             </>
@@ -170,15 +172,19 @@ export default function StreakScreen() {
 
         <Card style={styles.card}>
           <Calendar
+            // react-native-calendars читает `theme` только при монтировании, поэтому
+            // при смене темы пересоздаётся один календарь (не дерево приложения);
+            // видимый месяц хранится в `visibleMonth` и передаётся в `current`.
+            key={theme}
             current={toLocalDateString(visibleMonth)}
             firstDay={1}
             maxDate={maxDate}
             enableSwipeMonths
             renderArrow={(direction) =>
               direction === "left" ? (
-                <ChevronLeftIcon size={20} color={getColor("foreground")} />
+                <ChevronLeftIcon size={20} color={getColor("foreground", undefined, theme)} />
               ) : (
-                <ChevronRightIcon size={20} color={getColor("foreground")} />
+                <ChevronRightIcon size={20} color={getColor("foreground", undefined, theme)} />
               )
             }
             markedDates={markedDates}
@@ -192,14 +198,14 @@ export default function StreakScreen() {
               setVisibleMonth(new Date(year, month - 1, 1));
             }}
             theme={{
-              calendarBackground: getColor("base"),
-              dayTextColor: getColor("foreground"),
-              monthTextColor: getColor("foreground"),
-              textSectionTitleColor: getColor("mutedForeground"),
-              textDisabledColor: getColor("mutedForeground", 0.4),
-              selectedDayBackgroundColor: getColor("primary"),
-              selectedDayTextColor: getColor("base"),
-              todayTextColor: getColor("primary"),
+              calendarBackground: getColor("base", undefined, theme),
+              dayTextColor: getColor("foreground", undefined, theme),
+              monthTextColor: getColor("foreground", undefined, theme),
+              textSectionTitleColor: getColor("mutedForeground", undefined, theme),
+              textDisabledColor: getColor("mutedForeground", 0.4, theme),
+              selectedDayBackgroundColor: getColor("primary", undefined, theme),
+              selectedDayTextColor: getColor("primaryForeground", undefined, theme),
+              todayTextColor: getColor("accentText", undefined, theme),
             }}
           />
         </Card>
