@@ -1,11 +1,19 @@
-import { DimensionValue, StyleSheet, TextInput as RNTextInput, View } from "react-native";
+import {
+  DimensionValue,
+  StyleSheet,
+  TextInput as RNTextInput,
+  View,
+} from "react-native";
 import { PlusIcon, TrashIcon } from "lucide-react-native";
 import Text from "@/components/ui/Text";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import WithSkeleton from "@/components/ui/WithSkeleton";
 import GramsStepper from "@/components/meal/GramsStepper";
-import getColor, { getActiveTheme } from "@/lib/ui/getColor";
+import getColor from "@/lib/ui/getColor";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
 import resolveFontFamily from "@/lib/ui/resolveFontFamily";
 
 type Item = {
@@ -34,6 +42,9 @@ export default function ConfirmMealItems({
   onRemove,
   onAdd,
 }: Props) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
+
   if (loading) {
     return (
       <View>
@@ -87,7 +98,7 @@ export default function ConfirmMealItems({
           <Text size="18" weight="600">
             Список пуст
           </Text>
-          <Text size="14" color={getColor("mutedForeground")}>
+          <Text size="14" color={getColor("mutedForeground", undefined, theme)}>
             Добавьте хотя бы один ингредиент, чтобы продолжить
           </Text>
         </View>
@@ -110,8 +121,12 @@ export default function ConfirmMealItems({
           style={styles.addRow}
           onPress={onAdd}
         >
-          <PlusIcon size={14} strokeWidth={2.25} color={getColor("mutedForeground")} />
-          <Text size="14" color={getColor("mutedForeground")}>
+          <PlusIcon
+            size={14}
+            strokeWidth={2.25}
+            color={getColor("mutedForeground", undefined, theme)}
+          />
+          <Text size="14" color={getColor("mutedForeground", undefined, theme)}>
             Добавить ингредиент
           </Text>
         </Button>
@@ -131,6 +146,8 @@ function IngredientRow({
   onChangeGrams: (id: string, grams: number) => void;
   onRemove: (id: string) => void;
 }) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const handleRemove = () => {
     onRemove(item.id);
   };
@@ -152,7 +169,7 @@ function IngredientRow({
           hitSlop={8}
           onPress={handleRemove}
         >
-          <TrashIcon size={18} color={getColor("red")} />
+          <TrashIcon size={18} color={getColor("red", undefined, theme)} />
         </Button>
       </View>
       <GramsStepper
@@ -165,57 +182,62 @@ function IngredientRow({
   );
 }
 
-const styles = StyleSheet.create({
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingBottom: 12,
-  },
-  ingredientsContainer: {
-    gap: 8,
-  },
-  card: {
-    padding: 16,
-    gap: 8,
-  },
-  topRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  nameContent: {
-    flex: 1,
-  },
-  nameInput: {
-    flex: 1,
-    fontSize: 16,
-    fontFamily: resolveFontFamily({ weight: "400" }),
-    color: getColor("foreground"),
-    padding: 0,
-  },
-  removeButton: {
-    width: 44,
-    height: 44,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  addRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    borderWidth: 1,
-    // Та же конвенция, что и в Card.tsx: "secondary" при пониженной
-    // непрозрачности в тёмной теме — сплошной secondary дал бы кричаще-белую
-    // пунктирную рамку.
-    borderColor: getColor("secondary", getActiveTheme() === "dark" ? 0.08 : undefined),
-    borderStyle: "dashed",
-    borderRadius: 16,
-    padding: 16,
-    justifyContent: "center",
-  },
-  emptyState: {
-    paddingBottom: 12,
-    gap: 4,
-  },
-});
+const createStyles = (theme: ThemeName) =>
+  StyleSheet.create({
+    headerContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingBottom: 12,
+    },
+    ingredientsContainer: {
+      gap: 8,
+    },
+    card: {
+      padding: 16,
+      gap: 8,
+    },
+    topRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+    },
+    nameContent: {
+      flex: 1,
+    },
+    nameInput: {
+      flex: 1,
+      fontSize: 16,
+      fontFamily: resolveFontFamily({ weight: "400" }),
+      color: getColor("foreground", undefined, theme),
+      padding: 0,
+    },
+    removeButton: {
+      width: 44,
+      height: 44,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    addRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+      borderWidth: 1,
+      // Та же конвенция, что и в Card.tsx: "secondary" при пониженной
+      // непрозрачности в тёмной теме — сплошной secondary дал бы кричаще-белую
+      // пунктирную рамку.
+      borderColor: getColor(
+        "secondary",
+        theme === "dark" ? 0.08 : undefined,
+        theme,
+      ),
+      borderStyle: "dashed",
+      borderRadius: 16,
+      padding: 16,
+      justifyContent: "center",
+    },
+    emptyState: {
+      paddingBottom: 12,
+      gap: 4,
+    },
+  });

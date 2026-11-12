@@ -6,6 +6,9 @@ import WithSkeleton from "../ui/WithSkeleton";
 import { ComponentType } from "react";
 import { LucideProps } from "lucide-react-native";
 import getColor from "@/lib/ui/getColor";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
 
 type Props = {
   item: {
@@ -19,10 +22,12 @@ type Props = {
 };
 
 export default function MealSummaryCard({ item, loading }: Props) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   return (
     <Button variant="base" size="base" style={styles.cardButton}>
       <Card style={styles.card}>
-        <Text size="12" color={getColor("mutedForeground")}>
+        <Text size="12" color={getColor("mutedForeground", undefined, theme)}>
           {item.label}
         </Text>
         <View style={styles.valueContainer}>
@@ -43,26 +48,27 @@ export default function MealSummaryCard({ item, loading }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  cardButton: {
-    flex: 1,
-  },
-  card: {
-    flex: 1,
-    padding: 12,
-    gap: 8,
-  },
-  valueContainer: {
-    flexDirection: "row",
-    gap: 4,
-    alignItems: "center",
-  },
-  iconContainer: {
-    height: 22,
-    width: 22,
-    borderRadius: 16,
-    backgroundColor: getColor("muted"),
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+const createStyles = (theme: ThemeName) =>
+  StyleSheet.create({
+    cardButton: {
+      flex: 1,
+    },
+    card: {
+      flex: 1,
+      padding: 12,
+      gap: 8,
+    },
+    valueContainer: {
+      flexDirection: "row",
+      gap: 4,
+      alignItems: "center",
+    },
+    iconContainer: {
+      height: 22,
+      width: 22,
+      borderRadius: 16,
+      backgroundColor: getColor("muted", undefined, theme),
+      alignItems: "center",
+      justifyContent: "center",
+    },
+  });

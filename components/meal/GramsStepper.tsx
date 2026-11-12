@@ -4,6 +4,9 @@ import { MinusIcon, PlusIcon } from "lucide-react-native";
 import Button from "@/components/ui/Button";
 import Text from "@/components/ui/Text";
 import getColor from "@/lib/ui/getColor";
+import useThemedStyles from "@/lib/ui/useThemedStyles";
+import { useThemeContext } from "@/context/ThemeContext";
+import type { ThemeName } from "@/lib/ui/palettes";
 
 type Props = {
   value: number;
@@ -15,6 +18,8 @@ const MAX_GRAMS = 1500;
 const STEP = 10;
 
 export default function GramsStepper({ value, onChange }: Props) {
+  const { theme } = useThemeContext();
+  const styles = useThemedStyles(createStyles);
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(String(Math.round(value)));
 
@@ -33,7 +38,10 @@ export default function GramsStepper({ value, onChange }: Props) {
 
   const commitEdit = () => {
     const parsed = parseInt(draft, 10);
-    const clamped = Math.max(MIN_GRAMS, Math.min(MAX_GRAMS, parsed || MIN_GRAMS));
+    const clamped = Math.max(
+      MIN_GRAMS,
+      Math.min(MAX_GRAMS, parsed || MIN_GRAMS),
+    );
     onChange(clamped);
     setIsEditing(false);
   };
@@ -47,7 +55,7 @@ export default function GramsStepper({ value, onChange }: Props) {
         hitSlop={8}
         onPress={handleDecrement}
       >
-        <MinusIcon size={16} color={getColor("foreground")} />
+        <MinusIcon size={16} color={getColor("foreground", undefined, theme)} />
       </Button>
 
       {isEditing ? (
@@ -80,35 +88,36 @@ export default function GramsStepper({ value, onChange }: Props) {
         hitSlop={8}
         onPress={handleIncrement}
       >
-        <PlusIcon size={16} color={getColor("foreground")} />
+        <PlusIcon size={16} color={getColor("foreground", undefined, theme)} />
       </Button>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  stepperButton: {
-    width: 44,
-    height: 44,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  valueButton: {
-    minWidth: 44,
-    height: 44,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  input: {
-    minWidth: 44,
-    height: 44,
-    fontSize: 16,
-    fontWeight: "600",
-    color: getColor("foreground"),
-    textAlign: "center",
-  },
-});
+const createStyles = (theme: ThemeName) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    stepperButton: {
+      width: 44,
+      height: 44,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    valueButton: {
+      minWidth: 44,
+      height: 44,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    input: {
+      minWidth: 44,
+      height: 44,
+      fontSize: 16,
+      fontWeight: "600",
+      color: getColor("foreground", undefined, theme),
+      textAlign: "center",
+    },
+  });
