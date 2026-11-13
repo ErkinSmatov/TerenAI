@@ -319,11 +319,11 @@ await ctx.scheduler.runAfter(0, internal.notifications.sendPushNotification.defa
 | A5 | Доступ к Convex deployment для запуска миграции есть | Environment | Блокер шага миграции |
 | A6 | Отмена pending наблюдателем хранится как `revoked` (`endedBy=observer`), так как новых статусов D-09 не добавляет | Автомат | Если нужен отдельный `cancelled`, поправить union |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. Тихие часы для push OBS-01 (A3) и cooldown после revoke (A4): уточнить у пользователя или принять рекомендации выше.
-2. Нужен ли пациенту экран запроса отдельным маршрутом (SC2 «экран»), или достаточно bottom-sheet + блок в maps.tsx (D-03)? Рекомендация: sheet + блок, без нового маршрута.
-3. Показывать ли пациенту email/телефон наблюдателя в запросе (сейчас `getMyObservers` уже отдаёт name/email/phone fallback)? Рекомендация: так же, как сейчас.
+1. RESOLVED: тихие часы для OBS-01 (A3) и cooldown только после declined (A4) приняты по рекомендации исследования (план 78-05); допущения A3/A4/A6/A7 подтверждаются пользователем в checkpoint плана 78-10.
+2. RESOLVED: отдельный маршрут не нужен — bottom-sheet на главной (план 78-08) и блок «Запросы на наблюдение» в maps.tsx (план 78-09).
+3. RESOLVED: пациент видит `displayName` наблюдателя с fallback name → email → телефон (как в `getMyObservers`), через `resolveObserverSummary` (план 78-06); отдельные поля email/phone в ответ не отдаются.
 
 ## Project Constraints (from CLAUDE.md)
 - Отвечать пользователю на русском языке; тексты UI, комментарии и коммиты в проекте по-русски.

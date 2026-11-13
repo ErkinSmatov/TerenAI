@@ -490,6 +490,7 @@ Plans:
 **Plans:** 7/9 plans executed
 
 Plans:
+
 - [x] 74-01-PLAN.md — правила push (тихие часы, лимиты, ротация, длины) и каталог FOOD-01/HLT-14/RET-01..03 (TDD)
 - [x] 74-02-PLAN.md — фикс дублей токенов: reassign в recordPushToken, removePushToken при выходе, deleteUser, миграция dedupeTokens
 - [x] 74-03-PLAN.md — hasHealthBlocks: блоки сахара/давления для Диабета и Биохакинга (экраны, наблюдатель, отчёт)
@@ -520,6 +521,7 @@ Plans:
 3. Сахар, давление и пульс вне физиологического диапазона не сохраняются ни из UI, ни прямым вызовом мутации; пользователь видит понятное сообщение
 
 Plans:
+
 - [x] 75-01-PLAN.md — диапазоны сахара/давления/пульса: lib/health/healthRanges.ts, verify-скрипт, клиентская и серверная валидация, фильтр импорта HealthKit (wave 1)
 - [x] 75-02-PLAN.md — наблюдатель readOnly: неинтерактивные пустые состояния, цель калорий пациента, аудит экрана пациента (wave 1)
 - [x] 75-03-PLAN.md — WhatsApp OTP: диагностика пользователем, выбор варианта A/B/C, реализация выбранного (wave 1, checkpoint)
@@ -535,6 +537,7 @@ Plans:
 **Замечание тестера (2026-11-11):** при включении тёмного или светлого режима надписи не видны, цвета меняются только после закрытия и повторного открытия приложения; светлая тема выглядит «криво», основной цвет меняется с зелёного на синий.
 
 **Причины (найдены чтением кода 2026-11-11):**
+
 1. Тема — глобальная переменная модуля (`lib/ui/getColor.ts`); перерисовываются только компоненты, подписанные на `ThemeContext`. 49 файлов вызывают `getColor(...)` без `useThemeContext`/`useThemedStyles` (в том числе `Button`, `Text`, `ScreenMain`, `ScreenFooter`, `Popover`, иконки, многие экраны) и сохраняют цвета старой темы; React Compiler (`reactCompiler: true`) дополнительно кэширует их рендер.
 2. 18 файлов создают `StyleSheet.create` на уровне модуля с `getColor` внутри — цвета фиксируются при загрузке модуля (в `useThemedStyles` это записано как «осознанный компромисс» прежней фазы).
 3. Светлая палитра в `lib/ui/palettes.ts` — стандартные цвета Tailwind (`primary` `#3B82F6` синий), а у тёмной дизайнерский лаймовый акцент `#C9F14C`.
@@ -549,6 +552,7 @@ Plans:
 4. `npx tsc --noEmit` и `npx eslint .` без ошибок; проверка на устройстве в обеих темах на основных экранах (главная, настройки, блюдо, камера, пейволл, онбординг, вход)
 
 Plans:
+
 - [x] 76-01-PLAN.md — Wave 1: светлая палитра с лаймом #C9F14C, ключи primaryForeground и accentText, проверки palette.check.mjs (контраст, снимок dark) и themeColors.check.mjs (против регрессий), текст на лайме в подписанных компонентах
 - [x] 76-02-PLAN.md — Wave 2: примитивы Text, Button, ScreenMain, ScreenFooter, Popover, Carousel, SettingsItem, SettingsToggleItem с темой из контекста
 - [x] 76-03-PLAN.md — Wave 2: модульные стили → фабрики: камера, журналы давления и глюкозы, вход, Pro, пейволл, онбординг
@@ -576,6 +580,7 @@ Plans:
 4. Сборка Android собирается с новыми разрешениями, `npx tsc --noEmit` и `npx eslint .` без ошибок, проверка на реальном устройстве Android
 
 Plans:
+
 - [x] 77-01-PLAN.md — Wave 1: чистые функции (маппинг, батчи 200, computeSince), syncHealthData, MMKV-состояние, verify-скрипт verifyHealthSync
 - [x] 77-02-PLAN.md — Wave 1: сервер: source healthconnect, мутация importGlucoseReadings с source и лимитом пачки, обёртка старой мутации, getLastManualUnit, деплой dev
 - [x] 77-03-PLAN.md — Wave 1: нативная конфигурация: проверка пакета, react-native-health-connect 4.1.3, разрешения READ_*, minSdk 26, первая dev-сборка Android (checkpoint)
@@ -589,6 +594,7 @@ Plans:
 **Контекст:** TerenDesk — отдельный веб-проект (репозиторий `/Users/smatov/GitLab/TerenDesk`, Next.js) для врачей клиник: наблюдение за пациентами Teren, алерты, аналитика, отчёты. Только наблюдение, без переписки и заданий пациенту. Только RU. Один Convex-деплоймент: серверные функции врача лежат в `convex/doctor/*` этого репозитория, сайт читает сгенерированный `api`.
 
 **Ключевые решения (2026-11-13):**
+
 - Врач — роль наблюдателя, а не отдельная сущность связи. Любой наблюдатель получает код, наблюдаемый обязан подтвердить связь (`observerLinks.status`: `pending` → `active` / `revoked`); пометка «Врач · Клиника» ставится сервером по `doctors.status = verified`, самому наблюдателю недоступна.
 - `assertObserverAccess` пускает только `active`; существующие связи при миграции становятся `active`.
 - Приглашение: ссылка и QR `https://<домен TerenDesk>/i/<токен>`; Android передаёт токен через Play Install Referrer, iOS — через короткий код (8 символов) на лендинге и карточке; связь всегда создаётся как `pending`, согласие даёт пациент.
@@ -602,16 +608,33 @@ Plans:
 **Plans:** 11 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 78-01-PLAN.md — автомат статусов связи lib/observers/linkStatus.ts + verifyLinkStatus (Wave 0, TDD)
 - [ ] 78-02-PLAN.md — push OBS-01 класса A, ScheduledPushId, deep link на вкладку наблюдения
 - [ ] 78-03-PLAN.md — схема observerLinks (шаг 1), таблица doctors, миграция D-13, createDoctor, pairLinks
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 78-04-PLAN.md — шлюз только active, respondToRequest, cancelRequest, revokeLink по статусам, observerGate.check
 - [ ] 78-05-PLAN.md — redeemCode → pending + cooldown + push, лимиты без отката; cron истечения 14 дней
 - [ ] 78-06-PLAN.md — getMyObservers (только active + doctor), getIncomingRequests
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 78-07-PLAN.md — getObservedPatients с заглушкой pending, PendingObservedCard, обработка redeemCode в maps.tsx
 - [ ] 78-08-PLAN.md — IncomingRequestCard, лист запросов на главной, бейдж в HomeHeader
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 78-09-PLAN.md — блок «Запросы на наблюдение» в maps.tsx, пометка «Врач · Клиника» в ObserverCard
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 78-10-PLAN.md — миграция на dev, решение по prod и допущениям (checkpoint)
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
 - [ ] 78-11-PLAN.md — обязательный status (шаг 2), полный набор проверок, сквозной сценарий (checkpoint)
 
 **Success Criteria** (what must be TRUE):
