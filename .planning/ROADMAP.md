@@ -599,7 +599,20 @@ Plans:
 **Goal:** Любой наблюдатель получает доступ к данным пациента только после его явного подтверждения; врач отображается в карточке наблюдателя с пометкой «Врач».
 **Requirements**: LINK-01, LINK-02, LINK-03, LINK-04, LINK-05
 **Depends on:** Nothing (Phase 6 уже закрыта)
-**Plans:** 0/TBD
+**Plans:** 11 plans
+
+Plans:
+- [ ] 78-01-PLAN.md — автомат статусов связи lib/observers/linkStatus.ts + verifyLinkStatus (Wave 0, TDD)
+- [ ] 78-02-PLAN.md — push OBS-01 класса A, ScheduledPushId, deep link на вкладку наблюдения
+- [ ] 78-03-PLAN.md — схема observerLinks (шаг 1), таблица doctors, миграция D-13, createDoctor, pairLinks
+- [ ] 78-04-PLAN.md — шлюз только active, respondToRequest, cancelRequest, revokeLink по статусам, observerGate.check
+- [ ] 78-05-PLAN.md — redeemCode → pending + cooldown + push, лимиты без отката; cron истечения 14 дней
+- [ ] 78-06-PLAN.md — getMyObservers (только active + doctor), getIncomingRequests
+- [ ] 78-07-PLAN.md — getObservedPatients с заглушкой pending, PendingObservedCard, обработка redeemCode в maps.tsx
+- [ ] 78-08-PLAN.md — IncomingRequestCard, лист запросов на главной, бейдж в HomeHeader
+- [ ] 78-09-PLAN.md — блок «Запросы на наблюдение» в maps.tsx, пометка «Врач · Клиника» в ObserverCard
+- [ ] 78-10-PLAN.md — миграция на dev, решение по prod и допущениям (checkpoint)
+- [ ] 78-11-PLAN.md — обязательный status (шаг 2), полный набор проверок, сквозной сценарий (checkpoint)
 
 **Success Criteria** (what must be TRUE):
 
