@@ -4,6 +4,9 @@
 node_modules/
 /android/
 /ios/
+fdc-data/
+/data/
+/docs/
 
 # Expo
 .expo/
@@ -39,10 +42,6 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
-
-fdc-data/
-data/
-docs/
 
 # Ключ сервисного аккаунта Firebase Admin SDK, никогда не коммитить (D-19)
 *firebase-adminsdk*.json

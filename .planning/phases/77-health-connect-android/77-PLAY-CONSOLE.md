@@ -7,12 +7,11 @@ https://docs.google.com/document/d/e/2PACX-1vTyNCLjuAHdtZmdZQpIfOolwZ2nE7pA5kKTH
 
 Исходник политики в репозитории: `docs/privacy-policy.html`.
 
-## Предупреждение: политика не упоминает Health Connect
+## Политика конфиденциальности (обновлено 2026-11-13)
 
-В `docs/privacy-policy.html` (раздел B, EN и RU) сказано только про Apple Health на iOS. Упоминания Health Connect, Android, шагов, активной энергии и дистанции нет. Google требует, чтобы политика описывала данные здоровья. Перед отправкой формы:
-1. Добавить в раздел B пункт: "On Android, if you grant permission: steps, active calories burned, distance and blood glucose data read from Health Connect. The App only reads this data; it never writes to Health Connect." (и русский вариант).
-2. Явно указать: данные здоровья не используются для рекламы, не продаются и не передаются третьим лицам для их целей; инфраструктурные подрядчики (Convex) хранят их только для работы приложения.
-3. Опубликовать обновление и в Google Doc по ссылке выше (его использует приложение), и в docs/privacy-policy.html, если он публикуется отдельно.
+`docs/privacy-policy.html` (EN и RU) обновлён: в разделе B добавлен пункт про Health Connect (шаги, активные калории, дистанция, глюкоза только для треков «диабет»/«биохакинг», только чтение, отзыв доступа), абзац «не для рекламы, не продаётся, не передаётся третьим лицам, хранится только на Convex», Health Connect в правах пользователя, дата 13 ноября 2026.
+
+Осталось вручную: перенести те же изменения в Google Doc по ссылке выше (её открывает приложение и указывает Play Console) и опубликовать.
 
 ## Data safety (App content -> Data safety)
 
