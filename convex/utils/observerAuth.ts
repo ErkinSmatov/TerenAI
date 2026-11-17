@@ -1,6 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { QueryCtx, MutationCtx } from "../_generated/server";
 import { Id } from "../_generated/dataModel";
+import { isActiveLink } from "@/lib/observers/linkStatus";
 
 /**
  * Единственный шлюз кросс-пользовательского чтения в проекте.
@@ -12,6 +13,10 @@ import { Id } from "../_generated/dataModel";
  * и бросает исключение вместо возврата boolean, чтобы вызывающий не
  * мог тихо проигнорировать результат проверки. Это единственная точка
  * ревью безопасности для BOLA/IDOR на этой поверхности.
+ *
+ * Доступ только при статусе active (LINK-01, Фаза 78): pending, declined,
+ * revoked, expired дают Forbidden. collect, а не first — у пары могут быть
+ * дубликаты, решает любая активная строка.
  */
 export async function assertObserverAccess(
   ctx: QueryCtx | MutationCtx,
@@ -20,13 +25,13 @@ export async function assertObserverAccess(
   const observerId = await getAuthUserId(ctx);
   if (observerId === null) throw new Error("Unauthorized");
 
-  const link = await ctx.db
+  const links = await ctx.db
     .query("observerLinks")
     .withIndex("byObserverAndPatient", (q) =>
       q.eq("observerId", observerId).eq("patientId", targetUserId)
     )
-    .first();
-  if (!link) throw new Error("Forbidden");
+    .collect();
+  if (!links.some(isActiveLink)) throw new Error("Forbidden");
 
   return observerId;
 }
