@@ -2,6 +2,12 @@ import { v } from "convex/values";
 import { mutation } from "../_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import logError from "@/lib/utils/logError";
+import {
+  normalizeLinkStatus,
+  pickEffectiveLink,
+  resolveTransition,
+} from "@/lib/observers/linkStatus";
+import { loadPairLinks, patchPairLinks } from "./utils/pairLinks";
 
 const revokeLink = mutation({
   args: { linkId: v.id("observerLinks") },
@@ -20,19 +26,27 @@ const revokeLink = mutation({
         throw new Error("Forbidden");
       }
 
-      // Удаляем ВСЕ строки для этой пары (observerId, patientId), а не
-      // только linkId: redeemCode не гарантирует уникальность на уровне
-      // схемы (check-then-insert), и гонка конкурентных редемпшенов может
-      // создать дубликат. Если отозвать только по linkId, assertObserverAccess
-      // найдёт уцелевший дубликат через .first() — отзыв станет фиктивным.
-      const pairLinks = await ctx.db
-        .query("observerLinks")
-        .withIndex("byObserverAndPatient", (q) =>
-          q.eq("observerId", link.observerId).eq("patientId", link.patientId)
-        )
-        .collect();
-      for (const duplicate of pairLinks) {
-        await ctx.db.delete(duplicate._id);
+      // Строки не удаляются (D-09): статус меняется у ВСЕХ строк пары, так как
+      // дубликаты возможны (check-then-insert в redeemCode). assertObserverAccess
+      // (collect + some active) теряет доступ сразу (LINK-03).
+      const pairLinks = await loadPairLinks(ctx, link.observerId, link.patientId);
+      const effective = pickEffectiveLink(pairLinks) ?? link;
+      const actor = link.patientId === callerId ? "patient" : "observer";
+      const now = Date.now();
+      const result = resolveTransition({
+        current: normalizeLinkStatus(effective.status),
+        action: "revoke",
+        actor,
+        now,
+      });
+      if (result.kind === "forbidden") throw new Error("Forbidden");
+      // noop: pending отзывом не трогается (пациент отклоняет, наблюдатель отменяет).
+      if (result.kind === "apply") {
+        await patchPairLinks(ctx, pairLinks, {
+          status: "revoked",
+          endedBy: actor,
+          respondedAt: now,
+        });
       }
       return null;
     } catch (error) {
