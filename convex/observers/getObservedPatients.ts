@@ -6,6 +6,12 @@ import logError from "@/lib/utils/logError";
 import { hasHealthBlocks } from "@/lib/profile/hasHealthBlocks";
 import { localDayBoundaries } from "../utils/localDayBoundaries";
 import { isGlucoseOutOfRange, isCaloriesExceeded } from "./utils/thresholds";
+import {
+  isActiveLink,
+  isPendingExpired,
+  normalizeLinkStatus,
+  pickEffectiveLink,
+} from "@/lib/observers/linkStatus";
 
 function resolveDisplayName(user: {
   name?: string;
@@ -34,7 +40,25 @@ const getObservedPatients = query({
         timezoneOffsetMinutes
       );
 
-      const results: {
+      // Дубликаты пары (наблюдатель, пациент) схлопываются в одну эффективную
+      // связь, чтобы не было двух карточек одного пациента.
+      const groups = new Map<string, typeof links>();
+      for (const link of links) {
+        const key = String(link.patientId);
+        const group = groups.get(key);
+        if (group) group.push(link);
+        else groups.set(key, [link]);
+      }
+      const effectiveLinks: typeof links = [];
+      for (const group of groups.values()) {
+        const effective = pickEffectiveLink(group);
+        if (effective) effectiveLinks.push(effective);
+      }
+
+      const now = Date.now();
+
+      type ActiveResult = {
+        status: "active";
         patientId: Id<"users">;
         linkId: Id<"observerLinks">;
         displayName: string;
@@ -52,10 +76,34 @@ const getObservedPatients = query({
         steps: number | null;
         distanceMeters: number | null;
         isGlucometerTrack: boolean;
-        _creationTime: number;
-      }[] = [];
+        sortTime: number;
+      };
+      type PendingResult = {
+        status: "pending";
+        linkId: Id<"observerLinks">;
+        requestedAt: number;
+        sortTime: number;
+      };
+      const results: (ActiveResult | PendingResult)[] = [];
 
-      for (const link of links) {
+      for (const link of effectiveLinks) {
+        const status = normalizeLinkStatus(link.status);
+        if (status === "pending") {
+          const requestedAt = link.requestedAt ?? link._creationTime;
+          if (isPendingExpired(requestedAt, now)) continue;
+          // Код из 5 цифр можно подобрать, поэтому личность пациента до
+          // подтверждения не раскрывается: ни имя, ни профиль, ни данные
+          // не читаются (D-05, D-06).
+          results.push({
+            status: "pending",
+            linkId: link._id,
+            requestedAt,
+            sortTime: requestedAt,
+          });
+          continue;
+        }
+        if (!isActiveLink(link)) continue; // declined, revoked, expired
+
         const patient = await ctx.db.get(link.patientId);
         if (!patient) continue; // связь с несуществующим пациентом — пропускаем
 
@@ -104,7 +152,7 @@ const getObservedPatients = query({
           )
           .collect();
 
-        let latestGlucose: (typeof results)[number]["latestGlucose"] = null;
+        let latestGlucose: ActiveResult["latestGlucose"] = null;
         for (const reading of glucoseReadings) {
           if (!latestGlucose || reading.recordedAt > latestGlucose.recordedAt) {
             latestGlucose = {
@@ -128,6 +176,7 @@ const getObservedPatients = query({
           .first();
 
         results.push({
+          status: "active",
           patientId: link.patientId,
           linkId: link._id,
           displayName: resolveDisplayName(patient),
@@ -140,13 +189,13 @@ const getObservedPatients = query({
           steps: movementRow?.steps ?? null,
           distanceMeters: movementRow?.distanceMeters ?? null,
           isGlucometerTrack: hasHealthBlocks(patientProfile?.data?.goalTrack),
-          _creationTime: link._creationTime,
+          sortTime: link.confirmedAt ?? link._creationTime,
         });
       }
 
-      results.sort((a, b) => b._creationTime - a._creationTime);
+      results.sort((a, b) => b.sortTime - a.sortTime);
 
-      return results.map(({ _creationTime, ...rest }) => rest);
+      return results.map(({ sortTime: _sortTime, ...rest }) => rest);
     } catch (error) {
       logError("getObservedPatients error", error);
       throw error;
