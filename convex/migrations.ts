@@ -14,6 +14,21 @@ export const backfillMealEatenAt = migrations.define({
   },
 });
 
+// Фаза 78, D-13: все связи, созданные до подтверждаемого наблюдения, становятся
+// active; идемпотентна — строки со статусом пропускаются.
+export const backfillObserverLinkStatus = migrations.define({
+  table: "observerLinks",
+  migrateOne: (_ctx, link) => {
+    if (link.status === undefined) {
+      return {
+        status: "active" as const,
+        confirmedAt: link._creationTime,
+        requestedAt: link._creationTime,
+      };
+    }
+  },
+});
+
 // npx convex run migrations:run '{"fn": "migrations:{MIGRATION_NAME}"}'
 // npx convex run --component migrations lib:getStatus --watch
 //
@@ -22,3 +37,10 @@ export const backfillMealEatenAt = migrations.define({
 // 2. npx convex run migrations:run '{"fn": "migrations:backfillMealEatenAt"}'
 // 3. npx convex run --component migrations lib:getStatus
 // Для prod — те же команды с флагом --prod.
+//
+// Бэкфилл статуса observerLinks:
+// 1. npx convex run migrations:run '{"fn": "migrations:backfillObserverLinkStatus", "dryRun": true}'
+// 2. npx convex run migrations:run '{"fn": "migrations:backfillObserverLinkStatus"}'
+// 3. npx convex run --component migrations lib:getStatus
+// Для prod — те же команды с флагом --prod. После завершения на всех
+// деплойментах — план 11 (обязательный status).
