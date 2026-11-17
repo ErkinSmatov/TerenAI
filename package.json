@@ -29,6 +29,7 @@
     "script:verifyEatenAt": "TZ=Europe/Berlin ts-node -r tsconfig-paths/register scripts/verifyEatenAt.ts",
     "script:verifyPushRules": "TZ=Europe/Berlin ts-node -r tsconfig-paths/register scripts/verifyPushRules.ts",
     "script:verifyPushTokenDedupe": "ts-node -r tsconfig-paths/register scripts/verifyPushTokenDedupe.ts",
+    "script:verifyLinkStatus": "ts-node -r tsconfig-paths/register scripts/verifyLinkStatus.ts",
     "script:verifyHealthBlocks": "ts-node -r tsconfig-paths/register scripts/verifyHealthBlocks.ts",
     "script:verifyHealthRanges": "ts-node -r tsconfig-paths/register scripts/verifyHealthRanges.ts",
     "script:verifyHealthSync": "TZ=Europe/Berlin ts-node -r tsconfig-paths/register scripts/verifyHealthSync.ts"
