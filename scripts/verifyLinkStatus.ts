@@ -118,10 +118,10 @@ for (const action of actions) {
 }
 
 // --- normalizeLinkStatus / isActiveLink ---
-assert.equal(normalizeLinkStatus(undefined), "active");
+assert.equal(normalizeLinkStatus(undefined), "expired");
 assert.equal(normalizeLinkStatus("pending"), "pending");
 assert.equal(isActiveLink({ status: "active" }), true);
-assert.equal(isActiveLink({}), true);
+assert.equal(isActiveLink({}), false);
 for (const s of ["pending", "declined", "revoked", "expired"] as const) {
   assert.equal(isActiveLink({ status: s }), false, s);
 }
@@ -144,9 +144,9 @@ assert.equal(pickEffectiveLink([p1, p2]), p2);
 const r1 = { status: "revoked" as const, _creationTime: 7 };
 const r2 = { status: "revoked" as const, _creationTime: 4 };
 assert.equal(pickEffectiveLink([r2, r1]), r1);
-// Legacy без статуса считается active
+// Строка без статуса (fail-closed) считается expired и уступает pending
 const legacy = { _creationTime: 1 };
-assert.equal(pickEffectiveLink([pending, legacy]), legacy);
+assert.equal(pickEffectiveLink([pending, legacy]), pending);
 
 // --- isPendingExpired (D-08) ---
 assert.equal(isPendingExpired(NOW - PENDING_EXPIRY_MS, NOW), true);

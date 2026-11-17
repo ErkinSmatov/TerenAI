@@ -10,14 +10,14 @@ export const observerLinkStatusValidator = v.union(
   v.literal("expired"),
 );
 
-// Статус опционален только на шаге 1 до миграции backfillObserverLinkStatus
-// (D-13); план 11 делает его обязательным. Строки не удаляются при отзыве:
+// Статус обязателен (шаг 2 схемы после миграции D-13). Строки не удаляются при отзыве:
 // статусы хранятся для аудита и защиты от спама (D-09). endedBy различает
 // отзыв пациентом и отмену/отзыв наблюдателем.
 export const observerLinksFields = {
   observerId: v.id("users"),
   patientId: v.id("users"),
-  status: v.optional(observerLinkStatusValidator),
+  // Обязателен после backfillObserverLinkStatus (Фаза 78, план 10).
+  status: observerLinkStatusValidator,
   requestedAt: v.optional(v.number()),
   confirmedAt: v.optional(v.number()),
   respondedAt: v.optional(v.number()),

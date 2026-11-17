@@ -4,8 +4,8 @@
 // переходы сами, а вызывают resolveTransition. Модуль чистый: без импортов из
 // convex и без Date.now(), время приходит аргументом now.
 //
-// normalizeLinkStatus трактует отсутствие статуса как legacy-active только до
-// миграции D-13 (план 11 переводит это на fail-closed).
+// normalizeLinkStatus трактует отсутствие статуса как expired (fail-closed):
+// после миграции D-13 status обязателен.
 
 /** D-09: пять хранимых статусов связи. */
 export type LinkStatus = "pending" | "active" | "declined" | "revoked" | "expired";
@@ -39,9 +39,12 @@ export type TransitionResult =
   | { kind: "forbidden" }
   | { kind: "cooldown" };
 
-/** Строка без статуса (до миграции D-13) считается активной. */
+/**
+ * После миграции D-13 status обязателен; ветка undefined — защита fail-closed:
+ * строка без статуса доступа не даёт, повторный запрос по коду разрешён.
+ */
 export function normalizeLinkStatus(status: LinkStatus | undefined): LinkStatus {
-  return status ?? "active";
+  return status ?? "expired";
 }
 
 /** LINK-01, D-05: pending не является активной связью. */
