@@ -15,4 +15,13 @@ crons.interval(
   internal.notifications.checkScheduledPushes.default
 );
 
+// Часового интервала достаточно: срок pending 14 суток, а respondToRequest и
+// getIncomingRequests дополнительно проверяют isPendingExpired, так что
+// задержка до часа не открывает доступ.
+crons.interval(
+  "expire pending observer links",
+  { hours: 1 },
+  internal.observers.expirePendingLinks.default
+);
+
 export default crons;

@@ -92,6 +92,7 @@ import type * as notifications_sendPushNotification from "../notifications/sendP
 import type * as notifications_sendTestPush from "../notifications/sendTestPush.js";
 import type * as notifications_skipMealReminder from "../notifications/skipMealReminder.js";
 import type * as nutrition_computeNutritionTargets from "../nutrition/computeNutritionTargets.js";
+import type * as observers_expirePendingLinks from "../observers/expirePendingLinks.js";
 import type * as observers_generateCode from "../observers/generateCode.js";
 import type * as observers_getMyObservers from "../observers/getMyObservers.js";
 import type * as observers_getObservedPatients from "../observers/getObservedPatients.js";
@@ -237,6 +238,7 @@ declare const fullApi: ApiFromModules<{
   "notifications/sendTestPush": typeof notifications_sendTestPush;
   "notifications/skipMealReminder": typeof notifications_skipMealReminder;
   "nutrition/computeNutritionTargets": typeof nutrition_computeNutritionTargets;
+  "observers/expirePendingLinks": typeof observers_expirePendingLinks;
   "observers/generateCode": typeof observers_generateCode;
   "observers/getMyObservers": typeof observers_getMyObservers;
   "observers/getObservedPatients": typeof observers_getObservedPatients;
