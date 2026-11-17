@@ -605,7 +605,7 @@ Plans:
 **Goal:** Любой наблюдатель получает доступ к данным пациента только после его явного подтверждения; врач отображается в карточке наблюдателя с пометкой «Врач».
 **Requirements**: LINK-01, LINK-02, LINK-03, LINK-04, LINK-05
 **Depends on:** Nothing (Phase 6 уже закрыта)
-**Plans:** 6/11 plans executed
+**Plans:** 8/11 plans executed
 
 Plans:
 **Wave 1**
@@ -622,8 +622,8 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 78-07-PLAN.md — getObservedPatients с заглушкой pending, PendingObservedCard, обработка redeemCode в maps.tsx
-- [ ] 78-08-PLAN.md — IncomingRequestCard, лист запросов на главной, бейдж в HomeHeader
+- [x] 78-07-PLAN.md — getObservedPatients с заглушкой pending, PendingObservedCard, обработка redeemCode в maps.tsx
+- [x] 78-08-PLAN.md — IncomingRequestCard, лист запросов на главной, бейдж в HomeHeader
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
