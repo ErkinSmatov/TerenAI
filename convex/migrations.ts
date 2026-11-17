@@ -19,6 +19,9 @@ export const backfillMealEatenAt = migrations.define({
 export const backfillObserverLinkStatus = migrations.define({
   table: "observerLinks",
   migrateOne: (_ctx, link) => {
+    // status стал обязательным (шаг 2 схемы), но миграция остаётся как история
+    // и защита при повторном запуске на данных без статуса.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (link.status === undefined) {
       return {
         status: "active" as const,
