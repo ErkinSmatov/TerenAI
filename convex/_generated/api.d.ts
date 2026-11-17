@@ -23,6 +23,7 @@ import type * as bloodPressure_getAllReadings from "../bloodPressure/getAllReadi
 import type * as bloodPressure_getMonthReadings from "../bloodPressure/getMonthReadings.js";
 import type * as bloodPressure_getWeekReadings from "../bloodPressure/getWeekReadings.js";
 import type * as crons from "../crons.js";
+import type * as doctors_createDoctor from "../doctors/createDoctor.js";
 import type * as favorites_addFavoriteFromMeal from "../favorites/addFavoriteFromMeal.js";
 import type * as favorites_favoriteSignature from "../favorites/favoriteSignature.js";
 import type * as favorites_favoritesConfig from "../favorites/favoritesConfig.js";
@@ -99,7 +100,8 @@ import type * as observers_getPatientToday from "../observers/getPatientToday.js
 import type * as observers_redeemCode from "../observers/redeemCode.js";
 import type * as observers_regenerateCode from "../observers/regenerateCode.js";
 import type * as observers_revokeLink from "../observers/revokeLink.js";
-import type * as observers_utils_thresholds from "../observers/utils/thresholds.js";
+import type * as observers_utils_pairLinks from "../observers/utils/pairLinks.js";
+import type * as observers_utils_thresholdsfrom "../observers/utils/thresholds.js";
 import type * as profiles_completeOnboarding from "../profiles/completeOnboarding.js";
 import type * as profiles_getProfile from "../profiles/getProfile.js";
 import type * as profiles_syncSubscriptionStatus from "../profiles/syncSubscriptionStatus.js";
@@ -166,6 +168,7 @@ declare const fullApi: ApiFromModules<{
   "bloodPressure/getMonthReadings": typeof bloodPressure_getMonthReadings;
   "bloodPressure/getWeekReadings": typeof bloodPressure_getWeekReadings;
   crons: typeof crons;
+  "doctors/createDoctor": typeof doctors_createDoctor;
   "favorites/addFavoriteFromMeal": typeof favorites_addFavoriteFromMeal;
   "favorites/favoriteSignature": typeof favorites_favoriteSignature;
   "favorites/favoritesConfig": typeof favorites_favoritesConfig;
@@ -242,7 +245,8 @@ declare const fullApi: ApiFromModules<{
   "observers/redeemCode": typeof observers_redeemCode;
   "observers/regenerateCode": typeof observers_regenerateCode;
   "observers/revokeLink": typeof observers_revokeLink;
-  "observers/utils/thresholds": typeof observers_utils_thresholds;
+  "observers/utils/pairLinks": typeof observers_utils_pairLinks;
+  "observers/utils/thresholds":typeof observers_utils_thresholds;
   "profiles/completeOnboarding": typeof profiles_completeOnboarding;
   "profiles/getProfile": typeof profiles_getProfile;
   "profiles/syncSubscriptionStatus": typeof profiles_syncSubscriptionStatus;
