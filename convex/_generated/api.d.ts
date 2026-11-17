@@ -93,6 +93,7 @@ import type * as notifications_sendTestPush from "../notifications/sendTestPush.
 import type * as notifications_skipMealReminder from "../notifications/skipMealReminder.js";
 import type * as nutrition_computeNutritionTargets from "../nutrition/computeNutritionTargets.js";
 import type * as observers_generateCode from "../observers/generateCode.js";
+import type * as observers_getIncomingRequests from "../observers/getIncomingRequests.js";
 import type * as observers_getMyObservers from "../observers/getMyObservers.js";
 import type * as observers_getObservedPatients from "../observers/getObservedPatients.js";
 import type * as observers_getPatientHistory from "../observers/getPatientHistory.js";
@@ -238,6 +239,7 @@ declare const fullApi: ApiFromModules<{
   "notifications/skipMealReminder": typeof notifications_skipMealReminder;
   "nutrition/computeNutritionTargets": typeof nutrition_computeNutritionTargets;
   "observers/generateCode": typeof observers_generateCode;
+  "observers/getIncomingRequests": typeof observers_getIncomingRequests;
   "observers/getMyObservers": typeof observers_getMyObservers;
   "observers/getObservedPatients": typeof observers_getObservedPatients;
   "observers/getPatientHistory": typeof observers_getPatientHistory;
