@@ -1,6 +1,9 @@
 import { query } from "../_generated/server";
+import type { Doc, Id } from "../_generated/dataModel";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import logError from "@/lib/utils/logError";
+import { isActiveLink, pickEffectiveLink } from "@/lib/observers/linkStatus";
+import { resolveObserverSummary } from "./utils/observerSummary";
 
 const getMyObservers = query({
   args: {},
@@ -17,21 +20,28 @@ const getMyObservers = query({
         .withIndex("byPatientId", (q) => q.eq("patientId", userId))
         .collect();
 
-      const resolved = await Promise.all(
-        links.map(async (link) => {
-          const observer = await ctx.db.get(link.observerId);
-          if (!observer) return null;
+      const groups = new Map<Id<"users">, Doc<"observerLinks">[]>();
+      for (const link of links) {
+        const group = groups.get(link.observerId);
+        if (group) group.push(link);
+        else groups.set(link.observerId, [link]);
+      }
 
-          const displayName =
-            [observer.name, observer.email, observer.phone].find(
-              (value): value is string => Boolean(value)
-            ) ?? "Гость";
+      const resolved = await Promise.all(
+        [...groups.values()].map(async (group) => {
+          const effective = pickEffectiveLink(group);
+          // pending сюда не попадают — они в getIncomingRequests.
+          if (!effective || !isActiveLink(effective)) return null;
+
+          const summary = await resolveObserverSummary(ctx, effective.observerId);
+          if (!summary) return null;
 
           return {
-            linkId: link._id,
-            observerId: link.observerId,
-            displayName,
-            linkedAt: link._creationTime,
+            linkId: effective._id,
+            observerId: effective.observerId,
+            displayName: summary.displayName,
+            linkedAt: effective.confirmedAt ?? effective._creationTime,
+            doctor: summary.doctor,
           };
         })
       );

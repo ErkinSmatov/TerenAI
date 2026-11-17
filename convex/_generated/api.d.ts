@@ -95,6 +95,7 @@ import type * as nutrition_computeNutritionTargets from "../nutrition/computeNut
 import type * as observers_cancelRequest from "../observers/cancelRequest.js";
 import type * as observers_expirePendingLinks from "../observers/expirePendingLinks.js";
 import type * as observers_generateCode from "../observers/generateCode.js";
+import type * as observers_getIncomingRequests from "../observers/getIncomingRequests.js";
 import type * as observers_getMyObservers from "../observers/getMyObservers.js";
 import type * as observers_getObservedPatients from "../observers/getObservedPatients.js";
 import type * as observers_getPatientHistory from "../observers/getPatientHistory.js";
@@ -243,6 +244,7 @@ declare const fullApi: ApiFromModules<{
   "observers/cancelRequest": typeof observers_cancelRequest;
   "observers/expirePendingLinks": typeof observers_expirePendingLinks;
   "observers/generateCode": typeof observers_generateCode;
+  "observers/getIncomingRequests": typeof observers_getIncomingRequests;
   "observers/getMyObservers": typeof observers_getMyObservers;
   "observers/getObservedPatients": typeof observers_getObservedPatients;
   "observers/getPatientHistory": typeof observers_getPatientHistory;
