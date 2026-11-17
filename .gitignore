@@ -5,8 +5,8 @@ node_modules/
 /android/
 /ios/
 fdc-data/
-/data/
-/docs/
+data/
+docs/
 
 # Expo
 .expo/
