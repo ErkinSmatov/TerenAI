@@ -42,4 +42,21 @@ for (const [name, src] of [
   );
 }
 
+const observed = read("convex/observers/getObservedPatients.ts");
+const firstDbGet = observed.indexOf("ctx.db.get(");
+assert.ok(firstDbGet >= 0, "getObservedPatients: нет ctx.db.get(");
+const pendingIdx = observed.indexOf('status === "pending"');
+assert.ok(pendingIdx >= 0 && pendingIdx < firstDbGet, "getObservedPatients: ветка pending должна быть раньше первого ctx.db.get(");
+const pickIdx = observed.indexOf("pickEffectiveLink(");
+assert.ok(pickIdx >= 0 && pickIdx < firstDbGet, "getObservedPatients: pickEffectiveLink( должен быть раньше первого ctx.db.get(");
+
+const redeem = read("convex/observers/redeemCode.ts");
+const limitIdx = redeem.indexOf("rateLimiter.limit");
+const catchIdx = redeem.indexOf("} catch");
+assert.ok(limitIdx >= 0 && catchIdx > limitIdx, "redeemCode: не найден участок после rateLimiter.limit");
+assert.ok(
+  !redeem.slice(limitIdx, catchIdx).includes("throw new Error("),
+  "redeemCode: после списания лимитов бросать ошибку нельзя (откатит лимиты), возвращайте { ok: false }"
+);
+
 console.log("observerGate.check: OK");
