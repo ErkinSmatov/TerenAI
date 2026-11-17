@@ -101,7 +101,7 @@ import type * as observers_redeemCode from "../observers/redeemCode.js";
 import type * as observers_regenerateCode from "../observers/regenerateCode.js";
 import type * as observers_revokeLink from "../observers/revokeLink.js";
 import type * as observers_utils_pairLinks from "../observers/utils/pairLinks.js";
-import type * as observers_utils_thresholdsfrom "../observers/utils/thresholds.js";
+import type * as observers_utils_thresholds from "../observers/utils/thresholds.js";
 import type * as profiles_completeOnboarding from "../profiles/completeOnboarding.js";
 import type * as profiles_getProfile from "../profiles/getProfile.js";
 import type * as profiles_syncSubscriptionStatus from "../profiles/syncSubscriptionStatus.js";
@@ -246,7 +246,7 @@ declare const fullApi: ApiFromModules<{
   "observers/regenerateCode": typeof observers_regenerateCode;
   "observers/revokeLink": typeof observers_revokeLink;
   "observers/utils/pairLinks": typeof observers_utils_pairLinks;
-  "observers/utils/thresholds":typeof observers_utils_thresholds;
+  "observers/utils/thresholds": typeof observers_utils_thresholds;
   "profiles/completeOnboarding": typeof profiles_completeOnboarding;
   "profiles/getProfile": typeof profiles_getProfile;
   "profiles/syncSubscriptionStatus": typeof profiles_syncSubscriptionStatus;
