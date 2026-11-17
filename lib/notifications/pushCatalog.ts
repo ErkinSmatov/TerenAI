@@ -5,7 +5,14 @@
 import type { MealPointId } from "@/lib/notifications/reminderSchedule";
 import type { PushClass } from "@/lib/notifications/pushRules";
 
-export type PushId = "FOOD-01" | "HLT-14" | "RET-01" | "RET-02" | "RET-03";
+export type ScheduledPushId =
+  | "FOOD-01"
+  | "HLT-14"
+  | "RET-01"
+  | "RET-02"
+  | "RET-03";
+
+export type PushId = ScheduledPushId | "OBS-01";
 
 export const PUSH_CATALOG: Record<
   PushId,
@@ -54,6 +61,17 @@ export const PUSH_CATALOG: Record<
       "Не будем вас отвлекать. Когда захотите вернуться — всё будет на месте 💚",
     ],
     url: "/app",
+  },
+  // Класс A — транзакционный: не входит в лимит C/D и в тумблеры напоминаний.
+  // Отправляется из convex/observers/redeemCode.ts. Имя наблюдателя в текст
+  // не подставляется (экран блокировки, медицинский контекст).
+  "OBS-01": {
+    pushClass: "A",
+    title: "Запрос на наблюдение",
+    texts: [
+      "Кто-то хочет наблюдать за вашими данными. Откройте приложение, чтобы ответить 🔔",
+    ],
+    url: "/app/(tabs)/maps",
   },
 };
 

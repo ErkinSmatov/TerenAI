@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { DAY_MS } from "@/lib/notifications/reminderSchedule";
 import {
   DORMANT_AFTER_MS,
+  LIMITED_PUSH_CLASSES,
   canSendWithDailyLimit,
   incrementDailyCounter,
   isDormant,
@@ -320,5 +321,8 @@ assert.strictEqual(PUSH_CATALOG["HLT-14"].pushClass, "B");
 assert.strictEqual(PUSH_CATALOG["RET-01"].pushClass, "D");
 assert.strictEqual(PUSH_CATALOG["RET-02"].pushClass, "D");
 assert.strictEqual(PUSH_CATALOG["RET-03"].pushClass, "D");
+// OBS-01 — транзакционный класс A, вне лимита C/D.
+assert.strictEqual(PUSH_CATALOG["OBS-01"].pushClass, "A");
+assert.ok(!LIMITED_PUSH_CLASSES.includes(PUSH_CATALOG["OBS-01"].pushClass));
 
 console.log("verifyPushRules: OK");

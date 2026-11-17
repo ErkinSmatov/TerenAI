@@ -25,7 +25,7 @@ import {
   PUSH_CATALOG,
   getFoodReminderVariantIndexes,
   renderPushText,
-  type PushId,
+  type ScheduledPushId,
 } from "@/lib/notifications/pushCatalog";
 import { pickLatestTokenRows } from "@/lib/notifications/tokenDedupe";
 import logError from "@/lib/utils/logError";
@@ -63,7 +63,7 @@ const checkScheduledPushes = internalMutation({
       const { keep: uniqueTokens, remove } = pickLatestTokenRows(tokens);
 
       const messages: PushMessage[] = [];
-      const counts: Record<PushId, number> = {
+      const counts: Record<ScheduledPushId, number> = {
         "FOOD-01": 0,
         "HLT-14": 0,
         "RET-01": 0,
@@ -98,7 +98,7 @@ const checkScheduledPushes = internalMutation({
 
         // Рендер с проверкой правил 9–10; при ошибке — повтор без имени.
         const renderChecked = async (
-          id: PushId,
+          id: ScheduledPushId,
           template: string,
           mealPointId?: MealPointId
         ): Promise<{ title: string; body: string } | null> => {
@@ -123,9 +123,9 @@ const checkScheduledPushes = internalMutation({
           return { title, body };
         };
 
-        const countsTowardLimit = (id: PushId) =>
+        const countsTowardLimit = (id: ScheduledPushId) =>
           LIMITED_PUSH_CLASSES.includes(PUSH_CATALOG[id].pushClass);
-        const limitedOk = (id: PushId) =>
+        const limitedOk = (id: ScheduledPushId) =>
           !countsTowardLimit(id) ||
           canSendWithDailyLimit(
             profile.limitedPushCounter,
@@ -262,7 +262,7 @@ const checkScheduledPushes = internalMutation({
             lastSentAtMs: profile.lastRetentionReminderSentAt,
           });
           if (stage !== null) {
-            const id = `RET-0${stage}` as PushId;
+            const id = `RET-0${stage}` as ScheduledPushId;
             if (limitedOk(id)) {
               const copy = await renderChecked(id, PUSH_CATALOG[id].texts[0]);
               if (copy) {

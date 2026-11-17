@@ -136,6 +136,9 @@ export default function NotificationsProvider() {
     const navigateFromNotificationUrl = (url: unknown) => {
       if (url === "/app/(settings)/weeklyWeighIn") {
         router.push("/app/(settings)/weeklyWeighIn");
+      } else if (url === "/app/(tabs)/maps") {
+        // Белый список целей push: OBS-01 открывает вкладку с запросами наблюдения.
+        router.push("/app/(tabs)/maps");
       } else {
         router.push("/app");
       }
