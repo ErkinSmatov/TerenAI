@@ -605,7 +605,7 @@ Plans:
 **Goal:** Любой наблюдатель получает доступ к данным пациента только после его явного подтверждения; врач отображается в карточке наблюдателя с пометкой «Врач».
 **Requirements**: LINK-01, LINK-02, LINK-03, LINK-04, LINK-05
 **Depends on:** Nothing (Phase 6 уже закрыта)
-**Plans:** 9/11 plans executed
+**Plans:** 10/11 plans executed
 
 Plans:
 **Wave 1**
@@ -631,7 +631,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 78-10-PLAN.md — миграция на dev, решение по prod и допущениям (checkpoint)
+- [x] 78-10-PLAN.md — миграция на dev, решение по prod и допущениям (checkpoint)
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
