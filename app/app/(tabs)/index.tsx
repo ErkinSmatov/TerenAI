@@ -1,4 +1,5 @@
 import BadgeCelebrationModal from "@/components/badges/BadgeCelebrationModal";
+import ObservationRequestSheet from "@/components/observer/ObservationRequestSheet";
 import HomeBloodPressureSummary from "@/components/home/HomeBloodPressureSummary";
 import HomeDaySelector from "@/components/home/HomeDaySelector";
 import HomeGlucoseSummary from "@/components/home/HomeGlucoseSummary";
@@ -169,6 +170,7 @@ export default function HomeScreen() {
         )}
       </ScrollView>
       <BadgeCelebrationModal />
+      <ObservationRequestSheet />
     </SafeArea>
   );
 }

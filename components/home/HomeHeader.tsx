@@ -3,7 +3,7 @@ import getColor from "@/lib/ui/getColor";
 import type { ThemeName } from "@/lib/ui/palettes";
 import useThemedStyles from "@/lib/ui/useThemedStyles";
 import Text from "../ui/Text";
-import { FlameIcon } from "lucide-react-native";
+import { EyeIcon, FlameIcon } from "lucide-react-native";
 import Pill from "../ui/Pill";
 import Button from "../ui/Button";
 import { useQuery } from "convex/react";
@@ -20,6 +20,8 @@ export default function HomeHeader() {
     timezoneOffsetMinutes: new Date().getTimezoneOffset(),
   });
   const userName = useQuery(api.home.getCurrentUserName.default);
+  const requests = useQuery(api.observers.getIncomingRequests.default);
+  const count = requests?.length ?? 0;
 
   return (
     <SafeArea edges={["left", "right"]} style={styles.safeArea}>
@@ -29,6 +31,34 @@ export default function HomeHeader() {
         </Text>
       </View>
       <View style={styles.iconGroup}>
+        <Button
+          variant="base"
+          size="base"
+          accessibilityLabel={
+            count > 0
+              ? `Наблюдение, новых запросов: ${count}`
+              : "Открыть наблюдение"
+          }
+          onPress={() => {
+            router.push("/app/(tabs)/maps");
+          }}
+        >
+          <Pill>
+            <EyeIcon size={20} color={getColor("foreground", undefined, theme)} />
+          </Pill>
+          {count > 0 && (
+            <View
+              style={[
+                styles.badge,
+                { backgroundColor: getColor("destructive", undefined, theme) },
+              ]}
+            >
+              <Text size="12" weight="600">
+                {count > 9 ? "9+" : String(count)}
+              </Text>
+            </View>
+          )}
+        </Button>
         <Button
           variant="base"
           size="base"
@@ -73,6 +103,17 @@ const createStyles = (_theme: ThemeName) => ({
     flexDirection: "row" as const,
     alignItems: "center" as const,
     gap: 8,
+  },
+  badge: {
+    position: "absolute" as const,
+    top: -4,
+    right: -4,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    paddingHorizontal: 4,
   },
   streakContainer: {
     minWidth: 56,
