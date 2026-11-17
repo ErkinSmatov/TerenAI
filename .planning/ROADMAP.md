@@ -605,7 +605,7 @@ Plans:
 **Goal:** Любой наблюдатель получает доступ к данным пациента только после его явного подтверждения; врач отображается в карточке наблюдателя с пометкой «Врач».
 **Requirements**: LINK-01, LINK-02, LINK-03, LINK-04, LINK-05
 **Depends on:** Nothing (Phase 6 уже закрыта)
-**Plans:** 3/11 plans executed
+**Plans:** 6/11 plans executed
 
 Plans:
 **Wave 1**
@@ -616,9 +616,9 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 78-04-PLAN.md — шлюз только active, respondToRequest, cancelRequest, revokeLink по статусам, observerGate.check
-- [ ] 78-05-PLAN.md — redeemCode → pending + cooldown + push, лимиты без отката; cron истечения 14 дней
-- [ ] 78-06-PLAN.md — getMyObservers (только active + doctor), getIncomingRequests
+- [x] 78-04-PLAN.md — шлюз только active, respondToRequest, cancelRequest, revokeLink по статусам, observerGate.check
+- [x] 78-05-PLAN.md — redeemCode → pending + cooldown + push, лимиты без отката; cron истечения 14 дней
+- [x] 78-06-PLAN.md — getMyObservers (только active + doctor), getIncomingRequests
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
