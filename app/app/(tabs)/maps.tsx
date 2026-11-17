@@ -4,6 +4,7 @@ import { useMutation, useQuery } from "convex/react";
 import { UserIcon, UsersIcon } from "lucide-react-native";
 import type { LucideIcon } from "lucide-react-native";
 import ObservedPatientCard from "@/components/observer/ObservedPatientCard";
+import PendingObservedCard from "@/components/observer/PendingObservedCard";
 import ObserverCard from "@/components/observer/ObserverCard";
 import ShareCodeCard from "@/components/observer/ShareCodeCard";
 import OTPInput, { OTPInputHandle } from "@/components/ui/OTPInput";
@@ -15,6 +16,7 @@ import { Toast } from "@/components/ui/Toast";
 import { useThemeContext } from "@/context/ThemeContext";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import { REDEEM_ERRORS } from "@/lib/observers/linkStatus";
 import getColor from "@/lib/ui/getColor";
 import type { ThemeName } from "@/lib/ui/palettes";
 import useThemedStyles from "@/lib/ui/useThemedStyles";
@@ -61,42 +63,65 @@ export default function MapsScreen() {
   const observers = useQuery(api.observers.getMyObservers.default);
   const redeemCode = useMutation(api.observers.redeemCode.default);
   const revokeLink = useMutation(api.observers.revokeLink.default);
+  const cancelRequest = useMutation(api.observers.cancelRequest.default);
 
   const inputRef = useRef<OTPInputHandle>(null);
   const [activeTab, setActiveTab] = useState<string>(TAB_OBSERVED);
 
   const handleFilled = async (code: string) => {
     try {
-      await redeemCode({ code });
-      inputRef.current?.clear();
-      setActiveTab(TAB_OBSERVED);
-    } catch (error) {
+      const result = await redeemCode({ code });
+      if (result.ok) {
+        inputRef.current?.clear();
+        setActiveTab(TAB_OBSERVED);
+        if (result.status === "pending") {
+          Toast.show({
+            text: "Запрос отправлен. Данные появятся после подтверждения.",
+            variant: "success",
+          });
+        }
+        return;
+      }
       inputRef.current?.flashError();
       inputRef.current?.clear();
-      const message = error instanceof Error ? error.message : "";
-
-      if (message.includes("Code not found")) {
+      if (result.error === REDEEM_ERRORS.notFound) {
         Toast.show({
           text: "Код не найден. Проверьте и попробуйте снова.",
           variant: "error",
         });
-      } else if (message.includes("Cannot observe yourself")) {
+      } else if (result.error === REDEEM_ERRORS.self) {
         Toast.show({
           text: "Это ваш код — наблюдать за собой нельзя.",
           variant: "error",
         });
       } else {
-        Toast.show({
-          text: "Не удалось подключиться. Попробуйте ещё раз.",
-          variant: "error",
-        });
+        // D-10: причину не называем.
+        Toast.show({ text: "Запрос не принят.", variant: "error" });
       }
+    } catch {
+      inputRef.current?.flashError();
+      inputRef.current?.clear();
+      Toast.show({
+        text: "Не удалось подключиться. Попробуйте ещё раз.",
+        variant: "error",
+      });
     }
   };
 
   const handleRevoke = async (linkId: Id<"observerLinks">) => {
     try {
       await revokeLink({ linkId });
+    } catch {
+      Toast.show({
+        text: "Не удалось подключиться. Попробуйте ещё раз.",
+        variant: "error",
+      });
+    }
+  };
+
+  const handleCancel = async (linkId: Id<"observerLinks">) => {
+    try {
+      await cancelRequest({ linkId });
     } catch {
       Toast.show({
         text: "Не удалось подключиться. Попробуйте ещё раз.",
@@ -140,13 +165,21 @@ export default function MapsScreen() {
             />
           ) : (
             <View style={styles.observedCards}>
-              {patients.map((item) => (
-                <ObservedPatientCard
-                  key={item.linkId}
-                  patient={item}
-                  onRemove={() => void handleRevoke(item.linkId)}
-                />
-              ))}
+              {patients.map((item) =>
+                item.status === "pending" ? (
+                  <PendingObservedCard
+                    key={item.linkId}
+                    requestedAt={item.requestedAt}
+                    onCancel={() => void handleCancel(item.linkId)}
+                  />
+                ) : (
+                  <ObservedPatientCard
+                    key={item.linkId}
+                    patient={item}
+                    onRemove={() => void handleRevoke(item.linkId)}
+                  />
+                )
+              )}
             </View>
           )
         ) : observers === undefined ? null : observers.length === 0 ? (
