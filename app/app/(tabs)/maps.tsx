@@ -60,6 +60,7 @@ export default function MapsScreen() {
 
   const patients = useQuery(api.observers.getObservedPatients.default, {
     timezoneOffsetMinutes: new Date().getTimezoneOffset(),
+    supportsPending: true,
   });
   const observers = useQuery(api.observers.getMyObservers.default);
   const requests = useQuery(api.observers.getIncomingRequests.default);

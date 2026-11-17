@@ -59,4 +59,9 @@ assert.ok(
   "redeemCode: после списания лимитов бросать ошибку нельзя (откатит лимиты), возвращайте { ok: false }"
 );
 
+assert.ok(
+  observed.includes("supportsPending !== true"),
+  "getObservedPatients: pending должен отдаваться только клиентам с supportsPending (старое приложение 1.2.1(24) падает на заглушке)"
+);
+
 console.log("observerGate.check: OK");

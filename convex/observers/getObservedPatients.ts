@@ -24,8 +24,11 @@ function resolveDisplayName(user: {
 const getObservedPatients = query({
   args: {
     timezoneOffsetMinutes: v.number(),
+    // Клиенты до фазы 78 не умеют рисовать заглушку pending (краш на 1.2.1(24)),
+    // поэтому pending отдаётся только тем, кто явно передал этот флаг.
+    supportsPending: v.optional(v.boolean()),
   },
-  handler: async (ctx, { timezoneOffsetMinutes }) => {
+  handler: async (ctx, { timezoneOffsetMinutes, supportsPending }) => {
     try {
       const observerId = await getAuthUserId(ctx);
       if (observerId === null) throw new Error("Unauthorized");
@@ -89,6 +92,7 @@ const getObservedPatients = query({
       for (const link of effectiveLinks) {
         const status = normalizeLinkStatus(link.status);
         if (status === "pending") {
+          if (supportsPending !== true) continue; // старый клиент: pending не показываем
           const requestedAt = link.requestedAt ?? link._creationTime;
           if (isPendingExpired(requestedAt, now)) continue;
           // Код из 5 цифр можно подобрать, поэтому личность пациента до
