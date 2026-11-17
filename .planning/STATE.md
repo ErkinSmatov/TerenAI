@@ -4,7 +4,7 @@ milestone: v1.3
 milestone_name: milestone
 status: executing
 stopped_at: Phase 78 context gathered
-last_updated: "2026-11-13T11:15:15.552Z"
+last_updated: "2026-11-17T08:00:13.498Z"
 progress:
   total_phases: 26
   completed_phases: 10
@@ -20,13 +20,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-05)
 
 **Core value:** Пользователь фотографирует еду и через несколько секунд видит достоверные калории и БЖУ — без ручного ввода и поиска по базе.
-**Current focus:** Phase 74 — onboarding-push-notifications
+**Current focus:** Phase 78 — confirmed-observation
 
 ## Current Position
 
-Phase: 74 (onboarding-push-notifications) — EXECUTING
-Plan: 9 of 9
-Status: Ready to execute
+Phase: 78 (confirmed-observation) — EXECUTING
+Plan: 1 of 11
+Status: Executing Phase 78
 
 Next step: /gsd:discuss-phase 73
 

@@ -605,14 +605,14 @@ Plans:
 **Goal:** Любой наблюдатель получает доступ к данным пациента только после его явного подтверждения; врач отображается в карточке наблюдателя с пометкой «Врач».
 **Requirements**: LINK-01, LINK-02, LINK-03, LINK-04, LINK-05
 **Depends on:** Nothing (Phase 6 уже закрыта)
-**Plans:** 11 plans
+**Plans:** 3/11 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 78-01-PLAN.md — автомат статусов связи lib/observers/linkStatus.ts + verifyLinkStatus (Wave 0, TDD)
-- [ ] 78-02-PLAN.md — push OBS-01 класса A, ScheduledPushId, deep link на вкладку наблюдения
-- [ ] 78-03-PLAN.md — схема observerLinks (шаг 1), таблица doctors, миграция D-13, createDoctor, pairLinks
+- [x] 78-01-PLAN.md — автомат статусов связи lib/observers/linkStatus.ts + verifyLinkStatus (Wave 0, TDD)
+- [x] 78-02-PLAN.md — push OBS-01 класса A, ScheduledPushId, deep link на вкладку наблюдения
+- [x] 78-03-PLAN.md — схема observerLinks (шаг 1), таблица doctors, миграция D-13, createDoctor, pairLinks
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
