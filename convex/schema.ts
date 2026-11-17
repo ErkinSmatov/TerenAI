@@ -2,6 +2,7 @@ import { authTables } from "@convex-dev/auth/server";
 import { defineSchema } from "convex/server";
 import { badges } from "./tables/badges";
 import { bloodPressureReadings } from "./tables/bloodPressureReadings";
+import { doctors } from "./tables/doctors";
 import { favoriteMeals } from "./tables/favoriteMeals";
 import { foods } from "./tables/foods";
 import { glucoseReadings } from "./tables/glucoseReadings";
@@ -16,6 +17,7 @@ export default defineSchema({
   ...authTables,
   badges,
   bloodPressureReadings,
+  doctors,
   favoriteMeals,
   foods,
   glucoseReadings,

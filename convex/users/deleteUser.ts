@@ -127,6 +127,14 @@ const deleteUser = mutation({
       await ctx.db.delete(token._id);
     }
 
+    const doctorRows = await ctx.db
+      .query("doctors")
+      .withIndex("byUserId", (q) => q.eq("userId", userId))
+      .collect();
+    for (const doctor of doctorRows) {
+      await ctx.db.delete(doctor._id);
+    }
+
     await ctx.db.delete(userId);
   },
 });
