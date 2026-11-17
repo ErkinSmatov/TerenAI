@@ -92,6 +92,7 @@ import type * as notifications_sendPushNotification from "../notifications/sendP
 import type * as notifications_sendTestPush from "../notifications/sendTestPush.js";
 import type * as notifications_skipMealReminder from "../notifications/skipMealReminder.js";
 import type * as nutrition_computeNutritionTargets from "../nutrition/computeNutritionTargets.js";
+import type * as observers_cancelRequest from "../observers/cancelRequest.js";
 import type * as observers_generateCode from "../observers/generateCode.js";
 import type * as observers_getMyObservers from "../observers/getMyObservers.js";
 import type * as observers_getObservedPatients from "../observers/getObservedPatients.js";
@@ -99,6 +100,7 @@ import type * as observers_getPatientHistory from "../observers/getPatientHistor
 import type * as observers_getPatientToday from "../observers/getPatientToday.js";
 import type * as observers_redeemCode from "../observers/redeemCode.js";
 import type * as observers_regenerateCode from "../observers/regenerateCode.js";
+import type * as observers_respondToRequest from "../observers/respondToRequest.js";
 import type * as observers_revokeLink from "../observers/revokeLink.js";
 import type * as observers_utils_pairLinks from "../observers/utils/pairLinks.js";
 import type * as observers_utils_thresholds from "../observers/utils/thresholds.js";
@@ -237,6 +239,7 @@ declare const fullApi: ApiFromModules<{
   "notifications/sendTestPush": typeof notifications_sendTestPush;
   "notifications/skipMealReminder": typeof notifications_skipMealReminder;
   "nutrition/computeNutritionTargets": typeof nutrition_computeNutritionTargets;
+  "observers/cancelRequest": typeof observers_cancelRequest;
   "observers/generateCode": typeof observers_generateCode;
   "observers/getMyObservers": typeof observers_getMyObservers;
   "observers/getObservedPatients": typeof observers_getObservedPatients;
@@ -244,6 +247,7 @@ declare const fullApi: ApiFromModules<{
   "observers/getPatientToday": typeof observers_getPatientToday;
   "observers/redeemCode": typeof observers_redeemCode;
   "observers/regenerateCode": typeof observers_regenerateCode;
+  "observers/respondToRequest": typeof observers_respondToRequest;
   "observers/revokeLink": typeof observers_revokeLink;
   "observers/utils/pairLinks": typeof observers_utils_pairLinks;
   "observers/utils/thresholds": typeof observers_utils_thresholds;
