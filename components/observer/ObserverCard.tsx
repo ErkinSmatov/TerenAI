@@ -15,12 +15,16 @@ import { CARD_BACKGROUND_DARK, CARD_GLOW } from "./observerCardTheme";
 type Props = {
   displayName: string;
   linkedAt: number;
+  // Пометка приходит только из серверного поля doctor (verified в таблице
+  // doctors, LINK-05); компонент её не вычисляет.
+  doctorClinic?: string | null;
   onRevoke: () => void;
 };
 
 export default function ObserverCard({
   displayName,
   linkedAt,
+  doctorClinic,
   onRevoke,
 }: Props) {
   const { theme } = useThemeContext();
@@ -48,6 +52,11 @@ export default function ObserverCard({
         <Text size="16" weight="600" numberOfLines={1}>
           {displayName}
         </Text>
+        {doctorClinic ? (
+          <Text size="12" color={getColor("primary", undefined, theme)}>
+            {`Врач · ${doctorClinic}`}
+          </Text>
+        ) : null}
         <Text size="12" color={getColor("mutedForeground", undefined, theme)}>
           {`Подключён ${format(linkedAt, "d MMMM", { locale: ru })}`}
         </Text>
