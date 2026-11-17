@@ -5,6 +5,7 @@ import { UserIcon, UsersIcon } from "lucide-react-native";
 import type { LucideIcon } from "lucide-react-native";
 import ObservedPatientCard from "@/components/observer/ObservedPatientCard";
 import PendingObservedCard from "@/components/observer/PendingObservedCard";
+import IncomingRequestCard from "@/components/observer/IncomingRequestCard";
 import ObserverCard from "@/components/observer/ObserverCard";
 import ShareCodeCard from "@/components/observer/ShareCodeCard";
 import OTPInput, { OTPInputHandle } from "@/components/ui/OTPInput";
@@ -61,12 +62,36 @@ export default function MapsScreen() {
     timezoneOffsetMinutes: new Date().getTimezoneOffset(),
   });
   const observers = useQuery(api.observers.getMyObservers.default);
+  const requests = useQuery(api.observers.getIncomingRequests.default);
+  const respond = useMutation(api.observers.respondToRequest.default);
   const redeemCode = useMutation(api.observers.redeemCode.default);
   const revokeLink = useMutation(api.observers.revokeLink.default);
   const cancelRequest = useMutation(api.observers.cancelRequest.default);
 
   const inputRef = useRef<OTPInputHandle>(null);
   const [activeTab, setActiveTab] = useState<string>(TAB_OBSERVED);
+  const [busyId, setBusyId] = useState<Id<"observerLinks"> | null>(null);
+
+  const handleRespond = async (
+    linkId: Id<"observerLinks">,
+    decision: "accept" | "decline"
+  ) => {
+    setBusyId(linkId);
+    try {
+      await respond({ linkId, decision });
+      Toast.show({
+        text: decision === "accept" ? "Доступ разрешён" : "Запрос отклонён",
+        variant: "success",
+      });
+    } catch {
+      Toast.show({
+        text: "Не удалось ответить. Попробуйте ещё раз.",
+        variant: "error",
+      });
+    } finally {
+      setBusyId(null);
+    }
+  };
 
   const handleFilled = async (code: string) => {
     try {
@@ -149,6 +174,24 @@ export default function MapsScreen() {
             onFilled={(code) => void handleFilled(code)}
           />
         </View>
+        {requests && requests.length > 0 ? (
+          <View style={styles.requestsBlock}>
+            <Text size="16" weight="600">
+              Запросы на наблюдение
+            </Text>
+            {requests.map((item) => (
+              <IncomingRequestCard
+                key={item.linkId}
+                displayName={item.displayName}
+                requestedAt={item.requestedAt}
+                doctorClinic={item.doctor?.clinic ?? null}
+                busy={busyId === item.linkId}
+                onAccept={() => void handleRespond(item.linkId, "accept")}
+                onDecline={() => void handleRespond(item.linkId, "decline")}
+              />
+            ))}
+          </View>
+        ) : null}
         <View style={styles.tabs}>
           <SegmentedControl
             options={[TAB_OBSERVED, TAB_OBSERVERS]}
@@ -195,6 +238,7 @@ export default function MapsScreen() {
                 key={o.linkId}
                 displayName={o.displayName}
                 linkedAt={o.linkedAt}
+                doctorClinic={o.doctor?.clinic ?? null}
                 onRevoke={() => void handleRevoke(o.linkId)}
               />
             ))}
@@ -217,6 +261,9 @@ const createStyles = (_theme: ThemeName) =>
     },
     codeEntry: {
       gap: 8,
+    },
+    requestsBlock: {
+      gap: 12,
     },
     tabs: {
       alignSelf: "stretch",
